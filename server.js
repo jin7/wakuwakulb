@@ -15,8 +15,8 @@ var app = express();
 // Configuration
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
-//  app.set('port', process.env.PORT || 80);
+//  app.set('port', process.env.PORT || 3000);
+  app.set('port', process.env.PORT || 80);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
@@ -54,14 +54,12 @@ var io = require('socket.io').listen(server);
 var cmt = io
   .of('/live')
   .on('connection', function (socket) {
-//    console.log("#####connected /live");
     // comment
-//    socket.emit('comment', { comment: 'Hi!', rid: 'dummyrid', uid: 'dummyuid' });
     socket.on('comment', function (data) {
       // コメント受信
       // 参加プレーヤーにブロードキャスト
       socket.emit('comment', data);       // 送信者へ送信
-      socket.broadcast.emit('live', data);  // 送信者他全員へ送信
+      socket.broadcast.emit('comment', data);  // 送信者他全員へ送信
     });
 });
 
