@@ -15,8 +15,8 @@ var app = express();
 // Configuration
 
 app.configure(function(){
-//  app.set('port', process.env.PORT || 3000);
-  app.set('port', process.env.PORT || 80);
+  app.set('port', process.env.PORT || 3000);
+//  app.set('port', process.env.PORT || 80);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
@@ -51,6 +51,18 @@ var server = http.createServer(app).listen(app.get('port'), function() {
 });
 var io = require('socket.io').listen(server);
 
+//// account service
+var act = io
+  .of('/account')
+  .on('connection', function(socket) {
+    // add
+    socket.on('add', function(socket) {
+      // ユーザー登録
+
+    });
+  });
+
+//// comment service
 var cmt = io
   .of('/live')
   .on('connection', function (socket) {
@@ -63,10 +75,15 @@ var cmt = io
     });
 });
 
+//// round service
 var round = io
   .of('/round')
   .on('connection', function (socket) {
     console.log("connected /round");
+    // add
+    socket.on('add', function(data) {
+      
+    });
     // invite
     socket.on('invite', function(data) {
       // ユーザーへ招待メールを送信する
@@ -81,13 +98,18 @@ var round = io
     });
 });
 
+//// leaders board service
 var lb = io
   .of('/leadersboard')
   .on('connection', function (socket) {
     console.log("connected /leadersboard");
     // score
     socket.on('score', function (data) {
-      // スコア受信
+      // スコア入力データ受信
+      var rid = data.rid;
+      var uid = data.uid;
+      var holeno = data.holeno;
+      var score = data.score;
       // DBへ保存
       // TODO:スコアをDBへ保存
 
