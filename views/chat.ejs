@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/chatStyle.css' />
+    <link href='http://fonts.googleapis.com/css?family=Warnes' rel='stylesheet' type='text/css'>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/javascripts/wakuwakulb.js"></script>
+<!--
+    <script>
+	$(function() {
+	    // check desktop notifications
+//	    checkNotifications();
+
+	    var live = new io.connect("/live");
+//	    var live = new io.connect("/");
+
+	    live.on("connect", function(){
+	      $("#title").text(live.socket.transport.name + " chat");// 接続時に接続方式表示
+	    });
+
+	    live.on("live", function(data) {
+	            $("<li>").text(data.comment).prependTo($("#messageArea ul"));// 受信メッセージをレンダリング
+	            // Desktop Notification
+	            checkNotifications();
+	            notification('websockets chat', data);
+	        });
+
+	    $("#submitButton").click(function(event){
+	      // TODO: rid, uid
+	      live.emit("live", { rid: "dummy-rid", uid: "dummy-uid", comment: $("#name").val() + " : " + $("#msg").val()});// 入力メッセージをサーバへ
+	    });
+
+	    var $msg = $('#msg')
+	    , $ok = $('#ok')
+	    , $display = $('#display')
+	    ;
+	    live.on('msg push', function(data) {
+	        var $li = $('<li>').text(data);
+	        $display.append($li);
+	    });
+	    $ok.click(function() {
+	        live.emit('msg send', $msg.val());
+	    });
+	});
+
+	// check Desktop Notification
+	function checkNotifications() {
+	  if (!window.webkitNotifications) return;
+	  if (window.webkitNotifications.checkPermission() != 0) {
+	    window.webkitNotifications.requestPermission();
+	  }
+	};
+	// Notification
+	function notification(title, message) {
+	  if (window.webkitNotifications.checkPermission() == 0) {
+	    var nt = window.webkitNotifications.createNotification(null, title, data.comment);
+	    nt.ondisplay = function() {
+	      setTimeout(function() { nt.cancel(); }, 5000);
+	    };
+	    nt.show();
+	  } else {
+	    window.webkitNotifications.requestPermission();
+	  }
+	};
+    </script>
+-->
+  </head>
+  <body>
+    <div>
+      <h1 id="title"></h1>
+      <dl>
+        <dd><input type="text" id="name" class="msgField" placeholder="your name"></dd>
+        <dd><textarea id="msg" cols="100" class="msgField" placeholder="input message"></textarea></dd>
+        <dd><button type="button" id="submitButton" class="css3button" />シェア</dd>
+      </dl>
+    </div>
+    <hr />
+    <div id="messageArea">
+      <ul></ul>
+    </div>
+  </body>
+</html>
