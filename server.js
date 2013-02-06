@@ -8,15 +8,67 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , mongoose = require('mongoose');
 
 var app = express();
+
+var mongoUri = 'mongodb://127.0.0.1/wakuwakulb';
+var Schema = mongoose.Schema;
+
+function validator(v) {
+  return v.length > 0;
+}
+
+///
+/// Database schema
+///
+// get sequence numbers
+function counter(name) {
+    var ret = db.counters.findAndModify({query:{_id:name}, update:{$inc : {next:1}}, "new":true, upsert:true});
+    // ret == { "_id" : "users", "next" : 1 }
+    return ret.next;
+}
+
+// User model
+var userSchema = new Schema({
+    uname  : { type: String, validate: [validator, "Empty Error"] }
+  , mail   : { type: String }
+  , birth  : { type: Date }
+  , sex    : { type: Number }
+  , uimg   : { type: String }
+  , created: { type: Date, default: Date.now }
+});
+var User = mongoose.model('User', userSchema);
+
+// Team model
+var teamSchema = new mongoose.Schema({
+    team   : { type: String, validate: [validator, "Empty Error"] }
+  , timg   : { type: String }
+});
+var Team = mongoose.model('Team', teamSchema);
+
+// Round model
+var roundSchema = new mongoose.Schema({
+    roundname: { type: String, validate: [validator, "Empty Error"] }
+  , date     : { type: Date }
+});
+var Round = mongoose.model('Round', roundSchema);
+
+// Score model
+var scoreSchema = new mongoose.Schema({
+    rid   : { type: Number }
+  , uid   : { type: Number, index: true }
+  , holeno: { type: Number }
+  , score : { type: Number }
+});
+var Score = mongoose.model('Score', scoreSchema);
 
 // Configuration
 
 app.configure(function(){
-//  app.set('port', process.env.PORT || 3000);
-  app.set('port', process.env.PORT || 80);
+  app.set('port', process.env.PORT || 3000);
+//  app.set('port', process.env.PORT || 80);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
@@ -27,6 +79,7 @@ app.configure(function(){
   app.use(express.session());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
+  mongoose.connect(mongoUri);
 });
 
 app.configure('development', function(){
@@ -44,14 +97,15 @@ app.get('/users', user.list);
 
 // Server
 
-var points = [];
 //var io = require('socket.io').listen(app);
 var server = http.createServer(app).listen(app.get('port'), function() {
   console.log("Express server listening on port" + app.get('port'));
 });
 var io = require('socket.io').listen(server);
 
-//// account service
+///
+/// account service
+///
 var act = io
   .of('/account')
   .on('connection', function(socket) {
@@ -62,7 +116,9 @@ var act = io
     });
   });
 
-//// comment service
+///
+/// live service
+///
 var cmt = io
   .of('/live')
   .on('connection', function (socket) {
@@ -73,9 +129,11 @@ var cmt = io
       socket.emit('comment', data);       // 送信者へ送信
       socket.broadcast.emit('comment', data);  // 送信者他全員へ送信
     });
-});
+  });
 
-//// round service
+///
+/// round service
+///
 var round = io
   .of('/round')
   .on('connection', function (socket) {
@@ -96,9 +154,11 @@ var round = io
       // TODO:参加受付
       // socket.emit();
     });
-});
+  });
 
-//// leaders board service
+///
+/// leaders board service
+///
 var lb = io
   .of('/leadersboard')
   .on('connection', function (socket) {
@@ -106,25 +166,66 @@ var lb = io
     // score
     socket.on('score', function (data) {
       // スコア入力データ受信
-      var rid = data.rid;
-      var uid = data.uid;
-      var holeno = data.holeno;
-      var score = data.score;
       // DBへ保存
-      // TODO:スコアをDBへ保存
+      inputScore(socket, data);
 
       // 個人順位を参加プレーヤー全員に通知
-      var pscores = [];
-      // TODO:個人スコア生成
-      socket.emit('personalscore', pscores);
+      notifyPersonalRank(socket, data.rid);
 
       // チーム順位を参加プレーヤー全員に通知
-      var tscores = [];
-      // TODO:チームスコア生成
-      socket.emit('teamscore', tscores);
+      notifyTeamRank(socket, data.rid);
     });
-});
+  });
 
+// スコア入力 : inputScore
+function inputScore(socket, data) {
+  Score.findOne({ 'uid': data.uid, 'holeno': data.holeno },
+    function (err, score) {
+      if (!err) {
+        if (score != null) {
+          // found, then update
+          score.score = data.score;
+          score.save(function(err) {
+            if (err) console.log(err);
+          });
+        } else {
+          // NOT found, then add
+          updScore = new Score(data);
+          updScore.save(function(err) {
+            // notify personal rank
+            if (!err) {
+              //notifyPersonalRank();
+            } else {
+              console.log(err);
+            }
+          });
+        }
+      } else {
+        // findOne error
+        console.log(err);
+      }
+    });
+}
+
+// 個人順位通知 : notifyPersonalRank
+function notifyPersonalRank(socket, rid) {
+  console.log('notifyPersonalRank');
+  var pscores = [];
+  
+//  socket.emit('personalscore', pscores);
+}
+
+// チーム順位通知 : notifyTeamRank
+function notifyTeamRank(socket, rid) {
+  console.log('notifyTeamRank');
+//  var tscores = [];
+//  socket.emit('teamscore', tscores);
+}
+
+
+
+// test
+var points = [];
 paint = io.of('/paint').on('connection', function (socket) {
   if (points.length > 0) {
     for (var i in points) {
