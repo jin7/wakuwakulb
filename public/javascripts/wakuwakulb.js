@@ -56,8 +56,12 @@ $(function() {
     $("#submitButton").click(function(event){
       // TODO: rid, uid
       live.emit("comment", { rid: "dummy-rid", uid: "dummy-uid", comment: $("#name").val() + " : " + $("#msg").val()});// 入力メッセージをサーバへ
-      inputScore(lb, "1", "1",$("#name").val(), $("#msg").val());
-//      lb.emit('score', { rid: "1", uid: "1", holeno: $("#name").val(), score: $("#msg").val() });
+      inputScore(lb, 1, 1, $("#name").val(), $("#msg").val());
+//      lb.emit('score', { rid: "1", id: "1", holeno: $("#name").val(), score: $("#msg").val() });
+    });
+
+    lb.on('personalscore', function(data) {
+      alert(data);
     });
 
     var $msg = $('#msg')
@@ -70,7 +74,6 @@ $(function() {
     });
     $ok.click(function() {
         live.emit('msg send', $msg.val());
-        lb.emit('score', { rid: "1", uid: "1", holeno: 2, score: 3 });
     });
 });
 
