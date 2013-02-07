@@ -7,8 +7,12 @@
 	<link rel="stylesheet" href="/stylesheets/themes/default/jquery.mobile-1.2.0.css"></link>
 	<script src="/javascripts/jquery.js"></script>
 	<script src="/javascripts/jquery.mobile-1.2.0.js"></script>
+	<script src="/javascripts/jquery.tmpl.js"></script>
+	<script src="/javascripts/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script src="/javascripts/wakuwakulb.mobile.js"></script>
 	<style type="text/css">
-		.ui-page {
+		.bg_golf {
 			background: url(/images/golf.jpg) 50% 0;
 			border: 1px solid #516A18;
 			border-left-width: 0;
@@ -54,6 +58,12 @@
 			color: red;
 		}
 
+		.login-block {
+			text-align: right;
+			text-valign: middle;
+			width: 30%
+		}
+
 		.score-block {
 			padding-right: 3px;
 			padding-left: 3px;
@@ -65,13 +75,46 @@
 			overflow: visible;
 		}
 
+		.ui-li-has-count .ui-li-count {
+			font-size: medium;
+		}
+		
+		.ui-slider {
+			width: 10em;
+		}
+
 	</style>
 </head>
 <body>
+	<!-- ログイン -->
+	<div data-role="page" id="selectplayer" data-theme="d">
+		<div data-role="header">
+			<h1>プレーヤ選択</h1>
+		</div>
+		<div data-role="content">
+			<div data-role="fieldcontain">
+				<label for="player-name">プレーヤー名：</label>
+				<select id="player-name" data-inline="false">
+					<option value="1">江頭22:50</option>
+					<option value="2">エテ吉</option>
+					<option value="3">バラク小浜</option>
+					<option value="4">モナリーザ</option>
+					<option value="5">安倍　心臓</option>
+					<option value="6">小沢　二郎</option>
+				</select>
+			</div>
+			<a id="login-ok" href="#" data-role="button" data-inline="false" data-theme="b">OK</a>
+		</div>
+		<div data-role="footer" data-position="fixed" class="ui-bar">
+			<span class="copyright">Copyright 2013 PSW Golf Team</span>
+		</div>
+	</div>
+
 	<!-- 個人順位 -->
-	<div data-role="page" id="rank_personal">
+	<div data-role="page" id="rank_personal" class="bg_golf">
 		<div data-role="header" data-position="fixed">
-			<h1>LEADERSBOARD</h1>
+			<h1>LEADERSBOARD</h1><a href="#selectplayer" data-role="button" data-icon="gear" class="ui-btn-right">プレーヤ</a>
+			
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#" data-icon="info" class="ui-btn-active ui-state-persist">個人順位</a></li>
@@ -83,7 +126,7 @@
 			<ul data-role="listview" data-inset="true">
 				<li data-role="list-divider" class="divider">
 					<span class="list-title">個人順位</span>
-					<select data-role="slider" data-mini="true" style="width:200px">
+					<select data-role="slider" data-mini="true">
 						<option selected>グロス</option>
 						<option>ネット</option>
 					</select>
@@ -133,13 +176,13 @@
 			</ul>
 		</div>
 		<div data-role="footer" data-position="fixed" class="ui-bar">
-			<a href="#inputscore" data-role="button" data-icon="check">スコア入力</a><span class="copyright">Copyright 2013 PSW Golf Team</span>
+			<a href="#score" data-role="button" data-icon="check">スコア</a><span class="copyright">Copyright 2013 PSW Golf Team</span>
 		</div>
 	</div>
 
-	<div data-role="page" id="rank_team">
+	<div data-role="page" id="rank_team" class="bg_golf">
 		<div data-role="header">
-			<h1>LEADERSBOARD</h1>
+			<h1>LEADERSBOARD</h1><a href="#selectplayer" data-role="button" data-icon="gear" class="ui-btn-right">プレーヤ</a>
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#rank_personal" data-icon="info" data-transition="flip">個人順位</a></li>
@@ -226,23 +269,23 @@
 			</ul>
 		</div>
 		<div data-role="footer" data-position="fixed" class="ui-bar">
-			<a href="#inputscore" data-role="button" data-icon="check">スコア入力</a><span class="copyright">Copyright 2013 PSW Golf Team</span>
+			<a href="#score" data-role="button" data-icon="check">スコア</a><span class="copyright">Copyright 2013 PSW Golf Team</span>
 		</div>
 	</div>
 
-	<!-- スコア入力 -->
-	<div data-role="page" id="inputscore">
+	<!-- スコア -->
+	<div data-role="page" id="score" class="bg_golf">
 		<div data-role="header" data-position="fixed">
-			<h1>LEADERSBOARD</h1>
+			<h1>LEADERSBOARD</h1><a href="#selectplayer" data-role="button" data-icon="gear" class="ui-btn-right">プレーヤ</a>
 			<div data-role="navbar">
 				<ul>
 					<li><a href="#rank_personal" data-icon="info" data-transition="flip">個人順位</a></li>
-					<li><a href="#rank_team" data-icon="grid" class="ui-btn-active ui-state-persist">チーム順位</a></li>
+					<li><a href="#rank_team" data-icon="grid" ui-state-persist">チーム順位</a></li>
 				</ul>
 			</div>
 		</div>
 		<div data-role="content">
-			<div data-role="listview" class="score-total" data-inset="true">
+			<div data-role="listview" class="score-total" data-inset="true" data-theme="e">
 				<li>トータルスコア
 					<span class="ui-li-count">+7</span>
 				</li>
@@ -254,75 +297,84 @@
 							<span class="ui-li-count">+5</span>
 						</li>
 						<li>
-							<a href="#inputscoredlg" data-rel="dialog">
-								<h1>1H</h1>
-								<p>par 4</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">1H</h1>
+								<p class="par">par 4</p>
 								<p class="ui-li-aside finish">済</p>
 								<span class="ui-li-count">+1</span>
+								<span class="score" style="display:none">5</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>2H</h1>
-								<p>par 5</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">2H</h1>
+								<p class="par">par 5</p>
 								<p class="ui-li-aside finish">済</p>
 								<span class="ui-li-count">+2</span>
+								<span class="score" style="display:none">5</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>3H</h1>
-								<p>par 3</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">3H</h1>
+								<p class="par">par 3</p>
 								<p class="ui-li-aside finish">済</p>
 								<span class="ui-li-count">0</span>
+								<span class="score" style="display:none">3</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>4H</h1>
-								<p>par 4</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">4H</h1>
+								<p class="par">par 4</p>
 								<p class="ui-li-aside finish">済</p>
 								<span class="ui-li-count">+1</span>
+								<span class="score" style="display:none">5</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>5H</h1>
-								<p>par 4</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">5H</h1>
+								<p class="par">par 4</p>
 								<p class="ui-li-aside finish">済</p>
 								<span class="ui-li-count">0</span>
+								<span class="score" style="display:none">4</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>6H</h1>
-								<p>par 5</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">6H</h1>
+								<p class="par">par 5</p>
 								<p class="ui-li-aside finish">済</p>
 								<span class="ui-li-count">+1</span>
+								<span class="score" style="display:none">6</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>7H</h1>
-								<p>par 4</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">7H</h1>
+								<p class="par">par 4</p>
 								<p class="ui-li-aside finish">済</p>
 								<span class="ui-li-count">0</span>
+								<span class="score" style="display:none">4</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>8H</h1>
-								<p>par 3</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">8H</h1>
+								<p class="par">par 3</p>
 								<p class="ui-li-aside finish">済</p>
 								<span class="ui-li-count">+2</span>
+								<span class="score" style="display:none">5</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>9H</h1>
-								<p>par 4</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">9H</h1>
+								<p class="par">par 4</p>
 								<p class="ui-li-aside finish">済</p>
 								<span class="ui-li-count">-1</span>
+								<span class="score" style="display:none">3</span>
 							</a>
 						</li>
 					</div>
@@ -333,105 +385,122 @@
 							<span class="ui-li-count">+2</span>
 						</li>
 						<li>
-							<a href="#inputscoredlg" data-rel="popup">
-								<h1>10H</h1>
-								<p>par 4</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">10H</h1>
+								<p class="par">par 4</p>
 								<p class="ui-li-aside finish">済</p>
 								<span class="ui-li-count">0</span>
+								<span class="score" style="display:none">4</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>11H</h1>
-								<p>par 4</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">11H</h1>
+								<p class="par">par 4</p>
 								<p class="ui-li-aside finish">済</p>
 								<span class="ui-li-count">0</span>
+								<span class="score" style="display:none">4</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>12H</h1>
-								<p>par 3</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">12H</h1>
+								<p class="par">par 3</p>
 								<p class="ui-li-aside future">未</p>
 								<span class="ui-li-count"><h6></h6></span>
+								<span class="score" style="display:none">0</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>13H</h1>
-								<p>par 5</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">13H</h1>
+								<p class="par">par 5</p>
 								<p class="ui-li-aside future">未</p>
 								<span class="ui-li-count"><h6></h6></span>
+								<span class="score" style="display:none">0</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>14H</h1>
-								<p>par 4</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">14H</h1>
+								<p class="par">par 4</p>
 								<p class="ui-li-aside future">未</p>
 								<span class="ui-li-count"><h6></h6></span>
+								<span class="score" style="display:none">0</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>15H</h1>
-								<p>par 4</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">15H</h1>
+								<p class="par">par 4</p>
 								<p class="ui-li-aside future">未</p>
 								<span class="ui-li-count"><h6></h6></span>
+								<span class="score" style="display:none">0</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>16H</h1>
-								<p>par 3</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">16H</h1>
+								<p class="par">par 3</p>
 								<p class="ui-li-aside future">未</p>
 								<span class="ui-li-count"><h6></h6></span>
+								<span class="score" style="display:none">0</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>17H</h1>
-								<p>par 5</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">17H</h1>
+								<p class="par">par 5</p>
 								<p class="ui-li-aside future">未</p>
 								<span class="ui-li-count"><h6></h6></span>
+								<span class="score" style="display:none">0</span>
 							</a>
 						</li>
 						<li>
-							<a href="#">
-								<h1>18H</h1>
-								<p>par 4</p>
+							<a href="#" class="holescore">
+								<h1 class="hole">18H</h1>
+								<p class="par">par 4</p>
 								<p class="ui-li-aside future">未</p>
 								<span class="ui-li-count"><h6></h6></span>
+								<span class="score" style="display:none">0</span>
 							</a>
 						</li>
 					</div>
 				</div>
 			</div>
 		</div>
+		<a id="showinputdialog" href="#inputscore" data-rel="dialog" style="display:none"></a>
 		<div data-role="footer" data-position="fixed" class="ui-bar">
 			<span class="copyright">Copyright 2013 PSW Golf Team</span>
 		</div>
 	</div>
 	
-	<!-- ダイアログ -->
-	<div data-role="page" id="inputscoredlg">
+	<!-- スコア入力ダイアログ -->
+	<div data-role="page" id="inputscore" data-theme="d">
 		<div data-role="header">
 			<h1>スコア入力</h1>
 		</div>
 		<div data-role="content">
-			<p>スコアを入力してください。</p>	
-			<select>
-				<option value="1">1</option>	
-				<option value="2">2</option>	
-				<option value="3">3</option>	
-				<option value="4">4</option>	
-				<option value="5">5</option>	
-				<option value="6">6</option>	
-				<option value="7">7</option>	
-				<option value="8">8</option>	
-				<option value="9">9</option>	
+			<p>スコアを入力してください。<span class="blue" id="inputscore-desc"></span></p>
+			<select id="selectscore">
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+				<option value="4">4</option>
+				<option value="5">5</option>
+				<option value="6">6</option>
+				<option value="7">7</option>
+				<option value="8">8</option>
+				<option value="9">9</option>
+				<option value="10">10</option>
+				<option value="11">11</option>
+				<option value="12">12</option>
+				<option value="13">13</option>
+				<option value="14">14</option>
+				<option value="15">15</option>
 			</select>
-			<a href="#" data-rel="back">OK</a>
+			<a id="dlg-ok" href="#" data-role="button" data-inline="false" data-theme="b">OK</a>
 		</div>
+	</div>
 </body>
 </html>	
