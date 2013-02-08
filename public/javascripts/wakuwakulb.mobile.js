@@ -5,6 +5,8 @@ var curHole;
 var curParNum;
 var curScore;
 
+var lb;
+
 // ページ初期化処理（個人順位）
 $(document).delegate("#rank_personal", "pageinit", function() {
 	$(".ui-slider").width(100);
@@ -13,6 +15,11 @@ $(document).delegate("#rank_personal", "pageinit", function() {
 // ページ初期化処理（チーム順位）
 $(document).delegate("#rank_team", "pageinit", function() {
 	$(".ui-slider").width(100);
+});
+
+// ページ初期化処理（スコア）
+$(document).delegate("#score", "pageinit", function() {
+	
 });
 
 // ページ初期化処理（スコア入力ダイアログ）
@@ -62,8 +69,11 @@ $(document).delegate("#inputscore", "pageinit", function() {
 $(function() {
 
 	// leadersboard接続
-	var lb = new io.connect("/leadersboard");
+	lb = new io.connect("/leadersboard");
 	lb.on("connect", function() {
+	});
+	lb.on("personalscore", function(data) {
+		alert(data);
 	});
 
 	// cookieから情報取得
@@ -105,10 +115,9 @@ $(function() {
     });
 });
 
-///
-/// スコア入力
-///
+// スコア入力
 function inputScore(lb, rid, uid, holeno, score) {
-  lb.emit('score', { rid: rid, uid: uid, holeno: holeno, score: score });
+	lb.emit('score', { rid: rid, uid: uid, holeno: holeno, score: score });
 }
+
 
