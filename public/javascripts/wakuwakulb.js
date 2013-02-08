@@ -49,7 +49,7 @@ $(function() {
 
     lb.on('personalscore', function(data) {
       // 個人順位を反映する
-      alert(data);
+//      alert(data);
     });
     // teamscore イベント受付
     lb.on('teamscore', function(data) {
