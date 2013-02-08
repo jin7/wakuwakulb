@@ -71,9 +71,9 @@ $(function() {
 	// leadersboardÚ‘±
 	lb = new io.connect("/leadersboard");
 	lb.on("connect", function() {
-	});
-	lb.on("personalscore", function(data) {
-		alert(data);
+		lb.on("personalscore", function(data) {
+			alert(data);
+		});
 	});
 
 	// cookie‚©‚çî•ñæ“¾
