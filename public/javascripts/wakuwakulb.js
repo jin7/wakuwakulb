@@ -43,8 +43,13 @@ $(function() {
     /// leadersboard イベント処理
     ///
     // personalscore イベント受付
+//    lb.on('score', function(data) {
+//      // ホールスコアを反映する
+//    });
+
     lb.on('personalscore', function(data) {
       // 個人順位を反映する
+      alert(data);
     });
     // teamscore イベント受付
     lb.on('teamscore', function(data) {
@@ -58,10 +63,6 @@ $(function() {
       live.emit("comment", { rid: "dummy-rid", uid: "dummy-uid", comment: $("#name").val() + " : " + $("#msg").val()});// 入力メッセージをサーバへ
       inputScore(lb, 1, 1, $("#name").val(), $("#msg").val());
 //      lb.emit('score', { rid: "1", id: "1", holeno: $("#name").val(), score: $("#msg").val() });
-    });
-
-    lb.on('personalscore', function(data) {
-      alert(data);
     });
 
     var $msg = $('#msg')

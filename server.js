@@ -172,6 +172,10 @@ var lb = io
       // DBへ保存
       inputScore(socket, data);
 
+      // スコア入力データを全プレーヤーに通知
+      socket.emit('score', data);
+      socket.broadcast.emit('score', data);
+
       // 個人順位を参加プレーヤー全員に通知
       notifyPersonalRank(socket, data.rid);
 
@@ -182,7 +186,7 @@ var lb = io
     // personalscore
     socket.on('personalscore', function (data) {
       // 個人順位を参加プレーヤー全員に通知
-      notifyPersonalScore(socket, data.rid);
+      notifyPersonalRank(socket, data.rid);
     });
 
     // teamscore
