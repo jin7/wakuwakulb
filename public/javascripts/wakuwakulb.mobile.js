@@ -95,6 +95,9 @@ $(function() {
     	$.cookie("uid", uid, { expires: 1 });
     	$.cookie("uname", uname, { expires: 30 });
 
+		// 通知データ要求
+		requestPersonalScore(lb, rid, uid, 2);
+
 		// 次の画面へ
     	location.href = "#rank_personal";
     });
@@ -120,4 +123,8 @@ function inputScore(lb, rid, uid, holeno, score) {
 	lb.emit('score', { rid: rid, uid: uid, holeno: holeno, score: score });
 }
 
+// 
+function requestPersonalScore(lb, rid, uid, type) {
+	lb.emit('personalscore', { rid: rid, uid: uid, type: type });
+}
 
