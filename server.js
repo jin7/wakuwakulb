@@ -9,7 +9,8 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
-  , mongoose = require('mongoose');
+  , mongoose = require('mongoose')
+  , async = require('async');
 
 var app = express();
 
@@ -68,8 +69,8 @@ var Score = mongoose.model('Score', scoreSchema);
 // Configuration
 
 app.configure(function(){
-//  app.set('port', process.env.PORT || 3000);
-  app.set('port', process.env.PORT || 80);
+  app.set('port', process.env.PORT || 3000);
+//  app.set('port', process.env.PORT || 80);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
@@ -226,6 +227,7 @@ function inputScore(socket, data) {
     });
 }
 
+
 // 個人順位通知 : notifyPersonalRank
 function notifyPersonalRank(socket, rid) {
   console.log('notifyPersonalRank');
@@ -259,6 +261,49 @@ function notifyPersonalRank(socket, rid) {
     }
   });
 }
+
+function notifyPersonalRankNew(socket, rid) {
+  console.log('notifyPersonalRank');
+  // ユーザーごとのスコアを計算する
+  User.find(function(err, users) {
+    if (!err && users != null) {
+      var pscores = [];
+      async.waterfall(
+        [
+          function first(callback) {
+            for (i = 0; i < users.length; i++) {
+              console.log('user ' + i + ' ' + users[i].uid);
+              Score.find({'uid' : users[i].uid}).sort({holeno:'asc'}).exec(
+                function (err, scores) {
+      //            console.log('scores ' + scores);
+                  if (!err && scores != null) {
+                    var gross = 0;
+                    var holes = [];
+                    for (s = 0; s < scores.length; s++) {
+                      gross += scores[s].score;
+                      holes.push(scores[s].score);
+                    }
+                    pscores.push({ "user": users[i], "score": { "gross": gross, "holes": holes } });
+                  }
+      //            if (i == (users.length - 1)) {
+      //              socket.emit('personalscore', { "pscores": pscores });
+      //              socket.broadcast.emit('personalscore', { "pscores": pscores });
+      //            }
+                });
+            }
+            callback(null, 'next');
+          },
+          function second(param) {
+            console.log('pscores ' + pscores);
+            socket.emit('personalscore', { "pscores": pscores });
+            socket.broadcast.emit('personalscore', { "pscores": pscores });
+          }
+        ]
+      );
+    }
+  });
+}
+
 
 // チーム順位通知 : notifyTeamRank
 function notifyTeamRank(socket, rid) {
