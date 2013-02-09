@@ -7,22 +7,22 @@ var curScore;
 
 var lb;
 
-// ƒy[ƒW‰Šú‰»ˆ—iŒÂl‡ˆÊj
+// ãƒšãƒ¼ã‚¸åˆæœŸåŒ–å‡¦ç†ï¼ˆå€‹äººé †ä½ï¼‰
 $(document).delegate("#rank_personal", "pageinit", function() {
 	$(".ui-slider").width(100);
 });
 
-// ƒy[ƒW‰Šú‰»ˆ—iƒ`[ƒ€‡ˆÊj
+// ãƒšãƒ¼ã‚¸åˆæœŸåŒ–å‡¦ç†ï¼ˆãƒãƒ¼ãƒ é †ä½ï¼‰
 $(document).delegate("#rank_team", "pageinit", function() {
 	$(".ui-slider").width(100);
 });
 
-// ƒy[ƒW‰Šú‰»ˆ—iƒXƒRƒAj
+// ãƒšãƒ¼ã‚¸åˆæœŸåŒ–å‡¦ç†ï¼ˆã‚¹ã‚³ã‚¢ï¼‰
 $(document).delegate("#score", "pageinit", function() {
 	
 });
 
-// ƒy[ƒW‰Šú‰»ˆ—iƒXƒRƒA“ü—Íƒ_ƒCƒAƒƒOj
+// ãƒšãƒ¼ã‚¸åˆæœŸåŒ–å‡¦ç†ï¼ˆã‚¹ã‚³ã‚¢å…¥åŠ›ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ï¼‰
 $(document).delegate("#inputscore", "pageinit", function() {
 	var desc;
 	desc = "(Hole:" + curHole + " par:" + curParNum + ")";
@@ -68,41 +68,74 @@ $(document).delegate("#inputscore", "pageinit", function() {
 
 $(function() {
 
-	// leadersboardÚ‘±
-	lb = new io.connect("/leadersboard");
+
+/*
+	// leadersboardæ¥ç¶š
+	var uri="localhost";
+	io.transports = ['xhr-polling']; 
+//	io.transports = ['websocket']; 
+	var socket = io.connect(uri, { 
+	  'try multiple transports': false, 
+	  'force new connection': true 
+	}); 
+	
+	lb = socket.of('/leadersboard');
 	lb.on("connect", function() {
+		console.log("The connection to the server succeed!");
 		lb.on("personalscore", function(data) {
+			console.log(data);
 			alert(data);
 		});
 	});
+    lb.on('connect_failed', function(data){
+		console.log('The connection to the server failed. : ' + data);
+    });
+*/
 
-	// cookie‚©‚çî•ñæ“¾
+	// leadersboardæ¥ç¶š
+	io.transports = ['xhr-polling']; 
+	lb = io.connect("/leadersboard", { 
+	  'try multiple transports': false, 
+	  'force new connection': true 
+	}); 
+	console.log("attempt connect...");
+	lb.on("connect", function() {
+		console.log("The connection to the server succeed!");
+		lb.on("personalscore", function(data) {
+			console.log(data);
+		});
+	});
+    lb.on('connect_failed', function(data){
+		console.log('The connection to the server failed. : ' + data);
+    });
+
+	// cookieã‹ã‚‰æƒ…å ±å–å¾—
 	uid = $.cookie("uid")
 	uname = $.cookie("uname")
 
-	// ƒƒOƒCƒ“ƒfƒtƒHƒ‹ƒgİ’è
+	// ãƒ­ã‚°ã‚¤ãƒ³ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆè¨­å®š
 	if (uid != null) {
 		$("#player-name").val(uid);
 		$("#player-name").selectmenu("refresh",true);
 	}
 
-	//yƒCƒxƒ“ƒgzƒƒOƒCƒ“ - OK
+	//ã€ã‚¤ãƒ™ãƒ³ãƒˆã€‘ãƒ­ã‚°ã‚¤ãƒ³ - OK
     $("#login-ok").click(function(event) {
     	uid = $("#player-name option:selected").attr("value");
     	uname = $("#player-name option:selected").text();
 
-		// uid‚ğcookie‚Ö -> Ÿ‰ñƒfƒtƒHƒ‹ƒg
+		// uidã‚’cookieã¸ -> æ¬¡å›ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ
     	$.cookie("uid", uid, { expires: 1 });
     	$.cookie("uname", uname, { expires: 30 });
 
-		// ’Ê’mƒf[ƒ^—v‹
+		// é€šçŸ¥ãƒ‡ãƒ¼ã‚¿è¦æ±‚
 		requestPersonalScore(lb, rid, uid, 2);
 
-		// Ÿ‚Ì‰æ–Ê‚Ö
+		// æ¬¡ã®ç”»é¢ã¸
     	location.href = "#rank_personal";
     });
 
-	//yƒCƒxƒ“ƒgz ƒXƒRƒA“ü—Íƒ_ƒCƒAƒƒO•\¦
+	//ã€ã‚¤ãƒ™ãƒ³ãƒˆã€‘ ã‚¹ã‚³ã‚¢å…¥åŠ›ãƒ€ã‚¤ã‚¢ãƒ­ã‚°è¡¨ç¤º
     $(".holescore").click(function(event) {
 		curHole = $("h1.hole", this).text().replace("H", "");
 		curParNum = $("p.par", this).text().replace("par ", "");
@@ -110,7 +143,7 @@ $(function() {
     	$("#showinputdialog").click();
     });
 
-	//yƒCƒxƒ“ƒgz ƒXƒRƒA“ü—Íƒ_ƒCƒAƒƒO - OK
+	//ã€ã‚¤ãƒ™ãƒ³ãƒˆã€‘ ã‚¹ã‚³ã‚¢å…¥åŠ›ãƒ€ã‚¤ã‚¢ãƒ­ã‚° - OK
     $("#dlg-ok").click(function(event) {
     	curScore = $("#selectscore").val();
     	inputScore(lb, "1", uid, curHole, curScore);
@@ -118,13 +151,14 @@ $(function() {
     });
 });
 
-// ƒXƒRƒA“ü—Í
+// ã‚¹ã‚³ã‚¢å…¥åŠ›
 function inputScore(lb, rid, uid, holeno, score) {
-	lb.emit('score', { rid: rid, uid: uid, holeno: holeno, score: score });
+	lb.emit('score', { "rid": rid, "uid": uid, "holeno": holeno, "score": score });
+nt(score) });
 }
 
-// 
+// å€‹äººã‚¹ã‚³ã‚¢è¦æ±‚
 function requestPersonalScore(lb, rid, uid, type) {
-	lb.emit('personalscore', { rid: rid, uid: uid, type: type });
+	lb.emit('personalscore', { "rid": rid, "uid": uid, "type": type });
 }
 
