@@ -5,6 +5,8 @@ var curHole;
 var curParNum;
 var curScore;
 
+var ownScore = null;
+
 var lb;
 
 // ページ初期化処理（個人順位）
@@ -18,12 +20,11 @@ $(document).delegate("#rank_team", "pageinit", function() {
 });
 
 // ページ初期化処理（スコア）
-$(document).delegate("#score", "pageinit", function() {
-	
+$(document).delegate("#score", "pagebeforeshow", function() {
 });
 
 // ページ初期化処理（スコア入力ダイアログ）
-$(document).delegate("#inputscore", "pageinit", function() {
+$(document).delegate("#inputscore", "pagebeforeshow", function() {
 	var desc;
 	desc = "(Hole:" + curHole + " par:" + curParNum + ")";
 	$("span#inputscore-desc").text(desc)
@@ -103,6 +104,10 @@ $(function() {
 		console.log("The connection to the server succeed!");
 		lb.on("personalscore", function(data) {
 			console.log(data);
+			ownScore = data.pscores[0].score;
+			if (ownScore != null) {
+				reflectOwnScore(ownScore);
+			}
 		});
 	});
     lb.on('connect_failed', function(data){
@@ -161,3 +166,52 @@ function requestPersonalScore(lb, rid, uid, type) {
 	lb.emit('personalscore', { "rid": rid, "uid": uid, "type": type });
 }
 
+// スコア反映 -> 個人順位
+function reflectPersonalRank(scores) {
+}
+
+// スコア反映 -> チーム順位
+function reflectTeamRank(scores) {
+}
+
+// スコア反映 -> 個人（ホール毎）
+function reflectOwnScore(score) {
+	var targets = $("a.holescore");
+	var totalScoreOut = 0;
+	var totalScoreIn = 0;
+	var totalScore = 0;
+	for (var i = 0; i < 18; i++) {
+		var target = targets[i];
+		var holeScore = "";
+		var holeRelScore = "";
+		console.debug(score.gross);
+		if (score.holes[i] != null && score.holes[i] != "") {
+			var par = parseInt($("p.par", target).text().replace("par ", ""));
+			holeScore = score.holes[i];
+			holeRelScore = score.holes[i] - par;
+			if (i < 9) {
+			    totalScoreOut += holeRelScore;
+			} else {
+			    totalScoreIn += holeRelScore;
+			}
+			totalScore += holeRelScore;
+			$("p.mark", target).css("color", "blue").text("done");	
+		} else {
+			$("p.mark", target).css("color", "red").text("yet");	
+		}
+		$("span.relscore", target).text(convPlusNumStr(holeRelScore));
+		$("span.score", target).text(holeScore);
+	}
+	$("li#totalscore > span.relscore").text(convPlusNumStr(totalScore));
+	$("li#outscore > span.relscore").text(convPlusNumStr(totalScoreOut));
+	$("li#inscore > span.relscore").text(convPlusNumStr(totalScoreIn));
+}
+
+// 1以上の場合、"+" を付与
+function convPlusNumStr(src) {
+	if (src > 0) {
+		return "+" + src;
+	} else {
+		return src;
+	}
+}
