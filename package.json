@@ -7,6 +7,7 @@
     , "ejs": ">= 0.0.1"
     , "socket.io": "0.9.10"
     , "mongoose": "*"
+    , "async": "*"
   , "engines": {
       "node": "0.8.x"
     }

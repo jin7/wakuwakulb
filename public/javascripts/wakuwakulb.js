@@ -61,8 +61,8 @@ $(function() {
     $("#submitButton").click(function(event){
       // TODO: rid, uid
       live.emit("comment", { rid: "dummy-rid", uid: "dummy-uid", comment: $("#name").val() + " : " + $("#msg").val()});// 入力メッセージをサーバへ
-      inputScore(lb, 1, 1, $("#name").val(), $("#msg").val());
-//      lb.emit('score', { rid: "1", id: "1", holeno: $("#name").val(), score: $("#msg").val() });
+      inputScore(lb, 1, 1, parseInt($("#name").val()), parseInt($("#msg").val()));
+//      lb.emit('score', { rid: 1, uid: 1, holeno: $("#name").val(), score: $("#msg").val() });
     });
 
     var $msg = $('#msg')
