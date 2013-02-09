@@ -154,7 +154,6 @@ $(function() {
 // スコア入力
 function inputScore(lb, rid, uid, holeno, score) {
 	lb.emit('score', { "rid": rid, "uid": uid, "holeno": holeno, "score": score });
-nt(score) });
 }
 
 // 個人スコア要求
