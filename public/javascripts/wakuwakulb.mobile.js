@@ -4,10 +4,82 @@ var uname;
 var curHole;
 var curParNum;
 var curScore;
+var curScoreMode = "gross";
 
+var curAllScores = null;
 var ownScore = null;
-
 var lb;
+
+var dummyData = {
+	"pscores" : [
+		{
+			"user" : {
+				"uid" : 1,
+				"uname" : "江頭22:50",
+				"mail" : "",
+				"uimg" : "/images/ega.jpg",
+				"birth" : "",
+				"sex" : ""
+			},
+			"team" : {
+				"tid" : 1,
+				"team" : "めちゃモテ",
+				"timg" : "/images/ega.jpg"
+			},
+			"score" : {
+				"gross" : 108,
+				"hc" : 36,
+				"net" : 72,
+				"rank" : 1,
+				"holes" : [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
+			}
+		},
+		{
+			"user" : {
+				"uid" : 2,
+				"uname" : "エテ吉",
+				"mail" : "",
+				"uimg" : "/images/monkey.jpg",
+				"birth" : "",
+				"sex" : ""
+			},
+			"team" : {
+				"tid" : 2,
+				"team" : "動物",
+				"timg" : "/images/monkey.jpg"
+			},
+			"score" : {
+				"gross" : 74,
+				"hc" : 1,
+				"net" : 73,
+				"rank" : 2,
+				"holes" : [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5]
+			}
+		},
+		{
+			"user" : {
+				"uid" : 3,
+				"uname" : "バラク・小浜",
+				"mail" : "",
+				"uimg" : "/images/obama.jpg",
+				"birth" : "",
+				"sex" : ""
+			},
+			"team" : {
+				"tid" : 3,
+				"team" : "政治家",
+				"timg" : "/images/obama.jpg"
+			},
+			"score" : {
+				"gross" : 90,
+				"hc" : 15,
+				"net" : 75,
+				"rank" : 3,
+				"holes" : [5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]
+			}
+		}]
+	};
+	
 
 // ページ初期化処理（個人順位）
 $(document).delegate("#rank_personal", "pageinit", function() {
@@ -69,30 +141,6 @@ $(document).delegate("#inputscore", "pagebeforeshow", function() {
 
 $(function() {
 
-
-/*
-	// leadersboard接続
-	var uri="localhost";
-	io.transports = ['xhr-polling']; 
-//	io.transports = ['websocket']; 
-	var socket = io.connect(uri, { 
-	  'try multiple transports': false, 
-	  'force new connection': true 
-	}); 
-	
-	lb = socket.of('/leadersboard');
-	lb.on("connect", function() {
-		console.log("The connection to the server succeed!");
-		lb.on("personalscore", function(data) {
-			console.log(data);
-			alert(data);
-		});
-	});
-    lb.on('connect_failed', function(data){
-		console.log('The connection to the server failed. : ' + data);
-    });
-*/
-
 	// leadersboard接続
 //	io.transports = ['xhr-polling']; 
 	io.transports.push('xhr-polling'); 
@@ -101,16 +149,28 @@ $(function() {
 	  'force new connection': true 
 	}); 
 	console.log("attempt connect...");
+
+	// 接続成功
 	lb.on("connect", function() {
 		console.log("The connection to the server succeed!");
+
+		// 個人順位データ通知
 		lb.on("personalscore", function(data) {
 			console.log(data);
-			ownScore = data.pscores[0].score;
+
+			// 自スコアの反映
+			ownScore = data.pscores[0].score; // TODO 自分を探す必要あり
 			if (ownScore != null) {
 				reflectOwnScore(ownScore);
 			}
+			
+			// 個人順位の反映
+			curAllScores = dummyData;
+			reflectPersonalRank(dummyData);
 		});
 	});
+	
+	// 接続失敗
     lb.on('connect_failed', function(data){
 		console.log('The connection to the server failed. : ' + data);
     });
@@ -141,6 +201,14 @@ $(function() {
     	location.href = "#rank_personal";
     });
 
+	//【イベント】 スコアモード（グロス or ネット）変更
+	$(".scoremode").bind("change", function(event, ui) {
+		curScoreMode = this.value;
+		if (curAllScores != null) {
+			reflectPersonalRank(curAllScores);
+		}
+	});
+
 	//【イベント】 スコア入力ダイアログ表示
     $(".holescore").click(function(event) {
 		curHole = $("h1.hole", this).text().replace("H", "");
@@ -169,6 +237,27 @@ function requestPersonalScore(lb, rid, uid, type) {
 
 // スコア反映 -> 個人順位
 function reflectPersonalRank(scores) {
+
+	// 全データ削除
+	$("ul#list_personal > li:not(.divider)").remove();
+
+	// グロス or ネットの値を指定
+	if (curScoreMode == "gross") {
+		for (var i = 0; i < scores.pscores.length; i++) {
+			scores.pscores[i].score.count = scores.pscores[i].score.gross;
+		}
+	} else {
+		for (var i = 0; i < scores.pscores.length; i++) {
+			scores.pscores[i].score.count = scores.pscores[i].score.net;
+		}
+	}
+
+	// データ反映
+	$("#listitem_personal").tmpl(scores.pscores).appendTo("ul#list_personal");
+	$("ul#list_personal > li:not(.divider):odd").remove(); // TODO ゴミが入るので除去。ゴミが入らないようにすべし
+
+	// リストのリフレッシュ	
+	$("ul#list_personal").listview("refresh");
 }
 
 // スコア反映 -> チーム順位

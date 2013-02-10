@@ -117,14 +117,26 @@
 			</div>
 		</div>
 		<div data-role="content">
-			<ul data-role="listview" data-inset="true">
+			<ul id="list_personal" data-role="listview" data-inset="true">
 				<li data-role="list-divider" class="divider">
 					<span class="list-title">個人順位</span>
-					<select data-role="slider" data-mini="true">
-						<option selected>グロス</option>
-						<option>ネット</option>
+					<select class="scoremode" data-role="slider" data-mini="true">
+						<option value="gross" selected>グロス</option>
+						<option value="net">ネット</option>
 					</select>
 				</li>
+				<script id="listitem_personal" type="text/x-jquery-tmpl">
+					<li>
+						<img src="${user.uimg}"></img>
+						<img class="ui-li-icon" src=""></img>
+						<h1>${user.uname}</h1>
+						<p>${team.team}</p>
+						<span class="ui-li-count relscore">${score.count}</span>
+					</li>
+
+					<li><b>${Name}</b> (${ReleaseYear})</li>
+				</script>
+<!--				
 				<li>
 					<img src="/images/ega.jpg"></img>
 					<img class="ui-li-icon" src="/images/rank1.jpg"></img>
@@ -167,6 +179,7 @@
 					<p>Cチーム</p>
 					<span class="ui-li-count relscore"><span class="blue">+1</span> [12H]</span>
 				</li>
+-->				
 			</ul>
 		</div>
 		<div data-role="footer" data-position="fixed" class="ui-bar">
@@ -185,12 +198,12 @@
 			</div>
 		</div>
 		<div data-role="content">
-			<ul data-role="listview" data-inset="true">
+			<ul id="list_team" data-role="listview" data-inset="true">
 				<li data-role="list-divider" class="divider">
 					<span class="list-title">チーム順位</span>
-					<select data-role="slider" data-mini="true" style="width:200px">
-						<option selected>グロス</option>
-						<option>ネット</option>
+					<select class="scoremode" data-role="slider" data-mini="true" style="width:200px">
+						<option value="gross" selected>グロス</option>
+						<option value="net">ネット</option>
 					</select>
 				</li>
 				<li>
