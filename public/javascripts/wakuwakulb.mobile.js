@@ -94,7 +94,8 @@ $(function() {
 */
 
 	// leadersboard接続
-	io.transports = ['xhr-polling']; 
+//	io.transports = ['xhr-polling']; 
+	io.transports.push('xhr-polling'); 
 	lb = io.connect("/leadersboard", { 
 	  'try multiple transports': false, 
 	  'force new connection': true 

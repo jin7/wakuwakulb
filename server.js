@@ -104,22 +104,21 @@ var server = http.createServer(app).listen(app.get('port'), function() {
   console.log("Express server listening on port" + app.get('port'));
 });
 var io = require('socket.io').listen(server);
-//io.configure('prouction', function() {
-//  io.enable('browser client minification');
-//  io.enable('browser clinet etag');
-//  io.set('log level', 1);
-//  io.set('transports', [
-//      'websocket'
-//    , 'flashsocket'
-//    , 'htmlfile'
-//    , 'xhr-polling'
-//    , 'jsonp-polling'
-//  ]);
-//});
-//io.configure('development', function() {
+io.configure('prouction', function() {
+  io.enable('browser client minification');
+  io.enable('browser clinet etag');
+  io.set('log level', 1);
+  io.set('transports', [
+      'websocket'
+    , 'flashsocket'
+    , 'htmlfile'
+    , 'jsonp-polling'
+  ]);
+});
+io.configure('development', function() {
 //  io.set('log level', 2);
-//  io.set('transports', ['websocket']);
-//});
+  io.set('transports', ['websocket']);
+});
 
 ///
 /// account service
@@ -252,7 +251,7 @@ function notifyPersonalRankOrg(socket, rid) {
     if (!err && users != null) {
       var pscores = [];
       for (i = 0; i < users.length; i++) {
-        console.log('user ' + i + ' ' + users[i].uid);
+        console.log('uid:' + users[i].uid);
         Score.find({'uid' : users[i].uid}).sort({holeno:'asc'}).exec(
           function (err, scores) {
 //            console.log('scores ' + scores);
@@ -288,10 +287,10 @@ function notifyPersonalRank(socket, rid) {
       var calls = [];
       calls.push(function(callback) {
         for (i = 0; i < users.length; i++) {
-          console.log('user ' + i + ' ' + users[i].uid);
+          console.log('uid:' + users[i].uid);
           Score.find({'uid' : users[i].uid}).sort({'holeno':'asc'}).exec(
             function (err, scores) {
-              console.log('find score' + scores);
+//              console.log('find score' + scores);
                 if (!err && scores != null) {
                   var gross = 0;
                   var holes = [];
@@ -301,7 +300,7 @@ function notifyPersonalRank(socket, rid) {
                   }
                   pscores.push({ "user": users[i], "score": { "gross": gross, "holes": holes } });
                 }
-                callback(null, scores);
+              callback(null, pscores);
           });
         }
       });

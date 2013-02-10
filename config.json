@@ -1,3 +1,4 @@
 {
   "npm": true
+  "main: server.js
 }
