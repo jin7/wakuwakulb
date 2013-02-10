@@ -49,6 +49,18 @@ $(function() {
 
     lb.on('personalscore', function(data) {
       // 個人順位を反映する
+//      alert("gross :" + data.pscores[0].score.gross);
+      var msg = "";
+      for (i = 0; i < data.pscores.length; i++)
+      {
+//          msg += "user : " + data.pscores[i].user.uname + "," + data.pscores[i].user.uid + "\n";
+          msg += "gross : " + data.pscores[i].score.gross + "\n";
+          for (j = 0; j < data.pscores[i].score.holes.length; j++)
+          {
+              msg += "no." + (j + 1) + ":" + data.pscores[i].score.holes[j] + "\n";
+          }
+          alert(msg);
+      }
 //      alert(data);
     });
     // teamscore イベント受付

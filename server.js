@@ -69,8 +69,8 @@ var Score = mongoose.model('Score', scoreSchema);
 // Configuration
 
 app.configure(function(){
-//  app.set('port', process.env.PORT || 3000);
-  app.set('port', process.env.PORT || 80);
+  app.set('port', process.env.PORT || 3000);
+//  app.set('port', process.env.PORT || 80);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
@@ -104,6 +104,22 @@ var server = http.createServer(app).listen(app.get('port'), function() {
   console.log("Express server listening on port" + app.get('port'));
 });
 var io = require('socket.io').listen(server);
+//io.configure('prouction', function() {
+//  io.enable('browser client minification');
+//  io.enable('browser clinet etag');
+//  io.set('log level', 1);
+//  io.set('transports', [
+//      'websocket'
+//    , 'flashsocket'
+//    , 'htmlfile'
+//    , 'xhr-polling'
+//    , 'jsonp-polling'
+//  ]);
+//});
+//io.configure('development', function() {
+//  io.set('log level', 2);
+//  io.set('transports', ['websocket']);
+//});
 
 ///
 /// account service
