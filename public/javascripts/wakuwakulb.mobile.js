@@ -166,7 +166,14 @@ var dummyData = {
  ******************************************************************/
 $(document).delegate("#rank_personal", "pageinit", function() {
 	$(".ui-slider").width(100);
-	
+});
+
+/******************************************************************
+ * ページ表示前処理（個人順位）
+ ******************************************************************/
+$(document).delegate("#rank_personal", "pagebeforeshow", function() {
+	$("ul#list_personal select.scoremode").val(curScoreMode);
+	$("ul#list_personal select.scoremode").slider("refresh");
 });
 
 /******************************************************************
@@ -177,13 +184,21 @@ $(document).delegate("#rank_team", "pageinit", function() {
 });
 
 /******************************************************************
- * ページ初期化処理（スコア）
+ * ページ表示前処理（チーム順位）
+ ******************************************************************/
+$(document).delegate("#rank_team", "pagebeforeshow", function() {
+	$("ul#list_team select.scoremode").val(curScoreMode);
+	$("ul#list_team select.scoremode").slider("refresh");
+});
+
+/******************************************************************
+ * ページ表示前処理（スコア）
  ******************************************************************/
 $(document).delegate("#score", "pagebeforeshow", function() {
 });
 
 /******************************************************************
- * ページ初期化処理（スコア入力ダイアログ）
+ * ページ表示前処理（スコア入力ダイアログ）
  ******************************************************************/
 $(document).delegate("#inputscore", "pagebeforeshow", function() {
 	var desc;
@@ -511,7 +526,7 @@ function reflectTeamRank(teamscores) {
 	// 何故か呼ぶとエラーになる
 	// annot call methods on listview prior to initialization; attempted to call method 'refresh'
 	// see: http://d.hatena.ne.jp/t-horikiri/20120206/1328503072
-//	$("ul#list_team").listview("refresh");
+	$("ul#list_team").listview("refresh");
 }
 
 /******************************************************************
