@@ -16,6 +16,7 @@ var curTeamScores = null;
 var ownScore = null;
 
 var lb;
+var live;
 
 // コース情報（parデータ）
 var parData = [4,5,3,4,4,5,4,3,4,4,4,3,5,4,4,3,5,4];
@@ -205,7 +206,7 @@ $(document).delegate("#inputscore", "pagebeforeshow", function() {
 	desc = "(Hole:" + curHole + " par:" + curParNum + ")";
 	$("span#inputscore-desc").text(desc)
 
-	var i, target, str;
+	var i, target, str, comment;
 	for (i = 1; i < 16; i++) {
 		target = "select#selectscore option[value='" + i + "']";
 		if (i == 1) {
@@ -235,10 +236,12 @@ $(document).delegate("#inputscore", "pagebeforeshow", function() {
 		}
 	}	
 
-	if (curScore > 0) {
-		$("#selectscore").val(curScore);
-		$("#selectscore").selectmenu("refresh",true);
+
+	if (curScore == 0) {
+	    curScore = curParNum;
 	}
+	$("#selectscore").val(curScore);
+	$("#selectscore").selectmenu("refresh",true);
 });
 
 /******************************************************************
@@ -253,14 +256,15 @@ $(function() {
 	  'try multiple transports': false, 
 	  'force new connection': true 
 	}); 
-	console.log("attempt connect...");
+	console.log("leadersboard attempt connect...");
 
 	// 接続成功
 	lb.on("connect", function() {
-		console.log("The connection to the server succeed!");
+		console.log("leadersboard connection succeed!");
 
 		// 個人順位データ通知
 		lb.on("personalscore", function(data) {
+			console.log("personalscore received");
 			console.log(data);
 
 //			curPersonalScores = data; // TODO
@@ -300,7 +304,31 @@ $(function() {
 	
 	// 接続失敗
     lb.on('connect_failed', function(data){
-		console.log('The connection to the server failed. : ' + data);
+		console.log("leadersboard connection faled " + data);
+    });
+
+	// live接続
+	live = io.connect("/live", { 
+	  'try multiple transports': false, 
+	  'force new connection': true 
+	}); 
+	console.log("live attempt connect...");
+
+	// 接続成功
+	live.on("connect", function() {
+		console.log("live connection succeed!");
+
+		// メッセージ受信
+	    live.on("comment", function(data) {
+			console.log("live message received");
+			console.log(data);
+			$(".dsp_comment").val(data.comment);
+		});
+	});
+
+	// 接続失敗
+    live.on('connect_failed', function(data){
+		console.log("live connection faled " + data);
     });
 
 	// cookieから情報取得
@@ -355,11 +383,23 @@ $(function() {
     });
 
 	/******************************************************************
+	 * 【イベント】 スコア選択
+	 ******************************************************************/
+//	$("select#selectscore").change(function(event) {
+//		$("#score_comment").val($("select#selectscore option:selected").text());
+//	});
+
+	/******************************************************************
 	 * 【イベント】 スコア入力ダイアログ - OK
 	 ******************************************************************/
     $("#dlg-ok").click(function(event) {
     	curScore = $("#selectscore").val();
     	inputScore(lb, "1", uid, curHole, curScore);
+		var comment = $("#score_comment").val();
+		$("#score_comment").val("");
+		if (comment != "") {
+	    	sendComment(live, "1", uid, uname + ": " + comment);
+	    }
     	$(".ui-dialog").dialog("close");
     });
 });
@@ -376,6 +416,13 @@ function inputScore(lb, rid, uid, holeno, score) {
  ******************************************************************/
 function requestPersonalScore(lb, rid, uid, type) {
 	lb.emit('personalscore', { "rid": rid, "uid": uid, "type": type });
+}
+
+/******************************************************************
+ * 【関数】 コメント（サーバへの送信）
+ ******************************************************************/
+function sendComment(live, rid, uid, comment) {
+	live.emit("comment", { "rid": rid, "uid": uid, "comment": comment});
 }
 
 /******************************************************************
