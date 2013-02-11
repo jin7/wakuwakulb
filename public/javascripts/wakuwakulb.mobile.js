@@ -205,41 +205,40 @@ $(document).delegate("#inputscore", "pagebeforeshow", function() {
 	desc = "(Hole:" + curHole + " par:" + curParNum + ")";
 	$("span#inputscore-desc").text(desc)
 
-	if (curScore > 0) {
-		$("#selectscore").val(curScore);
-		$("#selectscore").selectmenu("refresh",true);
-	}
-/*
 	var i, target, str;
 	for (i = 1; i < 16; i++) {
 		target = "select#selectscore option[value='" + i + "']";
 		if (i == 1) {
-			str = "Hole In One";
+			str = i + " (Hole In One)";
 		} else if (i == (curParNum - 3)) {
-			str = "Albatros";
+			str = i + " (Albatros)";
 		} else if (i == (curParNum - 2)) {
-			str = "Eagle";
+			str = i + " (Eagle)";
 		} else if (i == (curParNum - 1)) {
-			str = "Birdie";
-		} else if (i = curParNum) {
-			str = "Par";
+			str = i + " (Birdie)";
+		} else if (i == curParNum) {
+			str = i + " (Par)";
 		} else if (i == (curParNum + 1)) {
-			str = "Boggy";
+			str = i + " (Boggy)";
 		} else if (i == (curParNum + 2)) {
-			str = "Double Boggy";
+			str = i + " (Double Boggy)";
 		} else if (i == (curParNum + 3)) {
-			str = "Triple Boggy";
+			str = i + " (Triple Boggy)";
 		} else {
-			str = curParNum;
+			str = i;
 		}
 		if (i <= curParNum * 3) { 
 			$(target).text(str);
-//			$(target).show();
+			$(target).show();
 		} else {
-//			$(target).hide();
+			$(target).hide();
 		}
 	}	
-*/	
+
+	if (curScore > 0) {
+		$("#selectscore").val(curScore);
+		$("#selectscore").selectmenu("refresh",true);
+	}
 });
 
 /******************************************************************
@@ -349,8 +348,8 @@ $(function() {
 	 * 【イベント】 スコア入力ダイアログ表示
 	 ******************************************************************/
     $(".holescore").click(function(event) {
-		curHole = $("h1.hole", this).text().replace("H", "");
-		curParNum = $("p.par", this).text().replace("par ", "");
+		curHole = parseInt($("h1.hole", this).text().replace("H", ""));
+		curParNum = parseInt($("p.par", this).text().replace("par ", ""));
 		curScore = $("span.score", this).text();
     	$("#showinputdialog").click();
     });
