@@ -128,58 +128,12 @@
 				<script id="listitem_personal" type="text/x-jquery-tmpl">
 					<li>
 						<img src="${user.uimg}"></img>
-						<img class="ui-li-icon" src=""></img>
 						<h1>${user.uname}</h1>
 						<p>${team.team}</p>
+						<p class="ui-li-aside comment">${score.comment}</p>
 						<span class="ui-li-count relscore">${score.count}</span>
 					</li>
-
-					<li><b>${Name}</b> (${ReleaseYear})</li>
 				</script>
-<!--				
-				<li>
-					<img src="/images/ega.jpg"></img>
-					<img class="ui-li-icon" src="/images/rank1.jpg"></img>
-					<h1>江頭22:50</h1>
-					<p>Aチーム</p>
-					<span class="ui-li-count relscore"><span class="red">-3</span> [9H]</span>
-				</li>
-				<li>
-					<img src="/images/monkey.jpg"></img>
-					<img class="ui-li-icon" src="/images/rank2.jpg"></img>
-					<h1>エテ吉</h1>
-					<p>Aチーム</p>
-					<span class="ui-li-count relscore"><span class="red">-2</span> [11H]</span>
-				</li>
-				<li>
-					<img src="/images/obama.jpg"></img>
-					<img class="ui-li-icon" src="/images/rank3.jpg"></img>
-					<h1>バラク・小浜</h1>
-					<p>Bチーム</p>
-					<span class="ui-li-count relscore"><span class="red">-1</span> [10H]</span>
-				</li>
-				<li>
-					<img src="/images/monariza.jpg"></img>
-					<img class="ui-li-icon" src="/images/rank4.jpg"></img>
-					<h1>モナリーザ</h1>
-					<p>Cチーム</p>
-					<span class="ui-li-count relscore"><span class="red">-1</span> [15H]</span>
-				</li>
-				<li>
-					<img src="/images/abe.jpg"></img>
-					<img class="ui-li-icon" src="/images/rank5.jpg"></img>
-					<h1>安倍　心臓</h1>
-					<p>Bチーム</p>
-					<span class="ui-li-count relscore"><span class="blue">EVEN</span> [8H]</span>
-				</li>
-				<li>
-					<img src="/images/ozawa.jpg"></img>
-					<img class="ui-li-icon" src="/images/rank6.jpg"></img>
-					<h1>小沢　ニ郎</h1>
-					<p>Cチーム</p>
-					<span class="ui-li-count relscore"><span class="blue">+1</span> [12H]</span>
-				</li>
--->				
 			</ul>
 		</div>
 		<div data-role="footer" data-position="fixed" class="ui-bar">
@@ -206,73 +160,26 @@
 						<option value="net">ネット</option>
 					</select>
 				</li>
-				<li>
-					<a href="#item1">
-						<img src="/images/ega.jpg"></img>
-						<img class="ui-li-icon" src="/images/rank1.jpg"></img>
-						<h1>Aチーム</h1>
-						<span class="ui-li-count relscore"><h6 class="red">-2.5</h6></span>
-					</a>
-					<ul>
-						<li>
-							<img src="/images/ega.jpg"></img>
-							<img class="ui-li-icon" src="/images/rank1.jpg"></img>
-							<h1>江頭22:50</h1>
-							<p>Aチーム</p>
-							<span class="ui-li-count relscore"><span class="red">-3</span> [9H]</span>
-						</li>
-						<li>
-		 						<img src="/images/monkey.jpg"></img>
-							<h1>エテ吉</h1>
-							<p>Aチーム</p>
-							<span class="ui-li-count relscore"><span class="red">-2</span> [11H]</span>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="#item1">
-						<img src="/images/obama.jpg"></img>
-						<img class="ui-li-icon" src="/images/rank2.jpg"></img>
-						<h1>Bチーム</h1>
-						<span class="ui-li-count relscore"><h6 class="red">-0.5</h6></span>
-					</a>
-					<ul>
-						<li>
-							<img src="/images/obama.jpg"></img>
-							<h1>バラク・小浜</h1>
-							<p>Bチーム</p>
-							<span class="ui-li-count relscore"><span class="red">-1</span> [10H]</span>
-						</li>
-						<li>
-							<img src="/images/abe.jpg"></img>
-							<h1>安倍　心臓</h1>
-							<p>Bチーム</p>
-							<span class="ui-li-count relscore"><span class="blue">EVEN</span> [8H]</span>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<a href="#item1">
-						<img src="/images/monariza.jpg"></img>
-						<img class="ui-li-icon" src="/images/rank3.jpg"></img>
-						<h1>Cチーム</h1>
-						<span class="ui-li-count relscore"><h6 class="blue">0.0</h6></span>
-					</a>
-					<ul>
-						<li>
-							<img src="/images/monariza.jpg"></img>
-							<h1>モナリーザ</h1>
-							<p>Cチーム</p>
-							<span class="ui-li-count relscore"><span class="red">-1</span> [15H]</span>
-						</li>
-						<li>
-							<img src="/images/ozawa.jpg"></img>
-							<h1>小沢　ニ郎</h1>
-							<p>Cチーム</p>
-							<span class="ui-li-count relscore"><span class="blue">+1</span> [12H]</span>
-						</li>
-					</ul>
-				</li>
+				<script id="listitem_team" type="text/x-jquery-tmpl">
+					<li>
+						<a href="#">
+							<img src="${timg}"></img>
+							<h1>${team}</h1>
+							<p></p>
+							<span class="ui-li-count relscore"><h6 class="blue">${count}</h6></span>
+						</a>
+						<ul></ul>
+					</li>
+				</script>
+				<script id="listitem_personal_in_team" type="text/x-jquery-tmpl">
+					<li>
+						<img src="${user.uimg}"></img>
+						<h1>${user.uname}</h1>
+						<p>${team.team}</p>
+						<p class="ui-li-aside comment">${score.comment}</p>
+						<span class="ui-li-count relscore">${score.count}</span>
+					</li>
+				</script>
 			</ul>
 		</div>
 		<div data-role="footer" data-position="fixed" class="ui-bar">

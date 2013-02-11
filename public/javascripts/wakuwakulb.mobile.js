@@ -1,15 +1,26 @@
-var rid=1;
-var uid;
-var uname;
-var curHole;
-var curParNum;
-var curScore;
-var curScoreMode = "gross";
+/******************************************************************
+ * 変数
+ ******************************************************************/
+var rid=1;		// ラウンドID
+var uid;		// ユーザID
+var uname;		// ユーザ名
 
-var curAllScores = null;
+// スコア入力用
+var curHole;	// ホール
+var curParNum;	// パー数
+var curScore;	// スコア
+
+var curScoreMode = "gross";
+var curPersonalScores = null;
+var curTeamScores = null;
 var ownScore = null;
+
 var lb;
 
+// コース情報（parデータ）
+var parData = [4,5,3,4,4,5,4,3,4,4,4,3,5,4,4,3,5,4];
+
+// スコアデータ（ダミー）
 var dummyData = {
 	"pscores" : [
 		{
@@ -23,12 +34,12 @@ var dummyData = {
 			},
 			"team" : {
 				"tid" : 1,
-				"team" : "めちゃモテ",
+				"team" : "ワイルドネイチャーチーム",
 				"timg" : "/images/ega.jpg"
 			},
 			"score" : {
-				"gross" : 108,
-				"hc" : 36,
+				"gross" : 82,
+				"hc" : 10,
 				"net" : 72,
 				"rank" : 1,
 				"holes" : [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
@@ -44,8 +55,8 @@ var dummyData = {
 				"sex" : ""
 			},
 			"team" : {
-				"tid" : 2,
-				"team" : "動物",
+				"tid" : 1,
+				"team" : "ワイルドネイチャーチーム",
 				"timg" : "/images/monkey.jpg"
 			},
 			"score" : {
@@ -53,7 +64,8 @@ var dummyData = {
 				"hc" : 1,
 				"net" : 73,
 				"rank" : 2,
-				"holes" : [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5]
+//				"holes" : [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5]
+				"holes" : [4,4,4,4,4,4,4]
 			}
 		},
 		{
@@ -66,8 +78,8 @@ var dummyData = {
 				"sex" : ""
 			},
 			"team" : {
-				"tid" : 3,
-				"team" : "政治家",
+				"tid" : 2,
+				"team" : "グローバルチーム",
 				"timg" : "/images/obama.jpg"
 			},
 			"score" : {
@@ -75,27 +87,104 @@ var dummyData = {
 				"hc" : 15,
 				"net" : 75,
 				"rank" : 3,
-				"holes" : [5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]
+//				"holes" : [5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]
+				"holes" : [5,5,5,5,5,5,5,5,6,8,7,5,5,5]
+			}
+		},
+		{
+			"user" : {
+				"uid" : 4,
+				"uname" : "モナリーザ",
+				"mail" : "",
+				"uimg" : "/images/monariza.jpg",
+				"birth" : "",
+				"sex" : ""
+			},
+			"team" : {
+				"tid" : 2,
+				"team" : "グローバルチーム",
+				"timg" : "/images/obama.jpg"
+			},
+			"score" : {
+				"gross" : 98,
+				"hc" : 20,
+				"net" : 78,
+				"rank" : 4,
+//				"holes" : [6,6,6,6,6,6,6,6,5,5,5,5,5,5,5,5,5,5]
+				"holes" : [6,6,6,6,6,6,6,6,5,5]
+			}
+		},
+		{
+			"user" : {
+				"uid" : 5,
+				"uname" : "安倍　肝臓",
+				"mail" : "",
+				"uimg" : "/images/abe.jpg",
+				"birth" : "",
+				"sex" : ""
+			},
+			"team" : {
+				"tid" : 3,
+				"team" : "超党派日本再建チーム",
+				"timg" : "/images/abe.jpg"
+			},
+			"score" : {
+				"gross" : 82,
+				"hc" : 5,
+				"net" : 77,
+				"rank" : 5,
+//				"holes" : [4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5]
+				"holes" : [4,4,4,4,4,4,4,4,5,5,5,5]
+			}
+		},
+		{
+			"user" : {
+				"uid" : 6,
+				"uname" : "小沢　二郎",
+				"mail" : "",
+				"uimg" : "/images/ozawa.jpg",
+				"birth" : "",
+				"sex" : ""
+			},
+			"team" : {
+				"tid" : 3,
+				"team" : "超党派日本再建チーム",
+				"timg" : "/images/abe.jpg"
+			},
+			"score" : {
+				"gross" :120,
+				"hc" : 36,
+				"net" : 75,
+				"rank" : 3,
+				"holes" : [6,6,6,6,6,6,7,7,6,6,6,6,6,6,6,6,6,6]
 			}
 		}]
 	};
-	
 
-// ページ初期化処理（個人順位）
+/******************************************************************
+ * ページ初期化処理（個人順位）
+ ******************************************************************/
 $(document).delegate("#rank_personal", "pageinit", function() {
 	$(".ui-slider").width(100);
+	
 });
 
-// ページ初期化処理（チーム順位）
+/******************************************************************
+ * ページ初期化処理（チーム順位）
+ ******************************************************************/
 $(document).delegate("#rank_team", "pageinit", function() {
 	$(".ui-slider").width(100);
 });
 
-// ページ初期化処理（スコア）
+/******************************************************************
+ * ページ初期化処理（スコア）
+ ******************************************************************/
 $(document).delegate("#score", "pagebeforeshow", function() {
 });
 
-// ページ初期化処理（スコア入力ダイアログ）
+/******************************************************************
+ * ページ初期化処理（スコア入力ダイアログ）
+ ******************************************************************/
 $(document).delegate("#inputscore", "pagebeforeshow", function() {
 	var desc;
 	desc = "(Hole:" + curHole + " par:" + curParNum + ")";
@@ -138,7 +227,9 @@ $(document).delegate("#inputscore", "pagebeforeshow", function() {
 */	
 });
 
-
+/******************************************************************
+ * 初期処理
+ ******************************************************************/
 $(function() {
 
 	// leadersboard接続
@@ -158,15 +249,38 @@ $(function() {
 		lb.on("personalscore", function(data) {
 			console.log(data);
 
+//			curPersonalScores = data; // TODO
+//------------- dummy data create -------------------------------
+			curPersonalScores = dummyData;	// dummy
+            for (var i = 0; i < curPersonalScores.pscores.length; i++) {
+				if (curPersonalScores.pscores[i].user.uid == uid) {
+					curPersonalScores.pscores[i].score.holes = data.pscores[0].score.holes;
+				}
+/*
+                for (var j = 0; j < data.pscores.length; j++) {
+                    if (curPersonalScores.pscores[i].user.uid == data.pscores[j].user.uid) {
+                        curPersonalScores.pscores[i].score.holes = data.pscores[j].score.holes;
+                    }
+                }
+*/                
+            }
+//------------- dummy data create -------------------------------
+
 			// 自スコアの反映
-			ownScore = data.pscores[0].score; // TODO 自分を探す必要あり
+			ownScore = searchOwnScore(curPersonalScores, uid);
 			if (ownScore != null) {
 				reflectOwnScore(ownScore);
 			}
-			
+
+			// データ最新化（gross/net計算、チームデータ作成）
+			updatePersonalScores(curPersonalScores);
+			curTeamScores = createTeamScores(curPersonalScores);
+
 			// 個人順位の反映
-			curAllScores = dummyData;
-			reflectPersonalRank(dummyData);
+			reflectPersonalRank(curPersonalScores);
+			
+			// チーム順位の反映
+			reflectTeamRank(curTeamScores);
 		});
 	});
 	
@@ -185,7 +299,9 @@ $(function() {
 		$("#player-name").selectmenu("refresh",true);
 	}
 
-	//【イベント】ログイン - OK
+	/******************************************************************
+	 * 【イベント】ログイン - OK
+	 ******************************************************************/
     $("#login-ok").click(function(event) {
     	uid = $("#player-name option:selected").attr("value");
     	uname = $("#player-name option:selected").text();
@@ -201,15 +317,22 @@ $(function() {
     	location.href = "#rank_personal";
     });
 
-	//【イベント】 スコアモード（グロス or ネット）変更
+	/******************************************************************
+	 * 【イベント】 スコアモード（グロス or ネット）変更
+	 ******************************************************************/
 	$(".scoremode").bind("change", function(event, ui) {
 		curScoreMode = this.value;
-		if (curAllScores != null) {
-			reflectPersonalRank(curAllScores);
-		}
+
+		// 個人順位の反映
+		reflectPersonalRank(curPersonalScores);
+
+		// チーム順位の反映
+		reflectTeamRank(curTeamScores);
 	});
 
-	//【イベント】 スコア入力ダイアログ表示
+	/******************************************************************
+	 * 【イベント】 スコア入力ダイアログ表示
+	 ******************************************************************/
     $(".holescore").click(function(event) {
 		curHole = $("h1.hole", this).text().replace("H", "");
 		curParNum = $("p.par", this).text().replace("par ", "");
@@ -217,7 +340,9 @@ $(function() {
     	$("#showinputdialog").click();
     });
 
-	//【イベント】 スコア入力ダイアログ - OK
+	/******************************************************************
+	 * 【イベント】 スコア入力ダイアログ - OK
+	 ******************************************************************/
     $("#dlg-ok").click(function(event) {
     	curScore = $("#selectscore").val();
     	inputScore(lb, "1", uid, curHole, curScore);
@@ -225,18 +350,89 @@ $(function() {
     });
 });
 
-// スコア入力
+/******************************************************************
+ * 【関数】 スコア入力（サーバへの送信）
+ ******************************************************************/
 function inputScore(lb, rid, uid, holeno, score) {
 	lb.emit('score', { "rid": rid, "uid": uid, "holeno": holeno, "score": score });
 }
 
-// 個人スコア要求
+/******************************************************************
+ * 【関数】 個人スコア要求（サーバへの送信）
+ ******************************************************************/
 function requestPersonalScore(lb, rid, uid, type) {
 	lb.emit('personalscore', { "rid": rid, "uid": uid, "type": type });
 }
 
-// スコア反映 -> 個人順位
+/******************************************************************
+ * 【関数】 指定uidのスコア取得
+ ******************************************************************/
+function searchOwnScore(scores, uid) {
+	for (var i = 0; i < scores.pscores.length; i++) {
+		if (scores.pscores[i].user.uid == uid) {
+			return scores.pscores[i].score;
+		}
+	}
+	return null;
+}
+
+/******************************************************************
+ * 【関数】 グロス／ネット計算（ラウンド中も加味）
+ ******************************************************************/
+function updatePersonalScores(scores) {
+	for (var i = 0; i < scores.pscores.length; i++) {
+		scores.pscores[i].score.gross = calcRelativeGross(scores.pscores[i].score.holes);
+		scores.pscores[i].score.net = calcRelativeNet(scores.pscores[i].score.holes, scores.pscores[i].score.hc);
+	}
+}
+
+/******************************************************************
+ * 【関数】 チームスコアデータ作成
+ * 
+ *	teamscores = [
+ *		{
+ *			"tid" : 1,
+ *			"team" : "xxx",
+ *			"timg" : "xxx",
+ *			"gross" : 0,
+ *			"net" : 0,
+ *			"userscores : [
+ *				{
+ *					// pscores[x]
+ *				}],
+ *		}];			
+ ******************************************************************/
+function createTeamScores(scores) {
+	var teamscores = new Array();
+	for (var i = 0; i < scores.pscores.length; i++) {
+
+		// tidで検索 なければ作成
+		var teamscore = searchTeamData(teamscores, scores.pscores[i].team.tid);
+		if (teamscore == null) {
+			teamscore = new Object();
+			teamscore.tid = scores.pscores[i].team.tid;
+			teamscore.team = scores.pscores[i].team.team;
+			teamscore.timg = scores.pscores[i].team.timg;
+			teamscore.gross = 0;
+			teamscore.net = 0;
+			teamscore.userscores = new Array();
+			teamscores.push(teamscore);
+		}
+		
+		teamscore.gross += parseInt(scores.pscores[i].score.gross);
+		teamscore.net += parseInt(scores.pscores[i].score.net);
+		teamscore.userscores[teamscore.userscores.length] = scores.pscores[i];
+	}
+	return teamscores;
+}
+
+/******************************************************************
+ * 【関数】 スコア反映 -> 個人順位
+ ******************************************************************/
 function reflectPersonalRank(scores) {
+	if (score == null) {
+		return;
+	}
 
 	// 全データ削除
 	$("ul#list_personal > li:not(.divider)").remove();
@@ -244,27 +440,131 @@ function reflectPersonalRank(scores) {
 	// グロス or ネットの値を指定
 	if (curScoreMode == "gross") {
 		for (var i = 0; i < scores.pscores.length; i++) {
-			scores.pscores[i].score.count = scores.pscores[i].score.gross;
+			scores.pscores[i].score.count = scores.pscores[i].score.gross
+			scores.pscores[i].score.comment = createCommentGross(scores.pscores[i].score.holes);
 		}
 	} else {
 		for (var i = 0; i < scores.pscores.length; i++) {
 			scores.pscores[i].score.count = scores.pscores[i].score.net;
+			scores.pscores[i].score.comment = createCommentNet(scores.pscores[i].score.holes, scores.pscores[i].score.hc);
 		}
 	}
 
+	// ソート
+    scores.pscores.sort(function(a, b) {
+        return (parseInt(a.score.count) > parseInt(b.score.count) ? 1 : -1);
+    });
+
 	// データ反映
 	$("#listitem_personal").tmpl(scores.pscores).appendTo("ul#list_personal");
-	$("ul#list_personal > li:not(.divider):odd").remove(); // TODO ゴミが入るので除去。ゴミが入らないようにすべし
+
+	// 順位画像付加
+	$("<img src='/images/rank1.jpg' class='ui-li-icon'></img>").appendTo($("ul#list_personal > li:not(.divider):first"));
+	$("<img src='/images/rank2.jpg' class='ui-li-icon'></img>").appendTo($("ul#list_personal > li:not(.divider):eq(1)"));
+	$("<img src='/images/rank3.jpg' class='ui-li-icon'></img>").appendTo($("ul#list_personal > li:not(.divider):eq(2)"));
 
 	// リストのリフレッシュ	
 	$("ul#list_personal").listview("refresh");
 }
 
-// スコア反映 -> チーム順位
-function reflectTeamRank(scores) {
+/******************************************************************
+ * 【関数】 スコア反映 -> チーム順位
+ ******************************************************************/
+function reflectTeamRank(teamscores) {
+	if (teamscores == null) {
+		return;
+	}
+	
+	// 全データ削除
+	$("ul#list_team > li:not(.divider)").remove();
+
+	// グロス or ネットの値を指定
+	if (curScoreMode == "gross") {
+		for (var i = 0; i < teamscores.length; i++) {
+			teamscores[i].count = teamscores[i].gross
+		}
+	} else {
+		for (var i = 0; i < teamscores.length; i++) {
+			teamscores[i].count = teamscores[i].net
+		}
+	}
+
+	// ソート
+    teamscores.sort(function(a, b) {
+        return (parseInt(a.count) > parseInt(b.count) ? 1 : -1);
+    });
+
+	// データ反映
+	$("#listitem_team").tmpl(teamscores).appendTo("ul#list_team");
+
+	// 順位画像付加
+	$("<img src='/images/rank1.jpg' class='ui-li-icon'></img>").appendTo($("ul#list_team > li:not(.divider):first"));
+	$("<img src='/images/rank2.jpg' class='ui-li-icon'></img>").appendTo($("ul#list_team > li:not(.divider):eq(1)"));
+	$("<img src='/images/rank3.jpg' class='ui-li-icon'></img>").appendTo($("ul#list_team > li:not(.divider):eq(2)"));
+
+	// データ反映（チーム内個人）
+	for (var i = 0; i < teamscores.length; i++) {
+		$("#listitem_personal_in_team").tmpl(teamscores[i].userscores).appendTo("ul#list_team > li:not(.divider):eq(" + i + ") > ul");
+	}
+
+	// リストのリフレッシュ	
+	// 何故か呼ぶとエラーになる
+	// annot call methods on listview prior to initialization; attempted to call method 'refresh'
+	// see: http://d.hatena.ne.jp/t-horikiri/20120206/1328503072
+//	$("ul#list_team").listview("refresh");
 }
 
-// スコア反映 -> 個人（ホール毎）
+/******************************************************************
+ * 【関数】 チームの検索
+ ******************************************************************/
+function searchTeamData(teamscores, tid) {
+	for(i = 0; i < teamscores.length; i++) {
+		if (teamscores[i].tid == tid) {
+			return teamscores[i];
+		}
+	}
+	return null;
+}
+
+/******************************************************************
+ * 【関数】 相対グロス（パーに対してのプラマイ）の計算
+ ******************************************************************/
+function calcRelativeGross(holes) {
+	var relScore = 0;
+	for (var i = 0; i < holes.length; i++) {
+		relScore += (holes[i] - parData[i]);
+	}
+	return convPlusNumStr(relScore);
+}
+
+/******************************************************************
+ * 【関数】 相対ネット（パーに対してのプラマイ）の計算
+ ******************************************************************/
+function calcRelativeNet(holes, hc) {
+	var relScore = 0;
+	for (var i = 0; i < holes.length; i++) {
+		relScore += (holes[i] - parData[i]);
+	}
+	return convPlusNumStr(relScore - hc);
+}
+
+/******************************************************************
+ * 【関数】 補足情報の作成（グロス）
+ ******************************************************************/
+function createCommentGross(holes) {
+	return "[Hole:" + holes.length + "]";
+}
+
+/******************************************************************
+ * 【関数】 補足情報の作成（ネット）
+ ******************************************************************/
+function createCommentNet(holes, hc) {
+	return "[Hole:" + holes.length + " HC:" + hc + "]";
+}
+
+/******************************************************************
+ * 【関数】 スコア反映 -> 個人（ホール毎）
+ ******************************************************************/
 function reflectOwnScore(score) {
 	var targets = $("a.holescore");
 	var totalScoreOut = 0;
@@ -291,13 +591,16 @@ function reflectOwnScore(score) {
 		}
 		$("span.relscore", target).text(convPlusNumStr(holeRelScore));
 		$("span.score", target).text(holeScore);
+		$("p.par", target).text("par " + parData[i]);
 	}
 	$("li#totalscore > span.relscore").text(convPlusNumStr(totalScore));
 	$("li#outscore > span.relscore").text(convPlusNumStr(totalScoreOut));
 	$("li#inscore > span.relscore").text(convPlusNumStr(totalScoreIn));
 }
 
-// 1以上の場合、"+" を付与
+/******************************************************************
+ * 【関数】 1以上の場合、"+" を付与
+ ******************************************************************/
 function convPlusNumStr(src) {
 	if (src > 0) {
 		return "+" + src;
