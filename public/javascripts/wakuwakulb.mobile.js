@@ -43,7 +43,8 @@ var dummyData = {
 				"hc" : 10,
 				"net" : 72,
 				"rank" : 1,
-				"holes" : [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
+//				"holes" : [6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
+				"holes" : []
 			}
 		},
 		{
@@ -66,7 +67,8 @@ var dummyData = {
 				"net" : 73,
 				"rank" : 2,
 //				"holes" : [4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5]
-				"holes" : [4,4,4,4,4,4,4]
+//				"holes" : [4,4,4,4,4,4,4]
+				"holes" : []
 			}
 		},
 		{
@@ -89,7 +91,8 @@ var dummyData = {
 				"net" : 75,
 				"rank" : 3,
 //				"holes" : [5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]
-				"holes" : [5,5,5,5,5,5,5,5,6,8,7,5,5,5]
+//				"holes" : [5,5,5,5,5,5,5,5,6,8,7,5,5,5]
+				"holes" : []
 			}
 		},
 		{
@@ -112,13 +115,14 @@ var dummyData = {
 				"net" : 78,
 				"rank" : 4,
 //				"holes" : [6,6,6,6,6,6,6,6,5,5,5,5,5,5,5,5,5,5]
-				"holes" : [6,6,6,6,6,6,6,6,5,5]
+//				"holes" : [6,6,6,6,6,6,6,6,5,5]
+				"holes" : []
 			}
 		},
 		{
 			"user" : {
 				"uid" : 5,
-				"uname" : "安倍　肝臓",
+				"uname" : "安倍　心臓",
 				"mail" : "",
 				"uimg" : "/images/abe.jpg",
 				"birth" : "",
@@ -135,7 +139,8 @@ var dummyData = {
 				"net" : 77,
 				"rank" : 5,
 //				"holes" : [4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5]
-				"holes" : [4,4,4,4,4,4,4,4,5,5,5,5]
+//				"holes" : [4,4,4,4,4,4,4,4,5,5,5,5]
+				"holes" : []
 			}
 		},
 		{
@@ -157,7 +162,54 @@ var dummyData = {
 				"hc" : 36,
 				"net" : 75,
 				"rank" : 3,
-				"holes" : [6,6,6,6,6,6,7,7,6,6,6,6,6,6,6,6,6,6]
+//				"holes" : [6,6,6,6,6,6,7,7,6,6,6,6,6,6,6,6,6,6]
+				"holes" : []
+			}
+		},
+		{
+			"user" : {
+				"uid" : 7,
+				"uname" : "坪田　和憲",
+				"mail" : "",
+				"uimg" : "/images/tsubota.jpg",
+				"birth" : "",
+				"sex" : ""
+			},
+			"team" : {
+				"tid" : 4,
+				"team" : "PSW孔球部チーム",
+				"timg" : "/images/bluecats.jpg"
+			},
+			"score" : {
+				"gross" :92,
+				"hc" : 15,
+				"net" : 77,
+				"rank" : 3,
+//				"holes" : [6,6,6,6,6,6,7,7,6,6,6,6,6,6,6,6,6,6]
+				"holes" : []
+			}
+		},
+		{
+			"user" : {
+				"uid" : 8,
+				"uname" : "蔵本　圭介",
+				"mail" : "",
+				"uimg" : "/images/kuramoto.jpg",
+				"birth" : "",
+				"sex" : ""
+			},
+			"team" : {
+				"tid" : 4,
+				"team" : "PSW孔球部チーム",
+				"timg" : "/images/bluecats.jpg"
+			},
+			"score" : {
+				"gross" :80,
+				"hc" : 5,
+				"net" : 75,
+				"rank" : 3,
+//				"holes" : [6,6,6,6,6,6,7,7,6,6,6,6,6,6,6,6,6,6]
+				"holes" : []
 			}
 		}]
 	};
@@ -271,16 +323,17 @@ $(function() {
 //------------- dummy data create -------------------------------
 			curPersonalScores = dummyData;	// dummy
             for (var i = 0; i < curPersonalScores.pscores.length; i++) {
+/*
 				if (curPersonalScores.pscores[i].user.uid == uid) {
 					curPersonalScores.pscores[i].score.holes = data.pscores[0].score.holes;
 				}
-/*
+*/
                 for (var j = 0; j < data.pscores.length; j++) {
                     if (curPersonalScores.pscores[i].user.uid == data.pscores[j].user.uid) {
+//                      curPersonalScores.pscores[i].user.uname = data.pscores[j].user.uname;
                         curPersonalScores.pscores[i].score.holes = data.pscores[j].score.holes;
                     }
                 }
-*/                
             }
 //------------- dummy data create -------------------------------
 
