@@ -330,51 +330,71 @@ function notifyPersonalRank(socket, rid) {
   var calls = [];
   var userlist = [];
   var pscores = [];
+  var pscore_counter = 0;
   calls.push(function(callback) {
       User.find(function(err, users) {
         console.log('users ' + users);
         if (!err && users != null) {
-          userlist = users;
+          async.forEach(users, function(user, cb) {
+            console.log(user);
+              Score.find({'uid' : user.uid}).sort({'holeno':'asc'}).exec(
+                function (err, scores) {
+                  console.log('find score' + scores);
+                  if (!err && scores != null && scores.length > 0) {
+                    var gross = 0;
+                    var holes = [];
+                    async.forEach(scores, function(score, scoreCb) {
+                      gross += score.score;
+                      holes.push(score.score);
+                      scoreCb();
+                    }, function (err) {
+                      console.log("score created");
+                      pscores.push({ "user": user, "score": { "gross": gross, "holes": holes } });
+                    });
+                  } else {
+                    pscores.push({ "user": user, "score": { "gross": 0, "holes": [] } });
+                  }
+                  cb();
+              });
+          }, function (err) {
+            console.log(err);
+            console.log("pscore created");
+            callback(null, pscores);
+          });
+        } else {
+          cb();
         }
-        callback(null, userlist);
       });
-  });
-  calls.push(function(callback) {
-    for (i = 0; i < userlist.length; i++) {
-      console.log('uid:' + userlist[i].uid);
-      var user = userlist[i];
-      Score.find({'uid' : userlist[i].uid}).sort({'holeno':'asc'}).exec(
-        function (err, scores) {
-//              console.log('find score' + scores);
-            if (!err && scores != null && scores.length > 0) {
-              var gross = 0;
-              var holes = [];
-              for (s = 0; s < scores.length; s++) {
-                gross += scores[s].score;
-                holes.push(scores[s].score);
-              }
-              pscores.push({ "user": userlist[scores[0].uid - 1], "score": { "gross": gross, "holes": holes } });
-            } else {
-              pscores.push({ "user": user, "score": { "gross": 0, "holes": [] } });
-            }
-            if (pscores.length == userlist.length) {
-              callback(null, pscores);
-            }
-      });
-    }
   });
 
   async.series(calls, function (err, result) {
     if (err) {
       return console.log(err);
     }
-//        console.log(result);
     console.log('pscores ' + pscores);
     socket.emit('personalscore', { "pscores": pscores });
     socket.broadcast.emit('personalscore', { "pscores": pscores });
   });
 }
 
+function findScore(user, pscores) {
+  console.log("find " + user.uid);
+  Score.find({'uid' : user.uid}).sort({'holeno':'asc'}).exec(
+    function (err, scores) {
+      console.log('find score' + scores);
+        if (!err && scores != null && scores.length > 0) {
+          var gross = 0;
+          var holes = [];
+          for (s = 0; s < scores.length; s++) {
+            gross += scores[s].score;
+            holes.push(scores[s].score);
+          }
+          pscores.push({ "user": userlist[scores[0].uid - 1], "score": { "gross": gross, "holes": holes } });
+        } else {
+          pscores.push({ "user": user, "score": { "gross": 0, "holes": [] } });
+        }
+  });
+}
 
 // チーム順位通知 : notifyTeamRank
 function notifyTeamRank(socket, rid) {
