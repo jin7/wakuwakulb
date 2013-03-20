@@ -121,8 +121,8 @@ io.configure('development', function() {
 //  io.set('transports', ['websocket']);
   io.set('transports', [
       'websocket'
-//    , 'flashsocket'
-//    , 'htmlfile'
+    , 'flashsocket'
+    , 'htmlfile'
     , 'xhr-polling'
     , 'jsonp-polling'
   ]);

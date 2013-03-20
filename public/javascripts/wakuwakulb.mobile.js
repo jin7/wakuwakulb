@@ -305,6 +305,7 @@ $(function() {
 //	io.transports = ['xhr-polling']; 
 	io.transports.push('xhr-polling'); 
   io.transports.push('jsonp-polling');
+  io.transports.push('flashsocket');
 	lb = io.connect("/leadersboard", { 
 	  'try multiple transports': false, 
 	  'force new connection': true 
