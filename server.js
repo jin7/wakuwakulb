@@ -121,8 +121,8 @@ io.configure('development', function() {
 //  io.set('transports', ['websocket']);
   io.set('transports', [
       'websocket'
-    , 'flashsocket'
-    , 'htmlfile'
+//    , 'flashsocket'
+//    , 'htmlfile'
     , 'xhr-polling'
     , 'jsonp-polling'
   ]);
@@ -341,13 +341,13 @@ function notifyPersonalRank(socket, rid) {
   var pscore_counter = 0;
   calls.push(function(callback) {
       User.find(function(err, users) {
-        console.log('users ' + users);
+//        console.log('users ' + users);
         if (!err && users != null) {
           async.forEach(users, function(user, cb) {
             console.log(user);
               Score.find({'uid' : user.uid}).sort({'holeno':'asc'}).exec(
                 function (err, scores) {
-                  console.log('find score' + scores);
+//                  console.log('find score' + scores);
                   if (!err && scores != null && scores.length > 0) {
                     var gross = 0;
                     var holes = [];
@@ -389,7 +389,7 @@ function findScore(user, pscores) {
   console.log("find " + user.uid);
   Score.find({'uid' : user.uid}).sort({'holeno':'asc'}).exec(
     function (err, scores) {
-      console.log('find score' + scores);
+//      console.log('find score' + scores);
         if (!err && scores != null && scores.length > 0) {
           var gross = 0;
           var holes = [];
