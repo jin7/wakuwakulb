@@ -112,12 +112,20 @@ io.configure('prouction', function() {
       'websocket'
     , 'flashsocket'
     , 'htmlfile'
+    , 'xhr-polling'
     , 'jsonp-polling'
   ]);
 });
 io.configure('development', function() {
 //  io.set('log level', 2);
-  io.set('transports', ['websocket']);
+//  io.set('transports', ['websocket']);
+  io.set('transports', [
+      'websocket'
+    , 'flashsocket'
+    , 'htmlfile'
+    , 'xhr-polling'
+    , 'jsonp-polling'
+  ]);
 });
 
 ///
