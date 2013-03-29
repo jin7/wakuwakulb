@@ -197,14 +197,14 @@ var lb = io
       inputScore(socket, data);
 
       // スコア入力データを全プレーヤーに通知
-      socket.emit('score', data);
-      socket.broadcast.emit('score', data);
+//    socket.emit('score', data);
+//    socket.broadcast.emit('score', data);
 
       // 個人順位を参加プレーヤー全員に通知
-      notifyPersonalRank(socket, data.rid);
+//      notifyPersonalRank(socket, data.rid);
 
       // チーム順位を参加プレーヤー全員に通知
-      notifyTeamRank(socket, data.rid);
+//      notifyTeamRank(socket, data.rid);
     });
 
     // personalscore
@@ -222,32 +222,47 @@ var lb = io
 
 // スコア入力 : inputScore
 function inputScore(socket, data) {
-  Score.findOne({ 'uid': data.uid, 'holeno': data.holeno },
-    function (err, score) {
-      if (!err) {
-        if (score != null) {
-          // found, then update
-          score.score = data.score;
-          score.save(function(err) {
-            if (err) console.log(err);
-          });
+  var calls = [];
+
+  calls.push(function(callback) {
+    Score.findOne({ 'uid': data.uid, 'holeno': data.holeno },
+      function (err, score) {
+        if (!err) {
+          if (score) {
+            // found, then update
+            score.score = data.score;
+            score.save(function(err) {
+              if (err) console.log(err);
+            });
+          } else {
+            // NOT found, then add
+            updScore = new Score(data);
+            updScore.save(function(err) {
+              // notify personal rank
+              if (!err) {
+                //notifyPersonalRank();
+              } else {
+                console.log(err);
+              }
+            });
+          }
         } else {
-          // NOT found, then add
-          updScore = new Score(data);
-          updScore.save(function(err) {
-            // notify personal rank
-            if (!err) {
-              //notifyPersonalRank();
-            } else {
-              console.log(err);
-            }
-          });
+          // findOne error
+          console.log(err);
         }
-      } else {
-        // findOne error
-        console.log(err);
-      }
-    });
+        callback(null, null);
+      });
+  });
+
+  calls.push(function(callback) {
+    // 個人順位を参加プレーヤー全員に通知
+    notifyPersonalRank(socket, data.rid);
+    callback(null, null);
+  });
+
+  async.series(calls, function(err, result) {
+    console.log('end main');
+  });
 }
 
 
@@ -344,7 +359,7 @@ function notifyPersonalRank(socket, rid) {
 //        console.log('users ' + users);
         if (!err && users != null) {
           async.forEach(users, function(user, cb) {
-            console.log(user);
+//            console.log(user);
               Score.find({'uid' : user.uid}).sort({'holeno':'asc'}).exec(
                 function (err, scores) {
 //                  console.log('find score' + scores);
@@ -365,7 +380,7 @@ function notifyPersonalRank(socket, rid) {
                   cb();
               });
           }, function (err) {
-            console.log(err);
+            console.log("err:" + err);
             console.log("pscore created");
             callback(null, pscores);
           });
@@ -379,7 +394,7 @@ function notifyPersonalRank(socket, rid) {
     if (err) {
       return console.log(err);
     }
-    console.log('pscores ' + pscores);
+//    console.log('pscores ' + pscores);
     socket.emit('personalscore', { "pscores": pscores });
     socket.broadcast.emit('personalscore', { "pscores": pscores });
   });
