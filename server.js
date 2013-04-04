@@ -427,6 +427,31 @@ function notifyTeamRank(socket, rid) {
 }
 
 
+///
+/// maintenance service
+///
+var mnt = io
+  .of('/maintenance')
+  .on('connection', function(socket) {
+    // clrsc : スコア削除
+    socket.on('delsc', function(data) {
+      // スコア削除要求
+      if (data.key) {
+        if (data.key == 'kty0407') {
+            var uid = data.uid;
+            Score.remove({ 'uid': uid }, function(err) {
+              if (err) {
+                console.log('clear score errored : ' + err);
+                socket.emit('delsc', { 'result': false });
+              } else {
+                console.log('cleared score for ' + uid );
+                socket.emit('delsc', { 'result': true });
+              }
+            });
+        }
+      }
+    });
+  });
 
 // test
 var points = [];
