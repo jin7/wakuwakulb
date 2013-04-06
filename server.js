@@ -437,7 +437,7 @@ var mnt = io
     socket.on('delsc', function(data) {
       // スコア削除要求
       if (data.key) {
-        if (data.key == 'kty0407') {
+        if (data.key == '999') {
             var uid = data.uid;
             Score.remove({ 'uid': uid }, function(err) {
               if (err) {
