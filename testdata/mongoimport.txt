@@ -1,0 +1,7 @@
+mongoimport -d wakuwakulb2 -c users -type json -file C:\Users\kuramoto\SkyDrive\2013TechCon\data\users.json
+mongoimport -d wakuwakulb2 -c teams -type json  -file C:\Users\kuramoto\SkyDrive\2013TechCon\data\teams.json
+mongoimport -d wakuwakulb2 -c players -type json -file C:\Users\kuramoto\SkyDrive\2013TechCon\data\players.json
+mongoimport -d wakuwakulb2 -c holes -type json -file C:\Users\kuramoto\SkyDrive\2013TechCon\data\holes.json
+mongoimport -d wakuwakulb2 -c courses -type json -file C:\Users\kuramoto\SkyDrive\2013TechCon\data\courses.json
+mongoimport -d wakuwakulb2 -c rounds -type json -file C:\Users\kuramoto\SkyDrive\2013TechCon\data\rounds.json
+
