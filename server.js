@@ -14,7 +14,7 @@ var express = require('express')
 
 var app = express();
 
-var mongoUri = 'mongodb://127.0.0.1/wakuwakulb';
+var mongoUri = 'mongodb://127.0.0.1/wakuwakulb2';
 var Schema = mongoose.Schema;
 
 function validator(v) {
@@ -31,12 +31,60 @@ function counter(name) {
     return ret.next;
 }
 
+// Round model
+var roundModel = new Schema({
+    rid    : { type: Number }
+  , rname  : { type: String, validate: [validator, "Empty Error"] }
+  , date: { type: Date }
+  //, time: { type: Time }
+  , cid: { type: Number }
+  , csubids: { type: Array }
+  , prtyifs: { type: Array }
+});
+var Round = mongoose.model('Round', roundModel);
+
+// Party model
+var partyModel = new Schema({
+    pid: { type: Number }
+  , rid: { type: Number }
+  , pname: { type: String }
+  , number: { type: Number }
+  , plyifs: { type: Array }
+});
+var Party = mongoose.model('Party', partyModel);
+
+// Course model
+var courseModel = new Schema({
+    cid: { type: Number }
+  , cname: { type: String }
+  , holeinfs: { type: Array }
+});
+var Course = mongoose.model('Course', courseModel);
+
+// Hole model
+var holeModel = new Schema({
+    csubid: { type: Number }
+  , csubname: { type: String }
+  , names: { type: Array }
+  , pars: { type: Array }
+});
+var Hole = mongoose.model('Hole', holeModel);
+
+// Player model
+var playerModel = new Schema({
+    plid: { type: Number }
+  , rid: { type: Number }
+  , uid: { type: Number }
+  , tid: { type: Number }
+});
+var Player = mongoose.model('Player', playerModel);
+
 // User model
 var userSchema = new Schema({
     uid    : { type: Number }
   , uname  : { type: String, validate: [validator, "Empty Error"] }
   , mail   : { type: String }
-  , birth  : { type: Date }
+  , brthdy : { type: Date }
   , sex    : { type: Number }
   , uimg   : { type: String }
   , created: { type: Date, default: Date.now }
@@ -45,22 +93,25 @@ var User = mongoose.model('User', userSchema);
 
 // Team model
 var teamSchema = new mongoose.Schema({
-    team   : { type: String, validate: [validator, "Empty Error"] }
+    tid: { type: Number }
+  , tname  : { type: String, validate: [validator, "Empty Error"] }
   , timg   : { type: String }
 });
 var Team = mongoose.model('Team', teamSchema);
 
 // Round model
-var roundSchema = new mongoose.Schema({
-    roundname: { type: String, validate: [validator, "Empty Error"] }
-  , date     : { type: Date }
-});
-var Round = mongoose.model('Round', roundSchema);
+//var roundSchema = new mongoose.Schema({
+//    roundname: { type: String, validate: [validator, "Empty Error"] }
+//  , date     : { type: Date }
+//});
+//var Round = mongoose.model('Round', roundSchema);
 
 // Score model
 var scoreSchema = new mongoose.Schema({
     rid   : { type: Number }
-  , uid   : { type: Number, index: true }
+  , uid: { type: Number, index: true }
+  , cid: { type: Number }
+  , csubid: { type: Number }
   , holeno: { type: Number }
   , score : { type: Number }
 });
@@ -218,7 +269,50 @@ var lb = io
       // チーム順位を参加プレーヤー全員に通知
       notifyTeamRank(socket, data.rid);
     });
+
+    // ラウンド情報取得要求受信
+    socket.on('getroundinf', function (data) {
+        // ラウンド情報を通知
+        notifyRoundData(socket);
+    });
   });
+
+// ラウンド情報通知
+function notifyRoundData(socket) {
+    console.log('notifyRoundData');
+    var calls = [];
+    var roundList = [];
+    calls.push(function (callback) {
+        Round.find(function (err, rounds) {
+            //console.log('rounds:' + rounds.length);
+            if (!err && rounds != null) {
+                if (rounds.length == 1) {
+                    roundList.push({ "rid": round.rid, "rname": round.rname, "date": round.date, "time": round.time, "cinf": round.cinf, "prtyinfs": round.prtyifs });
+                } else {
+                    async.forEach(rounds, function (round, cb) {
+                        roundList.push({ "rid": round.rid, "rname": round.rname, "date": round.date, "time": round.time, "cinf": round.cinf, "prtyinfs": round.prtyifs });
+                        cb();
+                    }, function (err) {
+                        console.log("notifyRoundData forEach error:" + err);
+                    });
+                }
+                callback(null, roundList);
+            } else {
+                console.log("notifyRoundData Round.find() error:" + err);
+                callback(null, roundList);
+            }
+        });
+    });
+
+    async.series(calls, function (err, result) {
+        if (!err) {
+//            console.log('emit getroundinf : ' + roundList);
+            socket.emit('getroundinf', roundList);
+        } else {
+            console.log("async.series error:" + err);
+        }
+    });
+}
 
 // スコア入力 : inputScore
 function inputScore(socket, data) {
