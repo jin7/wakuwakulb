@@ -63,7 +63,7 @@ var Course = mongoose.model('Course', courseModel);
 
 // Hole model
 var holeModel = new Schema({
-    csubid: { type: Number }
+    csubid: { type: String }
   , csubname: { type: String }
   , names: { type: Array }
   , pars: { type: Array }
@@ -282,21 +282,40 @@ function notifyRoundData(socket) {
     console.log('notifyRoundData');
     var calls = [];
     var roundList = [];
+    var csubidList = [];
     calls.push(function (callback) {
         Round.find(function (err, rounds) {
             //console.log('rounds:' + rounds.length);
             if (!err && rounds != null) {
                 if (rounds.length == 1) {
-                    roundList.push({ "rid": round.rid, "rname": round.rname, "date": round.date, "time": round.time, "cinf": round.cinf, "prtyinfs": round.prtyifs });
+                    console.log('csubids:' + rounds[0].csubids);
+                    var round = { "rid": rounds[0].rid, "rname": rounds[0].rname, "date": rounds[0].date, "time": rounds[0].time, "cinf": [], "prtyinfs": rounds[0].prtyifs };
+                    var csubList = [];
+                    async.forEach(rounds[0].csubids, function (csubid, csubidCb) {
+                        Hole.findOne({ 'csubid': csubid }, function (err, csub) {
+                            if (!err) {
+//                                console.log("csub:" + csub);
+                                csubList.push(csub);
+                            } else {
+                                console.log("Hole.findOne err : " + err);
+                            }
+                            csubidCb();
+                        });
+                    }, function (err) {
+//                        console.log("async.forEach(csubids) err:" + err + ",csublist:" + csubList);
+                        round.cinf = csubList;
+                        roundList.push(round);
+                        callback(null, roundList);
+                    });
                 } else {
                     async.forEach(rounds, function (round, cb) {
                         roundList.push({ "rid": round.rid, "rname": round.rname, "date": round.date, "time": round.time, "cinf": round.cinf, "prtyinfs": round.prtyifs });
                         cb();
                     }, function (err) {
                         console.log("notifyRoundData forEach error:" + err);
+                        callback(null, roundList);
                     });
                 }
-                callback(null, roundList);
             } else {
                 console.log("notifyRoundData Round.find() error:" + err);
                 callback(null, roundList);
@@ -306,7 +325,7 @@ function notifyRoundData(socket) {
 
     async.series(calls, function (err, result) {
         if (!err) {
-//            console.log('emit getroundinf : ' + roundList);
+            console.log('emit getroundinf : ' + roundList);
             socket.emit('getroundinf', roundList);
         } else {
             console.log("async.series error:" + err);
