@@ -284,7 +284,6 @@ function notifyRoundData(socket) {
     var roundList = [];
     calls.push(function (callback) {
         Round.find(function (err, rounds) {
-<<<<<<< HEAD
             //console.log('rounds:' + rounds.length);
             if (!err && rounds != null) {
                 if (rounds.length == 1) {
@@ -298,16 +297,6 @@ function notifyRoundData(socket) {
                     });
                 }
                 callback(null, roundList);
-=======
-            if (!err && rounds != null) {
-                async.forEach(rounds, function (round, cb) {
-                    roundList.push({ "rid": round.rid, "rname": round.rname, "date": round.date, "time": round.time, "cinf": round.cinf, "prtyinfs": round.prtyifs });
-                    cb();
-                }, function (err) {
-                    console.log("notifyRoundData forEach error:" + err);
-                    cb();
-                });
->>>>>>> 144fe9a16cdac5330b309b3eea37ef63d75364e0
             } else {
                 console.log("notifyRoundData Round.find() error:" + err);
                 callback(null, roundList);
@@ -317,10 +306,7 @@ function notifyRoundData(socket) {
 
     async.series(calls, function (err, result) {
         if (!err) {
-<<<<<<< HEAD
 //            console.log('emit getroundinf : ' + roundList);
-=======
->>>>>>> 144fe9a16cdac5330b309b3eea37ef63d75364e0
             socket.emit('getroundinf', roundList);
         } else {
             console.log("async.series error:" + err);
