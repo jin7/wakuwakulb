@@ -338,7 +338,7 @@ function inputScore(socket, data) {
   var calls = [];
 
   calls.push(function(callback) {
-    Score.findOne({ 'uid': data.uid, 'holeno': data.holeno },
+    Score.findOne({ 'rid':data.rid, 'uid': data.uid, 'cid': data.cid, 'csubid': data.csubid, 'holeno': data.holeno },
       function (err, score) {
         if (!err) {
           if (score) {
