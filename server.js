@@ -33,11 +33,13 @@ function counter(name) {
 
 // Round model
 var roundModel = new Schema({
-    rid    : { type: Number }
+    //rid    : { type: Number }
+    rid    : { type: String }
   , rname  : { type: String, validate: [validator, "Empty Error"] }
   , date: { type: Date }
   //, time: { type: Time }
-  , cid: { type: Number }
+  //, cid: { type: Number }
+  , cid: { type: String }
   , csubids: { type: Array }
   , prtyifs: { type: Array }
 });
@@ -45,8 +47,10 @@ var Round = mongoose.model('Round', roundModel);
 
 // Party model
 var partyModel = new Schema({
-    pid: { type: Number }
-  , rid: { type: Number }
+  //  pid: { type: Number }
+  //, rid: { type: Number }
+    pid: { type: String }
+  , rid: { type: String }
   , pname: { type: String }
   , number: { type: Number }
   , plyifs: { type: Array }
@@ -55,7 +59,8 @@ var Party = mongoose.model('Party', partyModel);
 
 // Course model
 var courseModel = new Schema({
-    cid: { type: Number }
+    //cid: { type: Number }
+    cid: { type: String }
   , cname: { type: String }
   , holeinfs: { type: Array }
 });
@@ -72,17 +77,22 @@ var Hole = mongoose.model('Hole', holeModel);
 
 // Player model
 var playerModel = new Schema({
-    plid: { type: Number }
-  , rid: { type: Number }
-  , uid: { type: Number }
-  , tid: { type: Number }
+  //  plid: { type: Number }
+  //, rid: { type: Number }
+  //, uid: { type: Number }
+  //, tid: { type: Number }
+    plid: { type: String }
+  , rid: { type: String }
+  , uid: { type: String }
+  , tid: { type: String }
 });
 var Player = mongoose.model('Player', playerModel);
 
 // User model
 var userSchema = new Schema({
-    uid    : { type: Number }
-  , uname  : { type: String, validate: [validator, "Empty Error"] }
+    //uid: { type: Number }
+    uid    : { type: String }
+  , uname: { type: String, validate: [validator, "Empty Error"] }
   , mail   : { type: String }
   , brthdy : { type: Date }
   , sex    : { type: Number }
@@ -93,8 +103,9 @@ var User = mongoose.model('User', userSchema);
 
 // Team model
 var teamSchema = new mongoose.Schema({
-    tid: { type: Number }
-  , tname  : { type: String, validate: [validator, "Empty Error"] }
+    //tid: { type: Number }
+    tid: { type: String }
+  , tname: { type: String, validate: [validator, "Empty Error"] }
   , timg   : { type: String }
 });
 var Team = mongoose.model('Team', teamSchema);
@@ -108,10 +119,14 @@ var Team = mongoose.model('Team', teamSchema);
 
 // Score model
 var scoreSchema = new mongoose.Schema({
-    rid   : { type: Number }
-  , uid: { type: Number, index: true }
-  , cid: { type: Number }
-  , csubid: { type: Number }
+  //  rid: { type: Number }
+  //, uid: { type: Number, index: true }
+  //, cid: { type: Number }
+  //, csubid: { type: Number }
+    rid   : { type: String }
+  , uid: { type: String, index: true }
+  , cid: { type: String }
+  , csubid: { type: String }
   , holeno: { type: Number }
   , score : { type: Number }
 });
@@ -290,23 +305,49 @@ function notifyRoundData(socket) {
                 if (rounds.length == 1) {
                     console.log('csubids:' + rounds[0].csubids);
                     var round = { "rid": rounds[0].rid, "rname": rounds[0].rname, "date": rounds[0].date, "time": rounds[0].time, "cinf": [], "prtyinfs": rounds[0].prtyifs };
-                    var csubList = [];
-                    async.forEach(rounds[0].csubids, function (csubid, csubidCb) {
-                        Hole.findOne({ 'csubid': csubid }, function (err, csub) {
-                            if (!err) {
-//                                console.log("csub:" + csub);
-                                csubList.push(csub);
-                            } else {
-                                console.log("Hole.findOne err : " + err);
-                            }
-                            csubidCb();
-                        });
-                    }, function (err) {
-//                        console.log("async.forEach(csubids) err:" + err + ",csublist:" + csubList);
-                        round.cinf = csubList;
-                        roundList.push(round);
-                        callback(null, roundList);
+                    var courseinf = { "cid": rounds[0].cid };
+                    Course.findOne({ "cid": rounds[0].cid }, function (err, crs) {
+                        if (!err) {
+                            courseinf["cname"] = crs.cname;
+                            var csubList = [];
+                            async.forEach(rounds[0].csubids, function (csubid, csubidCb) {
+                                Hole.findOne({ 'csubid': csubid }, function (err, csub) {
+                                    if (!err) {
+                                        //                                console.log("csub:" + csub);
+                                        csubList.push(csub);
+                                    } else {
+                                        console.log("Hole.findOne err : " + err);
+                                    }
+                                    csubidCb();
+                                });
+                            }, function (err) {
+                                //                        console.log("async.forEach(csubids) err:" + err + ",csublist:" + csubList);
+                                courseinf.holeinfs = csubList;
+                                round.cinf = courseinf;
+                                roundList.push(round);
+                                callback(null, roundList);
+                            });
+                        } else {
+                            console.log("Cource.findOne err : " + err);
+                        }
                     });
+//                    var csubList = [];
+//                    async.forEach(rounds[0].csubids, function (csubid, csubidCb) {
+//                        Hole.findOne({ 'csubid': csubid }, function (err, csub) {
+//                            if (!err) {
+////                                console.log("csub:" + csub);
+//                                csubList.push(csub);
+//                            } else {
+//                                console.log("Hole.findOne err : " + err);
+//                            }
+//                            csubidCb();
+//                        });
+//                    }, function (err) {
+////                        console.log("async.forEach(csubids) err:" + err + ",csublist:" + csubList);
+//                        round.cinf = csubList;
+//                        roundList.push(round);
+//                        callback(null, roundList);
+//                    });
                 } else {
                     async.forEach(rounds, function (round, cb) {
                         roundList.push({ "rid": round.rid, "rname": round.rname, "date": round.date, "time": round.time, "cinf": round.cinf, "prtyinfs": round.prtyifs });
