@@ -324,8 +324,31 @@ function notifyRoundData(socket) {
                                 //                        console.log("async.forEach(csubids) err:" + err + ",csublist:" + csubList);
                                 courseinf.holeinfs = csubList;
                                 round.cinf = courseinf;
-                                roundList.push(round);
-                                callback(null, roundList);
+                                var prtyinfs = [];
+                                async.forEach(rounds[0].prtyifs, function (prtyinf, prtyinfCb) {
+                                    var plyrinfs = [];
+                                    async.forEach(prtyinf.plyrifs, function (plyrid, plyrinfCb) {
+                                        Player.findOne({ 'plid': plyrid }, function (err, plyr) {
+                                            if (!err) {
+                                                plyrinfs.push(plyr);
+                                            } else {
+                                                console.log("Player.findOne err : " + err);
+                                            }
+                                            plyrinfCb();
+                                        });
+                                    }, function (err) {
+                                        if (!err) {
+                                            prtyinfs.push(plyrinfs);
+                                        }
+                                        prtyinfCb();
+                                    });
+                                }, function (err) {
+                                    if (!err) {
+                                        round.prtyinfs = prtyinfs;
+                                        roundList.push(round);
+                                        callback(null, roundList);
+                                    }
+                                });
                             });
                         } else {
                             console.log("Cource.findOne err : " + err);
