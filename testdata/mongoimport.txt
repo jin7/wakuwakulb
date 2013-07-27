@@ -4,4 +4,5 @@ mongoimport -d wakuwakulb2 -c players -type json -file C:\Users\kuramoto\SkyDriv
 mongoimport -d wakuwakulb2 -c holes -type json -file C:\Users\kuramoto\SkyDrive\2013TechCon\data\holes.json
 mongoimport -d wakuwakulb2 -c courses -type json -file C:\Users\kuramoto\SkyDrive\2013TechCon\data\courses.json
 mongoimport -d wakuwakulb2 -c rounds -type json -file C:\Users\kuramoto\SkyDrive\2013TechCon\data\rounds.json
+mongoimport -d wakuwakulb2 -c scores -type json -file C:\Users\kuramoto\SkyDrive\2013TechCon\data\scores.json
 

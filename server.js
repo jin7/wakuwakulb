@@ -125,6 +125,7 @@ var scoreSchema = new mongoose.Schema({
   //, csubid: { type: Number }
     rid   : { type: String }
   , uid: { type: String, index: true }
+  , plid: { type: String, index: true }
   , cid: { type: String }
   , csubid: { type: String }
   , holeno: { type: Number }
@@ -299,6 +300,7 @@ function notifyRoundData(socket) {
     var roundList = [];
     var csubidList = [];
     calls.push(function (callback) {
+        // ラウンド情報サーチ
         Round.find(function (err, rounds) {
             //console.log('rounds:' + rounds.length);
             if (!err && rounds != null) {
@@ -306,11 +308,14 @@ function notifyRoundData(socket) {
                     console.log('csubids:' + rounds[0].csubids);
                     var round = { "rid": rounds[0].rid, "rname": rounds[0].rname, "date": rounds[0].date, "time": rounds[0].time, "cinf": [], "prtyinfs": rounds[0].prtyifs };
                     var courseinf = { "cid": rounds[0].cid };
+                    // コース情報サーチ
                     Course.findOne({ "cid": rounds[0].cid }, function (err, crs) {
                         if (!err) {
                             courseinf["cname"] = crs.cname;
                             var csubList = [];
+                            // サブコースIDごとホール情報取得
                             async.forEach(rounds[0].csubids, function (csubid, csubidCb) {
+                                // ホール情報サーチ
                                 Hole.findOne({ 'csubid': csubid }, function (err, csub) {
                                     if (!err) {
                                         //                                console.log("csub:" + csub);
@@ -321,13 +326,17 @@ function notifyRoundData(socket) {
                                     csubidCb();
                                 });
                             }, function (err) {
+                                // サブコースIDごとのホール情報取得が完了後、
+                                // パーティ情報を取得
                                 //                        console.log("async.forEach(csubids) err:" + err + ",csublist:" + csubList);
                                 courseinf.holeinfs = csubList;
                                 round.cinf = courseinf;
-                                var prtyinfs = [];
+                                var prtyinfs = [];  // パーティ情報配列
+                                // パーティ情報ごとプレーヤー情報取得
                                 async.forEach(rounds[0].prtyifs, function (prtyinf, prtyinfCb) {
-                                    var plyrinfs = [];
+                                    var plyrinfs = [];  // プレーヤー情報配列
                                     async.forEach(prtyinf.plyrifs, function (plyrid, plyrinfCb) {
+                                        // プレーヤー情報サーチ
                                         Player.findOne({ 'plid': plyrid }, function (err, plyr) {
                                             if (!err) {
                                                 plyrinfs.push(plyr);
@@ -337,12 +346,24 @@ function notifyRoundData(socket) {
                                             plyrinfCb();
                                         });
                                     }, function (err) {
+                                        // パーティごとのプレーヤー情報取得が完了後、
+                                        // パーティ情報オブジェクトへ設定
                                         if (!err) {
-                                            prtyinfs.push(plyrinfs);
+                                            prtyinf.plyrifs = plyrinfs;
+                                            prtyinf.holeinfs = [];
+                                            if (prtyinf.csubids[0] == csubList[0].csubid) {
+                                                prtyinf.holeinfs.push(csubList[0]);
+                                                prtyinf.holeinfs.push(csubList[1]);
+                                            } else {
+                                                prtyinf.holeinfs.push(csubList[1]);
+                                                prtyinf.holeinfs.push(csubList[0]);
+                                            }
+                                            prtyinfs.push(prtyinf);
                                         }
                                         prtyinfCb();
                                     });
                                 }, function (err) {
+                                    // パーティ情報取得完了後、ラウンド情報オブジェクトへ設定
                                     if (!err) {
                                         round.prtyinfs = prtyinfs;
                                         roundList.push(round);
@@ -442,7 +463,7 @@ function inputScore(socket, data) {
   });
 }
 
-
+/*
 // 個人順位通知 : notifyPersonalRank
 function notifyPersonalRankOrg(socket, rid) {
   console.log('notifyPersonalRank');
@@ -476,7 +497,8 @@ function notifyPersonalRankOrg(socket, rid) {
     }
   });
 }
-
+*/
+/*
 function notifyPersonalRank01(socket, rid) {
   console.log('notifyPersonalRank');
   // ユーザーごとのスコアを計算する
@@ -523,8 +545,8 @@ function notifyPersonalRank01(socket, rid) {
     }
   });
 }
-
-function notifyPersonalRank(socket, rid) {
+*/
+function notifyPersonalRank_(socket, rid) {
   console.log('notifyPersonalRank');
   // ユーザーごとのスコアを計算する
   var calls = [];
@@ -575,6 +597,41 @@ function notifyPersonalRank(socket, rid) {
     socket.emit('personalscore', { "pscores": pscores });
     socket.broadcast.emit('personalscore', { "pscores": pscores });
   });
+}
+
+function notifyPersonalRank(socket, rid) {
+    console.log('notifyPersonalRank');
+    var calls = [];
+
+    calls.push(function (callback) {
+        Player.find({'rid': rid}, function (err, players) {
+            if (!err && players != null) {
+                async.forEach(palyers, function (player, cb) {
+                    Score.find({'uid': player.uid}).sort({'csubid':'asc', 'holeno':'asc'}).exec(
+                        function(err, scores) {
+                            if (!err && scores != null && scores.length > 0) {
+                                var gross = 0;
+                                var holes = [];
+                                async.forEach(scores,function(score, scoreCb) {
+                                    gross += score.score;
+                                    holes.pufh(score.score);
+                                }, function (err) {
+                                    console.log("score created");
+                                    pscores.push({ "user": user, "score": { "gross": gross, "holes": holes } });
+                                });
+                            } else {
+                                pscores.push({ "user": user, "score": { "gross": 0, "holes": [] } });
+                            }
+                            cb();
+                        });
+                }, function(err) {
+                    callback(null, pscores);
+                });
+            } else {
+                callback();
+            }
+        });
+    });
 }
 
 function findScore(user, pscores) {
