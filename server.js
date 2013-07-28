@@ -546,7 +546,7 @@ function notifyPersonalRank01(socket, rid) {
   });
 }
 */
-function notifyPersonalRank_(socket, rid) {
+function notifyPersonalRank(socket, rid) {
   console.log('notifyPersonalRank');
   // ユーザーごとのスコアを計算する
   var calls = [];
@@ -599,7 +599,7 @@ function notifyPersonalRank_(socket, rid) {
   });
 }
 
-function notifyPersonalRank(socket, rid) {
+function notifyPersonalRankNew(socket, rid) {
     console.log('notifyPersonalRank');
     var calls = [];
 
