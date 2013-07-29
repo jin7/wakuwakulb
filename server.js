@@ -569,7 +569,8 @@ function notifyPersonalRank01(socket, rid) {
   });
 }
 */
-function notifyPersonalRank(socket, rid) {
+/*
+function notifyPersonalRank_(socket, rid) {
   console.log('notifyPersonalRank');
   // ユーザーごとのスコアを計算する
   var calls = [];
@@ -621,31 +622,46 @@ function notifyPersonalRank(socket, rid) {
     socket.broadcast.emit('personalscore', { "pscores": pscores });
   });
 }
-
-function notifyPersonalRankNew(socket, rid) {
+*/
+function notifyPersonalRank(socket, rid) {
     console.log('notifyPersonalRank');
     var calls = [];
+    var pscores = [];
 
     calls.push(function (callback) {
         Player.find({'rid': rid}, function (err, players) {
             if (!err && players != null) {
-                async.forEach(palyers, function (player, cb) {
+                async.forEachSeries(players, function (player, cb) {
                     Score.find({'uid': player.uid}).sort({'csubid':'asc', 'holeno':'asc'}).exec(
                         function(err, scores) {
                             if (!err && scores != null && scores.length > 0) {
                                 var gross = 0;
                                 var holes = [];
-                                async.forEach(scores,function(score, scoreCb) {
+                                async.forEachSeries(scores, function(score, scoreCb) {
                                     gross += score.score;
-                                    holes.pufh(score.score);
+                                    holes.push(score.score);
+                                    scoreCb();
                                 }, function (err) {
                                     console.log("score created");
-                                    pscores.push({ "user": user, "score": { "gross": gross, "holes": holes } });
+                                    Team.findOne({ 'tid': player.tid }, function (err, team) {
+                                        if (!err) {
+                                            User.findOne({ 'uid': player.uid }, function (err, user) {
+                                                pscores.push({
+                                                    "user": { "uid": user.uid, "uname": user.uname, "mail": user.mail, "brthdy": user.brthdy, "sex": user.sex, "uimg": user.uimg, "created": user.created },
+                                                    "team": { "tid": team.tid, "tname": team.tname, "timg": team.timg },
+                                                    "score": { "gross": gross, "holes": holes }
+                                                });
+                                            });
+                                        }
+                                        cb();
+                                    });
                                 });
                             } else {
-                                pscores.push({ "user": user, "score": { "gross": 0, "holes": [] } });
+                                console.log("Score.find err : " + err);
+                                cb();
+                                //pscores.push({ "user": user, "score": { "gross": 0, "holes": [] } });
                             }
-                            cb();
+                            //cb();
                         });
                 }, function(err) {
                     callback(null, pscores);
@@ -654,6 +670,15 @@ function notifyPersonalRankNew(socket, rid) {
                 callback();
             }
         });
+    });
+
+    async.series(calls, function (err, result) {
+        if (err) {
+            return console.log(err);
+        }
+//      console.log('pscores ' + pscores);
+        socket.emit('personalscore', { "pscores": pscores });
+        socket.broadcast.emit('personalscore', { "pscores": pscores });
     });
 }
 
