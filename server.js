@@ -333,13 +333,14 @@ function notifyRoundData(socket) {
                                 round.cinf = courseinf;
                                 var prtyinfs = [];  // パーティ情報配列
                                 // パーティ情報ごとプレーヤー情報取得
-                                async.forEach(rounds[0].prtyifs, function (prtyinf, prtyinfCb) {
+                                var plyrinfsForTeam = [];
+                                async.forEachSeries(rounds[0].prtyifs, function (prtyinf, prtyinfCb) {
                                     var plyrinfs = [];  // プレーヤー情報配列
-                                    async.forEach(prtyinf.plyrifs, function (plyrid, plyrinfCb) {
+                                    async.forEachSeries(prtyinf.plyrifs, function (plyrid, plyrinfCb) {
                                         // プレーヤー情報サーチ
                                         Player.findOne({ 'plid': plyrid }, function (err, plyr) {
                                             if (!err) {
-                                                plyrinfs.push(plyr);
+                                                plyrinfs.push({ "plid": plyr.plid, "rid": plyr.rid, "uid": plyr.uid, "tid": plyr.tid });
                                             } else {
                                                 console.log("Player.findOne err : " + err);
                                             }
@@ -349,18 +350,57 @@ function notifyRoundData(socket) {
                                         // パーティごとのプレーヤー情報取得が完了後、
                                         // パーティ情報オブジェクトへ設定
                                         if (!err) {
-                                            prtyinf.plyrifs = plyrinfs;
-                                            prtyinf.holeinfs = [];
-                                            if (prtyinf.csubids[0] == csubList[0].csubid) {
-                                                prtyinf.holeinfs.push(csubList[0]);
-                                                prtyinf.holeinfs.push(csubList[1]);
-                                            } else {
-                                                prtyinf.holeinfs.push(csubList[1]);
-                                                prtyinf.holeinfs.push(csubList[0]);
-                                            }
-                                            prtyinfs.push(prtyinf);
+                                            async.forEachSeries(plyrinfs, function (plyr, plyrCb) {
+                                                // チーム情報取得
+                                                Team.findOne({ 'tid': plyr.tid }, function (err, team) {
+                                                    if (!err) {
+                                                        console.log("team:" + team);
+                                                        plyr["team"] = { "tid": team.tid, "tname": team.tname, "timg": team.timg };
+                                                        plyrinfsForTeam.push(plyr);
+                                                    } else {
+                                                        console.log("Team.findOne err : " + err);
+                                                    }
+                                                    plyrCb();
+                                                });
+                                            }, function (err) {
+                                                // チーム情報取得完了
+                                                if (!err) {
+                                                    var plyrinfsForUser = [];
+                                                    async.forEachSeries(plyrinfsForTeam, function (plyr, plyrCb2) {
+                                                        // ユーザー情報取得
+                                                        User.findOne({ 'uid': plyr.uid }, function (err, user) {
+                                                            if (!err) {
+                                                                console.log("user:" + user);
+                                                                plyr["user"] = { "uid": user.uid, "uname": user.uname, "mail": user.mail, "brthdy": user.brthdy, "sex": user.sex, "uimg": user.uimg, "created": user.created};
+                                                                plyrinfsForUser.push(plyr);
+                                                            } else {
+                                                                console.log("User.findOne err : " + err);
+                                                            }
+                                                            plyrCb2();
+                                                        });
+                                                    }, function (err) {
+                                                        prtyinf.plyrifs = plyrinfsForUser;
+                                                        //prtyinf.plyrifs = plyrinfs;
+                                                        prtyinf.holeinfs = [];
+                                                        if (prtyinf.csubids[0] == csubList[0].csubid) {
+                                                            prtyinf.holeinfs.push(csubList[0]);
+                                                            prtyinf.holeinfs.push(csubList[1]);
+                                                        } else {
+                                                            prtyinf.holeinfs.push(csubList[1]);
+                                                            prtyinf.holeinfs.push(csubList[0]);
+                                                        }
+                                                        prtyinfs.push(prtyinf);
+                                                        prtyinfCb();
+                                                    });
+                                                } else {
+                                                    console.log("async.forEach(plyrinfs : " + err);
+                                                }
+                                            });
+                                            //prtyinfCb();
+                                        } else {
+                                            console.log("async.forEach(prtyinf.plyrifs : " + err);
                                         }
-                                        prtyinfCb();
+                                        //prtyinfCb();
                                     });
                                 }, function (err) {
                                     // パーティ情報取得完了後、ラウンド情報オブジェクトへ設定
@@ -375,23 +415,6 @@ function notifyRoundData(socket) {
                             console.log("Cource.findOne err : " + err);
                         }
                     });
-//                    var csubList = [];
-//                    async.forEach(rounds[0].csubids, function (csubid, csubidCb) {
-//                        Hole.findOne({ 'csubid': csubid }, function (err, csub) {
-//                            if (!err) {
-////                                console.log("csub:" + csub);
-//                                csubList.push(csub);
-//                            } else {
-//                                console.log("Hole.findOne err : " + err);
-//                            }
-//                            csubidCb();
-//                        });
-//                    }, function (err) {
-////                        console.log("async.forEach(csubids) err:" + err + ",csublist:" + csubList);
-//                        round.cinf = csubList;
-//                        roundList.push(round);
-//                        callback(null, roundList);
-//                    });
                 } else {
                     async.forEach(rounds, function (round, cb) {
                         roundList.push({ "rid": round.rid, "rname": round.rname, "date": round.date, "time": round.time, "cinf": round.cinf, "prtyinfs": round.prtyifs });
