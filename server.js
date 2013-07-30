@@ -339,7 +339,7 @@ function notifyRoundData(socket) {
                                     async.forEachSeries(prtyinf.plyrifs, function (plyrid, plyrinfCb) {
                                         // プレーヤー情報サーチ
                                         Player.findOne({ 'plid': plyrid }, function (err, plyr) {
-                                            if (!err) {
+                                            if (!err && plyr) {
                                                 plyrinfs.push({ "plid": plyr.plid, "rid": plyr.rid, "uid": plyr.uid, "tid": plyr.tid });
                                             } else {
                                                 console.log("Player.findOne err : " + err);
