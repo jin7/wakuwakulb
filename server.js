@@ -333,8 +333,8 @@ function notifyRoundData(socket) {
                                 round.cinf = courseinf;
                                 var prtyinfs = [];  // パーティ情報配列
                                 // パーティ情報ごとプレーヤー情報取得
-                                var plyrinfsForTeam = [];
                                 async.forEachSeries(rounds[0].prtyifs, function (prtyinf, prtyinfCb) {
+                                    var plyrinfsForTeam = [];
                                     var plyrinfs = [];  // プレーヤー情報配列
                                     async.forEachSeries(prtyinf.plyrifs, function (plyrid, plyrinfCb) {
                                         // プレーヤー情報サーチ
@@ -486,143 +486,6 @@ function inputScore(socket, data) {
   });
 }
 
-/*
-// 個人順位通知 : notifyPersonalRank
-function notifyPersonalRankOrg(socket, rid) {
-  console.log('notifyPersonalRank');
-  // ユーザーごとのスコアを計算する
-  User.find(function(err, users) {
-    if (!err && users != null) {
-      var pscores = [];
-      for (i = 0; i < users.length; i++) {
-        console.log('uid:' + users[i].uid);
-        Score.find({'uid' : users[i].uid}).sort({holeno:'asc'}).exec(
-          function (err, scores) {
-//            console.log('scores ' + scores);
-            if (!err && scores != null) {
-              var gross = 0;
-              var holes = [];
-              for (s = 0; s < scores.length; s++) {
-                gross += scores[s].score;
-                holes.push(scores[s].score);
-              }
-              pscores.push({ "user": users[i], "score": { "gross": gross, "holes": holes } });
-              console.log('pscores ' + pscores);
-              socket.emit('personalscore', { "pscores": pscores });
-              socket.broadcast.emit('personalscore', { "pscores": pscores });
-            }
-//            if (i == (users.length - 1)) {
-//              socket.emit('personalscore', { "pscores": pscores });
-//              socket.broadcast.emit('personalscore', { "pscores": pscores });
-//            }
-          });
-      }
-    }
-  });
-}
-*/
-/*
-function notifyPersonalRank01(socket, rid) {
-  console.log('notifyPersonalRank');
-  // ユーザーごとのスコアを計算する
-  User.find(function(err, users) {
-    console.log('users ' + users);
-    if (!err && users != null) {
-      var pscores = [];
-      var calls = [];
-      var user;
-      var i;
-      calls.push(function(callback) {
-        for (i = 0; i < users.length; i++) {
-          console.log('uid:' + users[i].uid);
-          user = users[i];
-          Score.find({'uid' : users[i].uid}).sort({'holeno':'asc'}).exec(
-            function (err, scores) {
-//              console.log('find score' + scores);
-                if (!err && scores != null) {
-                  var gross = 0;
-                  var holes = [];
-                  for (s = 0; s < scores.length; s++) {
-                    gross += scores[s].score;
-                    holes.push(scores[s].score);
-                  }
-                  pscores.push({ "user": user, "score": { "gross": gross, "holes": holes } });
-                } else {
-                  pscores.push({ "user": user, "score": { "gross": 0, "holes": [] } });
-                }
-                if (pscores.length == users.length) {
-                  callback(null, pscores);
-                }
-          });
-        }
-      });
-      async.series(calls, function (err, result) {
-        if (err) {
-          return console.log(err);
-        }
-//        console.log(result);
-        console.log('pscores ' + pscores);
-        socket.emit('personalscore', { "pscores": pscores });
-        socket.broadcast.emit('personalscore', { "pscores": pscores });
-      });
-    }
-  });
-}
-*/
-/*
-function notifyPersonalRank_(socket, rid) {
-  console.log('notifyPersonalRank');
-  // ユーザーごとのスコアを計算する
-  var calls = [];
-  var userlist = [];
-  var pscores = [];
-  var pscore_counter = 0;
-  calls.push(function(callback) {
-      User.find(function(err, users) {
-//        console.log('users ' + users);
-        if (!err && users != null) {
-          async.forEach(users, function(user, cb) {
-//            console.log(user);
-              Score.find({'uid' : user.uid}).sort({'holeno':'asc'}).exec(
-                function (err, scores) {
-//                  console.log('find score' + scores);
-                  if (!err && scores != null && scores.length > 0) {
-                    var gross = 0;
-                    var holes = [];
-                    async.forEach(scores, function(score, scoreCb) {
-                      gross += score.score;
-                      holes.push(score.score);
-                      scoreCb();
-                    }, function (err) {
-                      console.log("score created");
-                      pscores.push({ "user": user, "score": { "gross": gross, "holes": holes } });
-                    });
-                  } else {
-                    pscores.push({ "user": user, "score": { "gross": 0, "holes": [] } });
-                  }
-                  cb();
-              });
-          }, function (err) {
-            console.log("err:" + err);
-            console.log("pscore created");
-            callback(null, pscores);
-          });
-        } else {
-          cb();
-        }
-      });
-  });
-
-  async.series(calls, function (err, result) {
-    if (err) {
-      return console.log(err);
-    }
-//    console.log('pscores ' + pscores);
-    socket.emit('personalscore', { "pscores": pscores });
-    socket.broadcast.emit('personalscore', { "pscores": pscores });
-  });
-}
-*/
 function notifyPersonalRank(socket, rid) {
     console.log('notifyPersonalRank');
     var calls = [];
