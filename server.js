@@ -514,9 +514,9 @@ function notifyPersonalRank(socket, rid) {
                                                     "team": { "tid": team.tid, "tname": team.tname, "timg": team.timg },
                                                     "score": { "gross": gross, "holes": holes }
                                                 });
+                                                cb();
                                             });
                                         }
-                                        cb();
                                     });
                                 });
                             } else {
