@@ -1,72 +1,72 @@
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 3, "score" : 6, "_id" : ObjectId("51d5cf6f82d8a19e2d000001"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 2, "score" : 5, "_id" : ObjectId("51d5cf6f82d8a19e2d000002"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 1, "score" : 4, "_id" : ObjectId("51d5cf6f82d8a19e2d000003"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 7, "score" : 4, "_id" : ObjectId("51d5cf6f82d8a19e2d000004"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 12, "score" : 6, "_id" : ObjectId("51d5cf6f82d8a19e2d000005"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 4, "score" : 4, "_id" : ObjectId("51d5cf6f82d8a19e2d000006"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 6, "score" : 6, "_id" : ObjectId("51d5cf6f82d8a19e2d000007"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 11, "score" : 5, "_id" : ObjectId("51d5cf6f82d8a19e2d000008"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 16, "score" : 4, "_id" : ObjectId("51d5cf6f82d8a19e2d000009"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 5, "score" : 5, "_id" : ObjectId("51d5cf6f82d8a19e2d00000a"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 10, "score" : 4, "_id" : ObjectId("51d5cf6f82d8a19e2d00000b"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 15, "score" : 6, "_id" : ObjectId("51d5cf6f82d8a19e2d00000c"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 9, "score" : 6, "_id" : ObjectId("51d5cf6f82d8a19e2d00000d"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 14, "score" : 5, "_id" : ObjectId("51d5cf6f82d8a19e2d00000e"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 8, "score" : 5, "_id" : ObjectId("51d5cf6f82d8a19e2d00000f"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 13, "score" : 4, "_id" : ObjectId("51d5cf6f82d8a19e2d000010"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 18, "score" : 6, "_id" : ObjectId("51d5cf6f82d8a19e2d000011"), "__v" : 0 }
-{ "plid": "pl001", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 17, "score" : 5, "_id" : ObjectId("51d5cf6f82d8a19e2d000012"), "__v" : 0 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 3, "score" : 6 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 2, "score" : 5 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 1, "score" : 5 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 7, "score" : 5 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 12, "score" : 5 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 4, "score" : 3 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 6, "score" : 6 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 11, "score" : 8 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 16, "score" : 6 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 5, "score" : 5 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 10, "score" : 4 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 15, "score" : 5 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 9, "score" : 7 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 14, "score" : 5 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 8, "score" : 6 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 13, "score" : 4 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 18, "score" : 4 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 17, "score" : 5 }
-{ "plid": "pl002", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 3, "score" : 4 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 2, "score" : 4 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 1, "score" : 4 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 7, "score" : 5 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 12, "score" : 6 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 4, "score" : 3 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 6, "score" : 6 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 11, "score" : 5 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 16, "score" : 4 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 5, "score" : 5 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 10, "score" : 4 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 15, "score" : 4 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 9, "score" : 6 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 14, "score" : 7 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 8, "score" : 6 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 13, "score" : 4 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 18, "score" : 3 }
-{ "plid": "pl003", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 17, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 3, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 2, "score" : 3 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 1, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 7, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 12, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 4, "score" : 3 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 6, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 11, "score" : 5 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 16, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 5, "score" : 5 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 10, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 15, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 9, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 14, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 8, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 13, "score" : 4 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 18, "score" : 3 }
-{ "plid": "pl004", "cid": "c001", "csbuid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 17, "score" : 4 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 3, "score" : 6, "_id" : ObjectId("51d5cf6f82d8a19e2d000001"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 2, "score" : 5, "_id" : ObjectId("51d5cf6f82d8a19e2d000002"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 1, "score" : 4, "_id" : ObjectId("51d5cf6f82d8a19e2d000003"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 7, "score" : 4, "_id" : ObjectId("51d5cf6f82d8a19e2d000004"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 12, "score" : 6, "_id" : ObjectId("51d5cf6f82d8a19e2d000005"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 4, "score" : 4, "_id" : ObjectId("51d5cf6f82d8a19e2d000006"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 6, "score" : 6, "_id" : ObjectId("51d5cf6f82d8a19e2d000007"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 11, "score" : 5, "_id" : ObjectId("51d5cf6f82d8a19e2d000008"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 16, "score" : 4, "_id" : ObjectId("51d5cf6f82d8a19e2d000009"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 5, "score" : 5, "_id" : ObjectId("51d5cf6f82d8a19e2d00000a"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 10, "score" : 4, "_id" : ObjectId("51d5cf6f82d8a19e2d00000b"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 15, "score" : 6, "_id" : ObjectId("51d5cf6f82d8a19e2d00000c"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 9, "score" : 6, "_id" : ObjectId("51d5cf6f82d8a19e2d00000d"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 14, "score" : 5, "_id" : ObjectId("51d5cf6f82d8a19e2d00000e"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u001", "holeno" : 8, "score" : 5, "_id" : ObjectId("51d5cf6f82d8a19e2d00000f"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 13, "score" : 4, "_id" : ObjectId("51d5cf6f82d8a19e2d000010"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 18, "score" : 6, "_id" : ObjectId("51d5cf6f82d8a19e2d000011"), "__v" : 0 }
+{ "plid": "pl001", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u001", "holeno" : 17, "score" : 5, "_id" : ObjectId("51d5cf6f82d8a19e2d000012"), "__v" : 0 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 3, "score" : 6 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 2, "score" : 5 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 1, "score" : 5 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 7, "score" : 5 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 12, "score" : 5 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 4, "score" : 3 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 6, "score" : 6 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 11, "score" : 8 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 16, "score" : 6 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 5, "score" : 5 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 10, "score" : 4 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 15, "score" : 5 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 9, "score" : 7 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 14, "score" : 5 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u002", "holeno" : 8, "score" : 6 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 13, "score" : 4 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 18, "score" : 4 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u002", "holeno" : 17, "score" : 5 }
+{ "plid": "pl002", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 3, "score" : 4 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 2, "score" : 4 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 1, "score" : 4 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 7, "score" : 5 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 12, "score" : 6 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 4, "score" : 3 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 6, "score" : 6 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 11, "score" : 5 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 16, "score" : 4 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 5, "score" : 5 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 10, "score" : 4 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 15, "score" : 4 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 9, "score" : 6 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 14, "score" : 7 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u003", "holeno" : 8, "score" : 6 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 13, "score" : 4 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 18, "score" : 3 }
+{ "plid": "pl003", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u003", "holeno" : 17, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 3, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 2, "score" : 3 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 1, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 7, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 12, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 4, "score" : 3 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 6, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 11, "score" : 5 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 16, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 5, "score" : 5 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 10, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 15, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 9, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 14, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs01", "rid" : "1", "uid" : "u004", "holeno" : 8, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 13, "score" : 4 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 18, "score" : 3 }
+{ "plid": "pl004", "cid": "c001", "csubid" : "c001cs02", "rid" : "1", "uid" : "u004", "holeno" : 17, "score" : 4 }
