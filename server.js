@@ -512,7 +512,8 @@ function notifyPersonalRank(socket, rid) {
                                                 pscores.push({
                                                     "user": { "uid": user.uid, "uname": user.uname, "mail": user.mail, "brthdy": user.brthdy, "sex": user.sex, "uimg": user.uimg, "created": user.created },
                                                     "team": { "tid": team.tid, "tname": team.tname, "timg": team.timg },
-                                                    "score": { "gross": gross, "holes": holes }
+                                                    "score": { "gross": gross, "holes": holes },
+                                                    "plid": player.plid
                                                 });
                                                 cb();
                                             });
