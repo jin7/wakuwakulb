@@ -2,7 +2,7 @@
 { "uid": "u002", "uname": "稲葉  徹", "brthdy": "1970-02-02", "sex": 1, "mail": "bbb@aaa.com", "uimg": "" }
 { "uid": "u003", "uname": "佐野  秀夫", "brthdy": "1970-03-03", "sex": 1, "mail": "ccc@aaa.com", "uimg": "" }
 { "uid": "u004", "uname": "佐藤  千秋", "brthdy": "1970-04-04", "sex": 1, "mail": "ddd@aaa.com", "uimg": "" }
-{ "uid": "u005", "uname": "荻田  ", "brthdy": "1970-05-05", "sex": 1, "mail": "eee@aaa.com", "uimg": "" }
+{ "uid": "u005", "uname": "荻田  和浩", "brthdy": "1970-05-05", "sex": 1, "mail": "eee@aaa.com", "uimg": "" }
 { "uid": "u006", "uname": "平松  秀夫", "brthdy": "1970-06-06", "sex": 1, "mail": "fff@aaa.com", "uimg": "" }
 { "uid": "u007", "uname": "新田  秀", "brthdy": "1970-07-07", "sex": 1, "mail": "ggg@aaa.com", "uimg": "" }
 { "uid": "u008", "uname": "石川  昭一", "brthdy": "1970-08-08", "sex": 1, "mail": "hhh@aaa.com", "uimg": "" }
@@ -12,5 +12,5 @@
 { "uid": "u012", "uname": "中野  欽也", "brthdy": "1970-12-12", "sex": 1, "mail": "hhh@aaa.com", "uimg": "" }
 { "uid": "u013", "uname": "笠谷  泰夫", "brthdy": "1970-12-12", "sex": 1, "mail": "hhh@aaa.com", "uimg": "" }
 { "uid": "u014", "uname": "谷保  喜一", "brthdy": "1970-12-12", "sex": 1, "mail": "hhh@aaa.com", "uimg": "" }
-{ "uid": "u015", "uname": "山岸  ", "brthdy": "1970-12-12", "sex": 1, "mail": "hhh@aaa.com", "uimg": "" }
+{ "uid": "u015", "uname": "山岸  裕一", "brthdy": "1970-12-12", "sex": 1, "mail": "hhh@aaa.com", "uimg": "" }
 { "uid": "u016", "uname": "坪田  和憲", "brthdy": "1970-12-12", "sex": 1, "mail": "hhh@aaa.com", "uimg": "" }
