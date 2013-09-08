@@ -39,6 +39,7 @@ var roundModel = new Schema({
   , date: { type: Date }
   //, time: { type: Time }
   //, cid: { type: Number }
+  , handicapinf: { type: Object }
   , cid: { type: String }
   , csubids: { type: Array }
   , prtyifs: { type: Array }
@@ -306,7 +307,7 @@ function notifyRoundData(socket) {
             if (!err && rounds != null) {
                 if (rounds.length == 1) {
                     console.log('csubids:' + rounds[0].csubids);
-                    var round = { "rid": rounds[0].rid, "rname": rounds[0].rname, "date": rounds[0].date, "time": rounds[0].time, "cinf": [], "prtyinfs": rounds[0].prtyifs };
+                    var round = { "rid": rounds[0].rid, "rname": rounds[0].rname, "date": rounds[0].date, "time": rounds[0].time, "handicapinf": rounds[0].handicapinf, "cinf": [], "prtyinfs": rounds[0].prtyifs };
                     var courseinf = { "cid": rounds[0].cid };
                     // コース情報サーチ
                     Course.findOne({ "cid": rounds[0].cid }, function (err, crs) {
