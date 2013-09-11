@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="UTF-8">
+	    <link rel="stylesheet" type="text/css" href="/stylesheets/reset.css">
+	    <link rel="stylesheet" type="text/css" href="/stylesheets/common.css">
+	    <link rel="stylesheet" type="text/css" href="/stylesheets/button.css">
+	    <link rel="stylesheet" type="text/css" href="/stylesheets/result.css">
+      <link rel="stylesheet" href="/stylesheets/webkit.css">
+	</meta>
+    
+	<link href="/stylesheets/ui-lightness/jquery-ui-1.10.2.custom.css" rel="stylesheet">
+	<script type="text/javascript" src="/javascripts/jquery-1.10.2.js"></script>
+	<script src="/javascripts/jquery-ui-1.10.2.custom.js"></script>
+
+	<script type="text/javascript" src="/javascripts/jquery-css-transform.js"></script>
+	<script type="text/javascript" src="/javascripts/rotate3Di.js"></script>
+	<script type="text/javascript" src="/javascripts/jstween-1.1.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2def.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2dsp.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2data.js"></script>
+
+	<link rel="stylesheet" type="text/css" media="screen,print" href="/stylesheets/roulette.css" />
+	<script type="text/javascript" src="/javascripts/roulette.js"></script>
+
+   	<script type="text/javascript">
+<!--
+	//////////////////////////////////////////////////////////////
+	// スコアデータの初期化
+	window.addEventListener( 'DOMContentLoaded', initializePerformance, false);
+
+	//////////////////////////////////////////////////////////////
+	// ルーレット関連
+	// コールバック関数（ルーレットでの値確定時に呼び出される）
+	var handys = getHandyData();
+
+	function callback(holes) {
+		// ハンディ保存
+		setHandy( holes );
+		isAnimation = true;
+		// 更新
+		//   ここで選べなくなったホールの情報も通知する
+		handys = getHandyData();
+	}
+
+	function callback_calc() {
+		if( isAnimation ) {
+			updatePerformance();
+			isAnimation = false;
+		}
+	}
+
+	function displayRouletteDialog() {
+		isAnimation = false;
+		handys = getHandyData();
+		roulette.showDialog();
+	}
+
+	$(function(){
+		// ダミーデータ
+		var pars = getParData();
+		// 初期化
+		roulette.init(pars, callback, "rouletteArea");
+	});
+
+// -->
+	</script>
+  </head>
+	<body>
+		<!-- カップ名称、ハンデホール -->
+		<header>
+			<section>
+				<h1 id="captitle" style="text-align:center"></h1>
+				<hr id="over"/>
+				<hr id="under"/>
+			</section>
+		</header>
+
+		<!-- 現在順位表 -->
+		<section>
+			<div id="handicapHole" style="position:absolute;text-align:left;margin:5px">
+				<input class="button blue" type="button" value="個人成績" onclick="location.href='/performance_personal'"/>
+			</div>
+			<div id="handicapHole" style="text-align:right;margin:5px">
+				<input class="button orange" type="button" value="ハンデ抽選" onclick="displayRouletteDialog();"/>
+                 <div id="drawHole" style="font-weight:bold;margin:5px">x / x</div>
+			</div>
+<!--			<h1 id="sitetitle" style="text-align:center;margin-top:-20px">成績表（チーム）</h1>-->
+		</section>
+
+		<!-- 現在順位表の構成
+			id resultTable
+				class teamResultLabel	ラベル
+				class teamResult		チームスコア：JSによってチーム数分複製される
+		-->
+		<section>
+			<article>
+				<div id="resultTable">
+					<div class="teamResultLabel">
+						<div class="rankingTeamLabel">順位</div>
+						<div class="nameTeamLabel">チーム名</div>
+						<div class="grossTeamLabel">Gross</div>
+						<div class="netTeamLabel">Net</div>
+					</div>
+					<div class="teamResult" id="result">
+						<div class="front">
+							<figure class="ranking"></figure>
+							<figure class="name"></figure>
+							<figure class="gross"></figure>
+							<figure class="net"></figure>
+							<div class="musk"></div>
+						</div>
+						<div class="back">Click!!</div>
+					</div>
+				</div>
+			</article>
+		</section>
+
+		<!-- ルーレット表示エリア -->
+		<div id="rouletteArea" style="display:none"></div>
+
+		<!-- フッタ－ -->
+		<footer>
+			<div id="globalnavi">Copryright PFU Software Limited</div>
+		</footer>
+	</body>
+</html>

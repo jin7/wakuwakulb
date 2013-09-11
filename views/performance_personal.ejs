@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="UTF-8">
+	    <link rel="stylesheet" href="/stylesheets/reset.css">
+	    <link rel="stylesheet" href="/stylesheets/common.css">
+	    <link rel="stylesheet" href="/stylesheets/button.css">
+	    <link rel="stylesheet" type="text/css" href="/stylesheets/result.css">
+      <link rel="stylesheet" href="/stylesheets/webkit.css">
+	</meta>
+    
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2data.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2def.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2dsp2.js"></script>
+	<script type="text/javascript" src="/javascripts/jstween-1.1.js"></script>
+   	<script type="text/javascript">
+<!--
+
+	window.addEventListener( 'DOMContentLoaded', initializePerformancePersonal, false);
+
+// -->
+	</script>
+  </head>
+  <body>
+		<!-- カップ名称、ハンデホール -->
+		<header>
+			<section>
+				<h1 id="captitle" style="text-align:center"></h1>
+				<hr id="over"/>
+				<hr id="under"/>
+			</section>
+		</header>
+
+		<section>
+			<div id="handicapHole" style="text-align:left">
+				<input class="button blue" type="button" value="チーム成績" onclick="location.href='/performance'" /> 
+            </div>
+<!--			<h1 id="sitetitle" style="text-align:center">成績表（個人）</h1>-->
+		</section>
+
+		<section>
+			<article>
+				<div id="resultTable">
+					<div class="personalResultLabel">
+						<div class="rankingLabel">順位</div>
+						<div class="nameLabel">氏名</div>
+						<div class="grossLabel">Gross</div>
+						<div class="netLabel">Net</div>
+					</div>
+					<div class="personalResult" id="result">
+						<figure class="ranking">a</figure>
+						<figure class="name">a</figure>
+						<figure class="gross">a</figure>
+						<figure class="net">a</figure>
+					</div>
+				</div>
+			</article>
+		</section>
+
+		<footer>
+			<nav id="globalnavi">Copryright PFU Software Limited
+			</nav>
+		</footer>
+	</body>
+  </body>
+</html>

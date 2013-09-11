@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>ソートアニメーション</title>
+<style type="text/css">
+<!--
+input#dosort {
+	padding: 2px 10px 2px 10px;
+}
+ul#sortarea {
+	list-style: none;
+}
+ul#sortarea li {
+	border: medium solid black;
+	width: 80%;
+	margin-bottom: 5px;
+	padding: 5px 0 5px 5px;
+}
+span.gross {
+	margin-left: 30px;
+	color: blue;
+}
+span.net {
+	color: red;
+}
+-->
+</style>
+<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+<script src="js/jquery-ui-1.10.2.custom.js"></script>
+<script src="js/jquery.shuffle.js"></script>
+<script type="text/javascript">
+
+// ソート種類
+var sorttype = 1;
+
+// オプション
+var opts = {};
+
+$(function(){
+
+	// 初期化
+	$("ul#sortarea").shuffle({
+		speed: 500,
+	});
+
+	// ソート種類の変更
+	$("select#sorttype").on("change", function() {
+		sorttype = this.value;
+	});
+
+	// ソートボタンを押したときの処理
+	$("input#dosort").on("click", function() {
+		if (sorttype == 1) {	// 名前でソート
+			opts = {
+				by: function($el) {
+					return $("span.name", $el).text();
+				}
+			}
+		} else if (sorttype == 2) {	// grossでソート
+			opts = {
+				by: function($el) {
+					return $("span.gross", $el).text();
+				}
+			}
+		} else {	// net でソート
+			opts = {
+				by: function($el) {
+					var netval = $("span.net", $el).text();
+					var grossval = $("span.gross", $el).text();
+					
+					// netが同じ場合はgrossで比較（にしてみた）
+					return netval * 100 + grossval;
+				}
+			}
+		}
+		$("ul#sortarea").shuffle("sort", opts);
+	});
+});
+
+</script>
+</head>
+<body>
+<div id="ope">
+	<select id="sorttype">
+		<option value="1">名前</option>
+		<option value="2" style="color:blue">グロス</option>
+		<option value="3" style="color:red">ネット</option>
+	</select>
+	<input type="button" id="dosort" value="ソート"></input>
+</div>
+<div id="main">
+	<ul id="sortarea">
+		<li style="background:lightpink">
+			<span class="name">ジャスティン　ローズ</span>
+			<span class="gross">70</span>
+			<span class="net">70</span>
+		</li>
+		<li style="background:aquamarine">
+			<span class="name">フィル　ミケルソン</span>
+			<span class="gross">74</span>
+			<span class="net">68</span>
+		</li>
+		<li style="background:yellow">
+			<span class="name">ジェイソン　デイ</span>
+			<span class="gross">71</span>
+			<span class="net">69</span>
+		</li>
+		<li style="background:lightcyan">
+			<span class="name">ハンター　メイハン</span>
+			<span class="gross">75</span>
+			<span class="net">70</span>
+		</li>
+		<li style="background:springgreen">
+			<span class="name">ビリー　ホーシェル</span>
+			<span class="gross">74</span>
+			<span class="net">72</span>
+		</li>
+	</ul>
+</div>
+</body>
+</html>

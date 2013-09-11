@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="UTF-8">
+    <link rel="stylesheet" href="/stylesheets/reset.css">
+    <link rel="stylesheet" href="/stylesheets/common.css">
+    <link rel="stylesheet" href="/stylesheets/button.css">
+	</meta>
+    
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2data.js"></script>
+	<script type="text/javascript" src="/javascripts/jstween-1.1.js"></script>
+   	<script type="text/javascript">
+<!--
+	$(document).ready(function(){
+		$("ul#tabber li a").click(function() {
+			$("ul#tabber li").removeClass("selected");
+			$(this).parents().addClass("selected");
+		});
+	});
+
+		window.addEventListener( 'DOMContentLoaded', initializeCommon, false);
+// -->
+	</script>
+  </head>
+  <body>
+		<!-- カップ名称、ハンデホール -->
+		<header>
+			<section>
+				<h1 id="captitle" style="text-align:center"></h1>
+				<hr id="over"/>
+				<hr id="under"/>
+			</section>
+		</header>
+		<section>
+			<h1 id="sitetitle" style="text-align:center">過去の成績</h1>
+		</section>
+
+		<section>
+			<nav>
+				<ul id="tabber">
+					<li class="one"><a href="./performance_past.html" target="_top">AAAカップ(2012)</a></li>
+					<li class="two selected"><a href="./performance_past2.html" target="_top">BBBカップ(2012)</a></li>
+					<li class="three"><a href="./performance_past3.html" target="_top">BBBカップ(2011)</a></li>
+					<li class="shadow"></li>
+				</ul>
+			</nav>
+		</section>
+		<section>
+
+			<article>
+				<div style="margin:2em 0 0 1em">
+					<table class="t" style="padding:30px">
+						<thead>
+							<tr>
+								<th style="width:6em">順位</th>
+								<th style="width:25em">チーム名</th>
+								<th style="width:10em">Gros</th>
+								<th style="width:10em">Net</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>チームA</td>
+								<td>86</td>
+								<td>75</td>
+							</tr>
+							<tr>
+								<td>2</td>
+								<td>チームB</td>
+								<td>86</td>
+								<td>77.2</td>
+							</tr>
+							<tr>
+								<td>3</td>
+								<td>チームC</td>
+								<td>89</td>
+								<td>79.6</td>
+							</tr>
+							<tr>
+								<td>4</td>
+								<td>チームD</td>
+								<td>90</td>
+								<td>80.4</td>
+							</tr>
+							<tr>
+								<td>5</td>
+								<td>チームE</td>
+								<td>94</td>
+								<td>80.6</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</article>
+		</section>
+
+		<footer>
+			<nav id="globalnavi">Copryright PFU LIMITED
+			</nav>
+		</footer>
+	</body>
+  </body>
+</html>

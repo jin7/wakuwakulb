@@ -7,6 +7,9 @@ process.env.TZ = 'Asia/Tokyo';
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
+  , performance = require('./routes/performance')
+  , performance_personal = require('./routes/performance_personal')
+  , scoreboard = require('./routes/scoreboard')
   , http = require('http')
   , path = require('path')
   , mongoose = require('mongoose')
@@ -164,6 +167,9 @@ app.configure('development', function(){
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+app.get('/performance', performance.performance);
+app.get('/performance_personal', performance_personal.performance_personal);
+app.get('/scoreboard', scoreboard.scoreboard);
 
 // Server
 

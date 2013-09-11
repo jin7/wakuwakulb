@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="UTF-8">
+	    <link rel="stylesheet" type="text/css" href="/stylesheets/reset.css">
+	    <link rel="stylesheet" type="text/css" href="/stylesheets/common.css">
+	    <link rel="stylesheet" type="text/css" href="/stylesheets/button.css">
+	    <link rel="stylesheet" type="text/css" href="/stylesheets/result.css">
+	</meta>
+    
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2data.js"></script>
+	<script type="text/javascript" src="/javascripts/jstween-1.1.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2def.js"></script>
+   	<script type="text/javascript">
+<!--
+		window.addEventListener( 'DOMContentLoaded', initializeHandyCap, false);
+// -->
+	</script>
+  </head>
+  <body>
+		<!-- カップ名称、ハンデホール -->
+		<header>
+			<section>
+				<h1 id="captitle" style="text-align:center"></h1>
+				<hr id="over"/>
+				<hr id="under"/>
+			</section>
+		</header>
+
+		<section>
+			<div id="handicapHole" style="text-align:right">
+				<input class="button blue" type="button" value="取得（仮）" onclick="getHandy()" /> 
+			</div>
+			<h1 id="sitetitle" style="text-align:center">ハンデ抽選</h1>
+		</section>
+
+		<section>
+			<article>
+				<table class="t" style="margin:30px 0 0 30px; width:800px;height:100px;margin-left:auto; margin-right:auto;" id="hole1"></table>
+				<table class="t" style="margin:30px 0 0 30px; width:800px;height:100px;margin-left:auto; margin-right:auto;" id="hole2"></table>
+			</article>
+		</section>
+
+		<!-- ナビゲーション -->
+		<section>
+			<nav style="text-align:center; position:absolute; left:20px; bottom:40px;">
+				<input class="button blue" type="button" value="チーム成績" onclick="location.href='./performance.html'" /> 
+            </nav>
+		</section>
+		<footer>
+			<nav id="globalnavi">Copryright PFU LIMITED
+			</nav>
+		</footer>
+	</body>
+  </body>
+</html>

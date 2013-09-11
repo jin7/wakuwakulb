@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>ハンデホール選択用ルーレット テストページ</title>
+<link rel="stylesheet" type="text/css" media="screen,print" href="css/roulette.css" />
+<link href="css/ui-lightness/jquery-ui-1.10.2.custom.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+<script src="js/jquery-ui-1.10.2.custom.js"></script>
+<script type="text/javascript" src="js/roulette.js"></script>
+<script type="text/javascript">
+
+// コールバック関数（ルーレットでの値確定時に呼び出される）
+function callback(holes) {
+	alert(holes);
+}
+
+function displayRouletteDialog() {
+	roulette.showDialog();
+}
+
+$(function(){
+
+	// ダミーデータ
+	var pars = [3,4,5,4,4,4,3,4,5,4,3,4,5,4,3,4,5,4];
+	
+	// 初期化
+	roulette.init(pars, callback, "rouletteArea");
+	
+	// ボタンが押されたらダイアログ表示
+	$('#startRoulette').on('click', displayRouletteDialog);
+});
+
+</script>
+</head>
+<body>
+<div id="main">
+	<button id="startRoulette" type="button">ルーレット表示</button>
+</div>
+<div id="rouletteArea" style="display:none">
+</div>
+</body>
+</html>

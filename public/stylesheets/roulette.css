@@ -1,0 +1,157 @@
+@charset "utf-8";
+<!-- Adobe製品持っていれば小塚ゴシックELがオススメです！
+fontフォルダとか作ってotfファイルを置くとOSのフォントも使えます！
+@font-face {
+  font-family: 'KozGoPro_EL';
+  src: url('../font/KozGoPro-ExtraLight.otf') format('truetype');
+}
+-->
+body, div, form, input, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+li { list-style: none; }
+
+div#main {
+	height: 300px;
+	width: 100%;
+	padding-top: 10px;
+	text-align: center;
+}
+
+button#startRoulette {
+	padding: 5px 10px 5px 10px;
+}
+
+div#wrapper {
+    margin: 0 auto;
+	width: 100%;
+    font-family: Helvetica, sans-serif, Arial;
+    font-style: bold;
+    text-align: center;
+    background-color: black;
+}
+
+div#title {
+    color: #fff;
+    font-size: 30px;
+    /*font-family: 'KozGoPro_EL';*/
+    text-align: center;
+    text-shadow: 0px 0px 1px #ffffff,
+        0px 0px 10px #ffd700,
+        0px 0px 20px #ffd700,
+        0px 0px 30px #ffd700,
+        0px 0px 40px #ffd700,
+        0px 0px 50px #ffd700;
+}
+
+div#number_english {
+    color: #fff;
+    font-size: 14px;
+    /*font-family: 'KozGoPro_EL';*/
+    text-align: center;
+    text-shadow: 0px 0px 1px #ffffff,
+        0px 0px 10px #ffd700,
+        0px 0px 20px #ffd700,
+        0px 0px 30px #ffd700,
+        0px 0px 40px #ffd700,
+        0px 0px 50px #ffd700;
+}
+/* 回転中のcss */
+div#bing_number_rolling {
+	text-align: center;
+    font-size: 150px;
+    color: #222;
+    opacity: 0.6;
+    text-shadow: 0px 0px 1px #ffffff,
+        0px 0px 60px #ffffff,
+        0px 0px 70px #ffffff;
+}
+/* 数字決定後のcss */
+div#bing_number_decide {
+	text-align: center;
+    font-size: 150px;
+    color: #fff;
+    text-shadow: 0px 0px 1px #ffffff,
+        /*0px 0px 10px #ffd700,*/
+        0px 0px 20px #ffd700,
+        0px 0px 30px #ffd700,
+        0px 0px 80px #ffd700;
+}
+
+div#past_number_list_early, div#past_number_list_late {
+    margin-top: 1px;
+    text-align: center;
+}
+
+ul.past_number_list {
+    height: 30px;
+}
+
+ul.past_number_list li {
+    position: relative;
+    margin: 0 2px;
+    float: left;
+    /*font-size: init()で指定*/
+    /*width: init()で指定*/
+    /*height: init()で指定*/
+    text-align: center;
+    z-index: 1001;
+    text-shadow: 0px 0px 1px #ffffff,
+        0px 0px 10px #ffffff,
+        0px 0px 20px #ffffff,
+        0px 0px 30px #ffffff,
+        0px 0px 40px #ffffff;
+}
+
+div.background_box {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    opacity: 0.2;
+    z-index: 1000;
+}
+
+button#exe_button {
+    font-size: 20px;
+    -webkit-box-shadow: 0 2px 6px rgba(0,0,0,0.6), inset 0 1px rgba(255,255,255,0.2), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.2), inset 0 -15px 30px rgba(0,0,0,0.6);
+    -moz-box-shadow: 0 2px 6px rgba(0,0,0,0.6), inset 0 1px rgba(255,255,255,0.2), inset 0 10px rgba(255,255,255,0.2), inset 0 10px 20px rgba(255,255,255,0.2), inset 0 -15px 30px rgba(0,0,0,0.6);
+    border: 1px solid rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    text-shadow: 0 -1px 1px #aaa, -1px 0 1px #aaa, 1px 0 1px #000;
+	padding: 0px 20px 0px 20px;
+	margin-top: 10px;
+}
+
+div#copyright {
+    color: #ffffff;
+    opacity: 0.5;
+    font-size: 12px;
+    position: absolute;
+    right: 5px;
+    bottom: 0px;
+}
+
+div#number_english {
+	height: 10px;
+}
+
+div#bing_number_rolling, div#bing_number_decide, div#bing_number{
+	height: 180px;
+}
+
+div#bing_number {
+    text-align: center;
+}
+
+div.past_number_list_area {
+    text-align: center;
+}
+
+div#past_number_list_late {
+    text-align: center;
+}
+
