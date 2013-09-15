@@ -25,6 +25,8 @@
 html {
 	background: #eef3f8 url(/images/golf.jpg) no-repeat left top;
 	color: #606060;
+	background-repeat:no-repeat;
+	-moz-background-size:cover;
 	background-size:cover;
 }
 p {

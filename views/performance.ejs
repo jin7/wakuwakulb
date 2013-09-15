@@ -17,6 +17,7 @@
 	<script type="text/javascript" src="/javascripts/rotate3Di.js"></script>
 	<script type="text/javascript" src="/javascripts/jstween-1.1.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2def.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2settings.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2dsp.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2data.js"></script>
 
@@ -70,7 +71,7 @@
 		<!-- カップ名称、ハンデホール -->
 		<header>
 			<section>
-				<h1 id="captitle" style="text-align:center"></h1>
+				<h1 id="captitle"></h1>
 				<hr id="over"/>
 				<hr id="under"/>
 			</section>
@@ -81,9 +82,9 @@
 			<div id="handicapHole" style="position:absolute;text-align:left;margin:5px">
 				<input class="button blue" type="button" value="個人成績" onclick="location.href='/performance_personal'"/>
 			</div>
-			<div id="handicapHole" style="text-align:right;margin:5px">
+			<div id="rouletteBtn" style="text-align:right;margin:5px">
 				<input class="button orange" type="button" value="ハンデ抽選" onclick="displayRouletteDialog();"/>
-                 <div id="drawHole" style="font-weight:bold;margin:5px">x / x</div>
+                 <div id="drawHole">x / x</div>
 			</div>
 <!--			<h1 id="sitetitle" style="text-align:center;margin-top:-20px">成績表（チーム）</h1>-->
 		</section>
@@ -121,7 +122,7 @@
 
 		<!-- フッタ－ -->
 		<footer>
-			<div id="globalnavi">Copryright PFU Software Limited</div>
+			<div id="footer">Copryright PFU Software Limited</div>
 		</footer>
 	</body>
 </html>

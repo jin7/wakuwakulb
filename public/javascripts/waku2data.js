@@ -757,9 +757,7 @@
 		for (var i = 0; i < storage.getItem(kSubCArray).split(",").length; i++)
 		{
 			js_h[i] = JSON.parse(storage.getItem(kCHoleInfs + i));
-			if(i != 0)
-				parArray += ",";
-			parArray += js_h[i].pars;
+			parArray = parArray.concat(js_h[i].pars);
 
 			if (storage.getItem(kHandyHole + i) != null)
 			{
