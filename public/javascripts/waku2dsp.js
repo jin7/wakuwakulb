@@ -2,6 +2,13 @@
 ////////////////////////////////////////////////////////
 // Created by k.iwamine
 
+// アニメーションフィナーレ非表示
+function onclick_finale() {
+	cvs = document.getElementById("finale");
+	cvs.style.visibility = "hidden";
+}
+
+
 ////////////////////////////////////////////////////////
 // チームスコア表示制御クラス
 //
@@ -81,6 +88,7 @@ var wk2TeamAnimetionClass = function() {
 
 		// アニメーション用の設定
 		prvAnimInitialize();
+
 	}
 
 	// 更新前スコアを復元する
@@ -131,6 +139,10 @@ var wk2TeamAnimetionClass = function() {
 
 	}
 
+	// チームオブジェクトの生成
+	this.test = function() {
+		prvAnimFinaleEnd();
+	}
 
 
 	////////////////////////////////////////////////////////
@@ -205,7 +217,7 @@ var wk2TeamAnimetionClass = function() {
 
 	// アニメーションエフェクトの後始末
 	function prvAnimClear() {
-		prvR3Di_Clear();
+		prvJST_Clear();
 	}
 
 	// アニメーション初期化
@@ -214,15 +226,24 @@ var wk2TeamAnimetionClass = function() {
 		prvR3Di_initialize();
 	}
 
-	// 疑似スリープ
-	function prvSleep(time) {
-		var d1 = new Date().getTime();
-		var d2 = new Date().getTime();
-		while (d2 < d1 + time) {
-			d2 = new Date().getTime();
-		}
-		return;
+
+	// アニメーションフィナーレ
+	function prvAnimFinaleEnd2() {
+		// 紙ふぶき
+		cvs = document.getElementById("finale");
+		cvs.style.visibility = "visible";
+		finale_init();
 	}
+
+	// アニメーションフィナーレ
+	function prvAnimFinaleEnd() {
+		// 内容表示
+		prvJST_Zoom();
+
+		// 紙ふぶき
+		setTimeout( prvAnimFinaleEnd2, 2000 );
+	}
+
 
 
 	////////////////////////////////////////////////////////
@@ -239,7 +260,7 @@ var wk2TeamAnimetionClass = function() {
 
 	// 中間結果表示用
 	function prvAnimUpdate() {
-		prvJST_MovePosition();
+		prvJST_MovePositionStart();
 	}
 
 	// アニメーションなし
@@ -282,46 +303,35 @@ var wk2TeamAnimetionClass = function() {
 	function prvR3Di_Complete() {
 		$(this).find('div.front').show();
 		$(this).find('div.back').hide();
+
+		// すべてめくり完了
+		mCountAnimTarget--;
+		if( mCountAnimTarget == 0 ) {
+			prvAnimFinaleEnd();
+		}
 	}
+
+	// 3Di切り替えクリックコールバック
+	function prvR3Di_Click() {
+		var result = $(this).find('div.back').is(':visible');
+		if( result != false ) {
+			$(this).rotate3Di( '900', 500,
+				{
+					sideChange: prvR3Di_SideChange,
+					complete: prvR3Di_Complete
+				}
+			);
+		}
+	}
+
 
 	// 3Di初期化
 	function prvR3Di_initialize() {
 		// rotate3Di関連
 		for (var i = 0; i < clsAnimete.m_srcScoreArray.length; i++) {
-			$( "#"+clsAnimete.m_srcScoreArray[i].teamId ).click( function () {
-				var result = $(this).find('div.back').is(':visible');
-				if( result != false ) {
-					$(this).rotate3Di(
-						'900',
-						500,
-						{
-							sideChange: prvR3Di_SideChange,
-							complete: prvR3Di_Complete
-						}
-					);
-				}
-			});
-
+			$( "#"+clsAnimete.m_srcScoreArray[i].teamId ).click( prvR3Di_Click );
 			$("#"+clsAnimete.m_srcScoreArray[i].teamId).find('div.front').show();
 			$("#"+clsAnimete.m_srcScoreArray[i].teamId).find('div.back').hide();
-		}
-	}
-
-	// 3Di効果の削除
-	function prvR3Di_Clear() {
-		for (var i = 0; i < clsAnimete.m_srcScoreArray.length; i++) {
-			// 影をクリアする
-			$( "#"+clsAnimete.m_srcScoreArray[i].teamId ).tween({
-				shadow:{
-					start: '6px 3px 8px #000',
-					stop: '0px 0px 0px #000',
-					time: 0,
-					duration: 0.5,
-					effect:'easeInOut'
-				}
-			} );
-			// アニメーション実行
-			$.play();
 		}
 	}
 
@@ -339,6 +349,9 @@ var wk2TeamAnimetionClass = function() {
             // 値更新
 			prvUpdateScore( teamData );
 		}
+
+		// カウントリセット
+		mCountAnimTarget = clsAnimete.m_srcScoreArray.length;
 	}
 
 	// スコアを裏返す
@@ -348,17 +361,53 @@ var wk2TeamAnimetionClass = function() {
 		$("#"+clsAnimete.m_srcScoreArray[mCountAnimTarget].teamId).find('div.front').hide();
 		$("#"+clsAnimete.m_srcScoreArray[mCountAnimTarget].teamId).find('div.back').show();
 
+		mCountAnimTarget++;
+
 		// 最後
 		if( mCountAnimTarget == clsAnimete.m_srcScoreArray.length - 1 ) {
 			setTimeout( prvR3Di_ExitFlipBackSetting, 300 );
 		}
-
-		mCountAnimTarget++;
 	}
 
 
 	///////////////////////////////////////////////
 	// JSTween関連
+
+	// 移動開始
+	function prvJST_MovePositionStart() {
+		mCountAnimTarget = clsAnimete.m_srcScoreArray.length;
+
+		// 変更前先頭からシャドウ追加
+		for (var i = 0; i < clsAnimete.m_srcScoreArray.length; i++) {
+			var id= clsAnimete.m_srcScoreArray[i].teamId;
+
+			// アニメーション処理
+			var dur = 0.2;
+			var interval = 0.1;
+			{
+				$( "#"+id ).tween({
+					shadow:{
+						start: '0px 0px 0px #000',
+						stop: '8px 3px 10px #444444',
+						time: interval * i,
+						duration: dur,
+						effect:'easeInOut'
+					},
+					onStop: function( elem ) {
+						// 最後の場合は移動処理開始
+						mCountAnimTarget--;
+						if( mCountAnimTarget == 0 ) {
+							setTimeout( prvJST_MovePosition, 10 );
+						}
+					}
+				} );
+				// アニメーション実行
+				$.play();
+			}
+		}
+	}
+
+	// 移動
 	function prvJST_MovePosition() {
 		mCountAnimTarget = clsAnimete.m_srcScoreArray.length;
 
@@ -387,13 +436,6 @@ var wk2TeamAnimetionClass = function() {
 						units: 'px',
 						effect: 'bounceOut',
 					},
-					shadow:{
-						start: '0px 0px 0px #000',
-						stop: '6px 3px 8px #000',
-						time: interval * i,
-						duration: (dur / 4),
-						effect:'easeInOut'
-					},
 					onStop: function( elem ) {
 						// 最後の場合は後始末
 						mCountAnimTarget--;
@@ -404,6 +446,189 @@ var wk2TeamAnimetionClass = function() {
 							}
 							prvAnimClear();
 						}
+					}
+				} );
+				// アニメーション実行
+				$.play();
+			}
+		}
+	}
+
+	// 効果の削除
+	function prvJST_Clear() {
+		for (var i = 0; i < clsAnimete.m_srcScoreArray.length; i++) {
+			// 影をクリアする
+			$( "#"+clsAnimete.m_srcScoreArray[i].teamId ).tween({
+				shadow:{
+					start: '8px 3px 10px #444444',
+					stop: '0px 0px 0px #000',
+					time: 0,
+					duration: 0.5,
+					effect:'easeInOut'
+				}
+			} );
+			// アニメーション実行
+			$.play();
+		}
+	}
+
+
+	// トップとラストの拡大
+	function prvJST_Zoom() {
+		mCountAnimTarget = clsAnimete.m_srcScoreArray.length;
+
+		// 1st
+		{
+			var pos = 0;
+			var id= clsAnimete.m_srcScoreArray[pos].teamId;
+			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
+			var newPos = 20;
+
+			// zIndex
+			var team = document.getElementById( id );
+			team.style.zIndex = '3';
+
+			// 移動＆アニメーション処理
+			var dur = 1;
+			var interval = 0.3;
+			{
+				$( "#"+id ).tween({
+					top:{ start: orgPos, stop: newPos,
+						time: interval, duration: dur, units: 'px', effect: 'bounceOut',
+					},
+					transform:{
+						start: 'scale( 1 )', stop: 'scale( 1.2 )',
+						time: interval, duration: dur, effect:'easeInOut'
+					},
+					shadow:{ start: '0px 0px 0px #000', stop: '0px 0px 4px 6px #FFFF66',
+						time: interval, duration: dur, effect:'easeInOut'
+					}
+				} );
+				// アニメーション実行
+				$.play();
+			}
+		}
+
+		// 2nd
+		if(clsAnimete.m_srcScoreArray.length > 2)
+		{
+			var pos = 1;
+			var id= clsAnimete.m_srcScoreArray[pos].teamId;
+			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
+			var newPos = 100;
+
+			// zIndex
+			var team = document.getElementById( id );
+			team.style.zIndex = '2';
+
+			// 移動＆アニメーション処理
+			var dur = 1;
+			var interval = 0.3;
+			{
+				$( "#"+id ).tween({
+					top:{ start: orgPos, stop: newPos,
+						time: interval, duration: dur, units: 'px', effect: 'bounceOut',
+					},
+					transform:{
+						start: 'scale( 1 )', stop: 'scale( 1.1 )',
+						time: interval, duration: dur, effect:'easeInOut'
+					},
+					shadow:{ start: '0px 0px 0px #000', stop: '0px 0px 4px 6px #DDDDDD',
+						time: interval, duration: dur, effect:'easeInOut'
+					}
+				} );
+				// アニメーション実行
+				$.play();
+			}
+		}
+		// 3rd
+		if(clsAnimete.m_srcScoreArray.length > 4)
+		{
+			var pos = 2;
+			var id= clsAnimete.m_srcScoreArray[pos].teamId;
+			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
+			var newPos = 180;
+
+			// zIndex
+			var team = document.getElementById( id );
+			team.style.zIndex = '1';
+
+			// 移動＆アニメーション処理
+			var dur = 1;
+			var interval = 0.3;
+			{
+				$( "#"+id ).tween({
+					top:{ start: orgPos, stop: newPos,
+						time: interval, duration: dur, units: 'px', effect: 'bounceOut',
+					},
+					transform:{
+						start: 'scale( 1 )', stop: 'scale( 1.05 )',
+						time: interval, duration: dur, effect:'easeInOut'
+					},
+					shadow:{ start: '0px 0px 0px #000', stop: '0px 0px 4px 6px #8B4513',
+						time: interval, duration: dur, effect:'easeInOut'
+					}
+				} );
+				// アニメーション実行
+				$.play();
+			}
+		}
+
+		// boobee
+		if(clsAnimete.m_srcScoreArray.length > 3)
+		{
+			var pos = clsAnimete.m_srcScoreArray.length-2;
+			var id= clsAnimete.m_srcScoreArray[pos].teamId;
+			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
+			var newPos = 400;
+
+			// zIndex
+			var team = document.getElementById( id );
+			team.style.zIndex = '2';
+
+			// 移動＆アニメーション処理
+			var dur = 1;
+			var interval = 0.3;
+			{
+				$( "#"+id ).tween({
+					top:{ start: orgPos, stop: newPos,
+						time: interval, duration: dur, units: 'px', effect: 'bounceOut',
+					},
+					transform:{ start: 'scale( 1 )', stop: 'scale( 1.1 )',
+						time: interval, duration: dur, effect:'easeInOut'
+					},
+					shadow:{ start: '0px 0px 0px #000', stop: '0px 0px 4px 6px #00BFFF',
+						time: interval, duration: dur, effect:'easeInOut'
+					}
+				} );
+				// アニメーション実行
+				$.play();
+			}
+		}
+		// last
+		{
+			var pos = clsAnimete.m_srcScoreArray.length-1;
+			var id= clsAnimete.m_srcScoreArray[pos].teamId;
+			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
+			var newPos = 480;
+
+			// zIndex
+			var team = document.getElementById( id );
+			team.style.zIndex = '3';
+
+			// 移動＆アニメーション処理
+			var dur = 1;
+			var interval = 0.3;
+			{
+				$( "#"+id ).tween({
+					top:{ start: orgPos, stop: newPos,
+						time: interval, duration: dur, units: 'px', effect: 'bounceOut',
+					},
+					transform:{ start: 'scale( 1 )', stop: 'scale( 1.2 )',
+						time: interval, duration: dur, effect:'easeInOut'
+					},
+					shadow:{ start: '0px 0px 0px #000', stop: '0px 0px 4px 6px #BB0000',
+						time: interval, duration: dur, effect:'easeInOut'
 					}
 				} );
 				// アニメーション実行

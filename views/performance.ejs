@@ -20,6 +20,7 @@
 	<script type="text/javascript" src="/javascripts/waku2settings.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2dsp.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2data.js"></script>
+	<script type="text/javascript" src="/javascripts/finale.js"></script>
 
 	<link rel="stylesheet" type="text/css" media="screen,print" href="/stylesheets/roulette.css" />
 	<script type="text/javascript" src="/javascripts/roulette.js"></script>
@@ -68,6 +69,10 @@
 	</script>
   </head>
 	<body>
+		<!-- カップテストコード -->
+		<input type="button" value="確認" style="position:absolute;top10px;left10px;" onclick="clsAnimete.test();"/>
+		<!--  -->
+
 		<!-- カップ名称、ハンデホール -->
 		<header>
 			<section>
@@ -109,9 +114,8 @@
 							<figure class="name"></figure>
 							<figure class="gross"></figure>
 							<figure class="net"></figure>
-							<div class="musk"></div>
 						</div>
-						<div class="back">Click!!</div>
+						<div class="back"></div>
 					</div>
 				</div>
 			</article>
@@ -124,5 +128,8 @@
 		<footer>
 			<div id="footer">Copryright PFU Software Limited</div>
 		</footer>
+
+		<!-- フィナーレ表示エリア -->
+		<canvas id="finale" style="visibility:hidden" onclick="onclick_finale();"></canvas>
 	</body>
 </html>
