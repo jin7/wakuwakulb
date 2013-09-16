@@ -1,0 +1,174 @@
+#container{
+  width:620px;
+}
+.notes{
+  font-size:11px;
+  color:#666;
+  text-align:center;
+  line-height:18px;
+}
+.displayArea{
+  margin:10px 0 20px;
+  padding:10px 0 20px;
+}
+.displayArea:after{content:"";display:block;clear:both;visibility:hidden;height:0;}
+.codeArea{
+  clear:both;
+  padding-top:30px;
+  color:#333;
+  text-align:center;
+  font-size:14px;
+  line-height:20px;
+}
+.txt{
+  margin-bottom:30px;
+  font-size:28px;
+  font-weight:bold;
+}
+.displayArea>.pic{
+  margin-top:20px;
+  width: 0px;
+  height:0px;
+}
+.info{
+  padding:10px;
+  font-size:14px;
+  color:#666;
+  line-height:18px;
+}
+.info.code{
+  border:#ddd 1px solid;
+}
+
+.slider{
+  position:relative;
+  margin: 0 auto;
+  width:800px;
+  height:450px;
+  overflow:hidden;
+  border:#666 1px solid;
+  -webkit-box-shadow:rgba(0,0,0,0.5) 2px 2px 2px;
+}
+.slider::before,
+.slider::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  left:50%;
+  display:block;
+  width: 6px;
+  height:30px;
+  background:#fff;
+  z-index: 10;
+//  -webkit-transform: rotate(-1deg) scale(0);
+  -webkit-transform: scale(0);
+}
+.slider::before{
+  margin:-15px 0 0 -15px;
+}
+.slider::after{
+  margin:-15px 0 0 0px;
+}
+//.slider:hover::before,
+//.slider:hover::after{
+////  -webkit-transform: rotate(-1deg) scale(1);
+//  -webkit-transform: scale(1);
+//}
+.slider:hover .slideLi,
+.slider:hover .progress,
+.slider:hover .slideMark li:nth-child(1),
+.slider:hover .slideMark li:nth-child(2),
+.slider:hover .slideMark li:nth-child(3),
+.slider:hover .slideMark li:nth-child(4){
+  -moz-animation-play-state:paused;
+  -webkit-animation-play-state:paused;
+}
+//.slider:hover{
+////  -webkit-transform: rotate(1deg) scale(1.05);
+//  -webkit-transform: scale(1.05);
+//  -webkit-transition: all 0.4s ease-in-out;
+//}
+.slider .slideLi{
+  position:absolute;
+  top:0;
+  left:0;
+  width:2400px;
+  height:450px;
+  -webkit-animation:slide 20s infinite;
+}
+.slider .slideLi li{
+  position:relative;
+  float:left;
+  display:block;
+  width:800px;
+  height:450px;
+}
+.slider a{
+  position:relative;
+  display:block;
+  width:800px;
+  height:450px;
+}
+//.slider a:hover{background:#000;}
+//.slider a:hover img{opacity: 0.55;}
+.slider>.slideLi>li img{
+  margin: 0 auto;
+  height: 400px;
+  display:block;
+}
+@-webkit-keyframes slide{
+  0% {opacity:0;}
+  2% {opacity:1;}
+  20% {left:0px; opacity:1;}
+  22.5% {opacity:0.3;}
+  25% {left:-800px; opacity:1;}
+  45% {left:-800px; opacity:1;}
+  47.5% {opacity:0.3;}
+  50% {left:-1600px; opacity:1;}
+  70% {left:-1600px; opacity:1;}
+  72.5% {opacity:0.3;}
+  75% {left:-2400px; opacity:1;}
+  95% {opacity:1;}
+  98% {left:-2400px; opacity:0;}
+  100% {left:0px; opacity:0;}
+}
+.progress{
+  position:absolute;
+  bottom:0px;
+  left:0;
+  width:600px;
+  height:2px;
+  background:#009F15;
+  -webkit-animation:progress 5s infinite;
+}
+@-webkit-keyframes progress{
+  0% {width:0px; opacity:0;}
+  2% {width:0px; opacity:1;}
+  88% {width:800px; opacity:1;}
+  92% {width:800px; opacity:0;}
+  100% {width:0px; opacity:0;}
+}
+.slideMark{
+  position:absolute;
+  top:3px;
+  right:0px;
+  margin:5px 15px 0 0;
+}
+.slideMark li{
+  display:block;
+  float:left;
+  margin-left: 5px;
+  background:#ccc;
+  border:#fff 1px solid;
+  width:6px;
+  height:6px;
+  -webkit-border-radius:6px;
+}
+.slideMark li:nth-child(1){-webkit-animation:mark1 20s infinite;}
+.slideMark li:nth-child(2){-webkit-animation:mark2 20s infinite;}
+.slideMark li:nth-child(3){-webkit-animation:mark3 20s infinite;}
+.slideMark li:nth-child(4){-webkit-animation:mark4 20s infinite;}
+@-webkit-keyframes mark1{0% {background:#009F15;}24%{background:#009F15;}25%{background:#ccc;}100% {background:#ccc;}}
+@-webkit-keyframes mark2{0% {background:#ccc;}24%{background:#ccc;}25%{background:#009F15;}49%{background:#009F15;}50% {background:#ccc;}100% {background:#ccc;}}
+@-webkit-keyframes mark3{0% {background:#ccc;}49%{background:#ccc;}50%{background:#009F15;}74%{background:#009F15;}75% {background:#ccc;}100% {background:#ccc;}}
+@-webkit-keyframes mark4{0% {background:#ccc;}74%{background:#ccc;}75%{background:#009F15;}98%{background:#009F15;}99% {background:#ccc;}100% {background:#ccc;}}
