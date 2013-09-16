@@ -60,7 +60,7 @@ var roulette = {
 		roulette.$root.append($('<div id="bing_number">&nbsp;</div>'));
 		roulette.$root.append($('<div id="past_number_list_early"></div>'));
 		roulette.$root.append($('<div id="past_number_list_late"></div>'));
-		roulette.$root.append($('<button type="button" id="exe_button">Start!!</button>'));
+		roulette.$root.append($('<button type="button" id="exe_button">ルーレット開始</button>'));
 
         roulette.$bing_number = $('#bing_number');
         
@@ -87,6 +87,8 @@ var roulette = {
         // li要素のwidth、height、font-sizeをウインドウサイズに合わせる
 //        var list_size = Math.floor($('.past_number_list').width() / (roulette.BING_NUMBER_HALF+2));
         var list_size = Math.floor(roulette.DIALOG_WIDTH / (roulette.BING_NUMBER_HALF+4));
+		$('div#past_number_list_early').width((list_size + 4) * 9);
+		$('div#past_number_list_late').width((list_size + 4) * 9);
         $('.past_number_list > li').width(list_size);
         $('.past_number_list > li').height(list_size);
         $('.past_number_list > li').css({fontSize:list_size+'px'});
@@ -175,9 +177,9 @@ var roulette = {
 			if (roulette.select_number_list.length > 0) {
 				$('#exe_button').off('click')
 				.on('click', roulette.execute)
-				.text('Start!!');
+				.text('ルーレット開始');
 			} else {
-				$('#exe_button').off('click').text('End');
+				$('#exe_button').off('click').on('click', closeDialog).text('終了');
 			}
             
 			// 決定した数の記録とCallBack呼び出し
@@ -215,7 +217,7 @@ var roulette = {
         // ボタンのclickイベントを停止するよう付け替える
         $('#exe_button').off('click')
         .on('click', roulette.stop)
-        .text('Stop!!');
+        .text('ルーレット停止');
         
         // 初期化
         roulette.$bing_number.attr('id', 'bing_number_rolling');
@@ -268,6 +270,7 @@ var roulette = {
 	
 	// ダイアログボックス表示
 	showDialog : function() {
+		roulette.$root.addClass("wrapper");
 		roulette.$root.css("background", "darkslategray");
 		roulette.$root.dialog( {
 			modal: false,
@@ -410,5 +413,9 @@ function displaySelectHoleNumber(holeNumber, anim) {
 // @add iwa
 function closeRulette() {
 	callback_calc();
+}
+
+function closeDialog() {
+	roulette.$root.dialog("close");
 }
 
