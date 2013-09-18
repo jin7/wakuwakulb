@@ -10,6 +10,7 @@ function dataTeamScore () {
 	this.score_gross = 0;	// グロスのスコア
 	this.score_net = 0;		// ネットのスコア
 	this.count = 0;			// チーム人数
+	this.brthdy = ""; 		// 誕生日
 }
 
 // 個人スコアデータ
@@ -24,7 +25,8 @@ function dataPlayerScore () {
 	this.hole_score = "";	// ホールのスコア
 	this.score_gross = 0;	// グロスのスコア
 	this.score_net = 0;		// ネットのスコア
-	this,teamId = 0; 		// チームID
+	this.teamId = 0; 		// チームID
+	this.brthdy = ""; 		// 誕生日
 }
 
 

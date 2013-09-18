@@ -41,17 +41,23 @@
 	/******************************************************************
 	 * ソート定義
 	 ******************************************************************/
-	var sort_ary = function( field, reverse, primer ){
+	var sort_ary = function( field, reverse, primer, subfield ){
 	   reverse = (reverse) ? -1 : 1;
 	   return function( a, b){
-	       a = a[field];
-	       b = b[field];
+	       var a1 = a[field];
+	       var b1 = b[field];
 	       if (typeof(primer) != 'undefined'){
-	           a = primer(a);
-	           b = primer(b);
+	           a1 = primer(a1);
+	           b1 = primer(b1);
 	       }
-	       if (a < b) return reverse * -1;
-	       if (a > b) return reverse * 1;
+	       if (a1 < b1) return reverse * -1;
+	       if (a1 > b1) return reverse * 1;
+
+           var a2 = a[subfield];
+           var b2 = b[subfield];
+
+	       if (a2 < b2) return reverse * -1;
+	       if (a2 > b2) return reverse * 1;
 	       return 0;
 	   }
 	}
@@ -319,6 +325,7 @@
 			plScr.score_gross = scr.gross;
 			plScr.score_net = scr.gross;
 			plScr.teamId = tid;
+			plScr.brthdy = plObj[i].user.brthdy;
 			dataPlayerScores.push(plScr);
 
 			// 成績表示用のチーム情報に加算する
@@ -331,6 +338,11 @@
 					// 既にチームが登録されている
 					dataTeamScores[j].score_gross += scr.gross;
 					dataTeamScores[j].count += 1;
+					// 最年長のプレイヤー生年月日を登録
+					if (dataTeamScores[j].brthdy > plObj[i].user.brthdy)
+					{
+					   dataTeamScores[j].brthdy = plObj[i].user.brthdy;
+    				}
 					flg = true;
 					break;
 				}
@@ -344,6 +356,7 @@
 				dataTeamScores[cnt].teamname = tname;
 				dataTeamScores[cnt].score_gross = scr.gross;
 				dataTeamScores[cnt].count = 1;
+				dataTeamScores[cnt].brthdy = plObj[i].user.brthdy;
 			}
 
 			// 不要になったstorageを削除
@@ -389,7 +402,7 @@
 		var isUpdate = false;
 		var animeType = "none";
 
-		teamData = sortDisplayData(kTeams, "score_net");
+		teamData = sortDisplayData(kTeams, "score_net", "brthdy");
 		clsAnimete.setSrcScore( teamData );
 
 		// TODO
@@ -431,7 +444,7 @@
 		}
 
 		// データ反映
-		var dataPlayerScore = sortDisplayData(kScores, "score_net");
+		var dataPlayerScore = sortDisplayData(kScores, "score_net", "brthdy");
 
 		// データをアニメーションクラスに設定し、初期表示を行う
 		clsAnimete2.setSrcScore( dataPlayerScore );
@@ -469,7 +482,7 @@
 	/******************************************************************
 	 * チームデータを作成する
 	 ******************************************************************/
-	function sortDisplayData( dataname, keyname )
+	function sortDisplayData( dataname, keyname, subkeyname )
 	{
 		var obj;
 		var scores = JSON.parse(storage.getItem(dataname));
@@ -480,7 +493,7 @@
 			array.push(scores[i]);
 		}
 
-		array.sort(sort_ary(keyname, false, parseFloat));
+		array.sort(sort_ary(keyname, false, parseFloat, subkeyname));
 
 		for (var i = 0; i < array.length; i++)
 		{
@@ -574,7 +587,7 @@
 		}
 
 		// ソートし、順位付け
-		plObj.sort(sort_ary("score_net", false, parseFloat));
+		plObj.sort(sort_ary("score_net", false, parseFloat, "brthdy"));
 
 		for (var i = 0; i < plObj.length; i++)
 		{
@@ -613,7 +626,7 @@
 		}
 
 		// ソートし、順位付け
-		teams.sort(sort_ary("score_net", false, parseFloat));
+		teams.sort(sort_ary("score_net", false, parseFloat, "brthdy"));
 		for (var i = 0; i < teams.length; i++)
 		{
 			teams[i].ranking = i + 1;
@@ -806,7 +819,7 @@
 		// チームデータを作成してソートする
 		var teamData;
 		teamData = culcHandy();
-		teamData = sortDisplayData(kTeams, "score_net");
+		teamData = sortDisplayData(kTeams, "score_net", "brthdy");
 
 		// データを設定して表示を更新
 		clsAnimete.setDstScore( teamData );
