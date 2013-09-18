@@ -175,7 +175,7 @@ var wk2TeamAnimetionClass = function() {
 	//    score：スコアデータ
 	function prvUpdateScore( score ) {
 		var team = document.getElementById( score.teamId );
-		// データを更新する
+		// 表面のデータを更新する
 		var ch = team.children[0].children;
 		for (var j = 0; j < ch.length; j++) {
 			// クラス名を元にデータを設定する
@@ -190,6 +190,13 @@ var wk2TeamAnimetionClass = function() {
 				ch[j].innerHTML = prvPreValue( score.score_net ); break;
 			}
 		}
+
+		// 裏面のデータを設定
+		ch = team.children[1];
+		ch.innerHTML = score.ranking;
+
+		// zIndex設定
+		team.style.zIndex = clsAnimete.m_srcScoreArray.length - score.ranking;
 	}
 
 	// Y座標設定
@@ -387,8 +394,8 @@ var wk2TeamAnimetionClass = function() {
 			{
 				$( "#"+id ).tween({
 					shadow:{
-						start: '0px 0px 0px #000',
-						stop: '8px 3px 10px #444444',
+						start: wk2_setting_shadow_move2,
+						stop: wk2_setting_shadow_move1,
 						time: interval * i,
 						duration: dur,
 						effect:'easeInOut'
@@ -417,8 +424,13 @@ var wk2TeamAnimetionClass = function() {
 			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[i].teamId );
 			var newPos = orgPos;
 			for (var j = 0; j < clsAnimete.m_dstScoreArray.length; j++) {
-				if( clsAnimete.m_dstScoreArray[j].teamId == clsAnimete.m_srcScoreArray[i].teamId ) {
+				if( clsAnimete.m_dstScoreArray[j].teamId == id ) {
+					// 位置計算
 					newPos = prvCalcPos( clsAnimete.m_dstScoreArray[j].ranking );
+
+					// zIndex設定
+					var elm = document.getElementById( id );
+					elm.style.zIndex = clsAnimete.m_dstScoreArray.length - clsAnimete.m_dstScoreArray[j].ranking;
 					break;
 				}
 			}
@@ -460,8 +472,8 @@ var wk2TeamAnimetionClass = function() {
 			// 影をクリアする
 			$( "#"+clsAnimete.m_srcScoreArray[i].teamId ).tween({
 				shadow:{
-					start: '8px 3px 10px #444444',
-					stop: '0px 0px 0px #000',
+					start: wk2_setting_shadow_move1,
+					stop: wk2_setting_shadow_move2,
 					time: 0,
 					duration: 0.5,
 					effect:'easeInOut'
@@ -477,6 +489,14 @@ var wk2TeamAnimetionClass = function() {
 	function prvJST_Zoom() {
 		mCountAnimTarget = clsAnimete.m_srcScoreArray.length;
 
+		// 上へスクロール
+		document.getElementById("resultTable").scrollTop = 0;
+
+
+		// 拡大表示
+		var dur = 1;
+		var interval = 0.3;
+		var teamCount = clsAnimete.m_srcScoreArray.length;
 		// 1st
 		{
 			var pos = 0;
@@ -486,21 +506,19 @@ var wk2TeamAnimetionClass = function() {
 
 			// zIndex
 			var team = document.getElementById( id );
-			team.style.zIndex = '3';
+			team.style.zIndex = 3 + teamCount;
 
 			// 移動＆アニメーション処理
-			var dur = 1;
-			var interval = 0.3;
 			{
 				$( "#"+id ).tween({
 					top:{ start: orgPos, stop: newPos,
 						time: interval, duration: dur, units: 'px', effect: 'bounceOut',
 					},
 					transform:{
-						start: 'scale( 1 )', stop: 'scale( 1.2 )',
+						start: 'rotateX(0deg) scale( 1 )', stop: 'rotateX(1080deg) scale( 1.2 )',
 						time: interval, duration: dur, effect:'easeInOut'
 					},
-					shadow:{ start: '0px 0px 0px #000', stop: '0px 0px 4px 6px #FFFF66',
+					shadow:{ start: '0px 0px 0px #000', stop: wk2_setting_shadow_1st,
 						time: interval, duration: dur, effect:'easeInOut'
 					}
 				} );
@@ -519,21 +537,19 @@ var wk2TeamAnimetionClass = function() {
 
 			// zIndex
 			var team = document.getElementById( id );
-			team.style.zIndex = '2';
+			team.style.zIndex = 2 + teamCount;
 
 			// 移動＆アニメーション処理
-			var dur = 1;
-			var interval = 0.3;
 			{
 				$( "#"+id ).tween({
 					top:{ start: orgPos, stop: newPos,
 						time: interval, duration: dur, units: 'px', effect: 'bounceOut',
 					},
 					transform:{
-						start: 'scale( 1 )', stop: 'scale( 1.1 )',
+						start: 'rotateX(0deg) scale( 1 )', stop: 'rotateX(720deg) scale( 1.1 )',
 						time: interval, duration: dur, effect:'easeInOut'
 					},
-					shadow:{ start: '0px 0px 0px #000', stop: '0px 0px 4px 6px #DDDDDD',
+					shadow:{ start: '0px 0px 0px #000', stop: wk2_setting_shadow_2nd,
 						time: interval, duration: dur, effect:'easeInOut'
 					}
 				} );
@@ -547,25 +563,23 @@ var wk2TeamAnimetionClass = function() {
 			var pos = 2;
 			var id= clsAnimete.m_srcScoreArray[pos].teamId;
 			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
-			var newPos = 180;
+			var newPos = 175;
 
 			// zIndex
 			var team = document.getElementById( id );
-			team.style.zIndex = '1';
+			team.style.zIndex = 1 + teamCount;
 
 			// 移動＆アニメーション処理
-			var dur = 1;
-			var interval = 0.3;
 			{
 				$( "#"+id ).tween({
 					top:{ start: orgPos, stop: newPos,
 						time: interval, duration: dur, units: 'px', effect: 'bounceOut',
 					},
 					transform:{
-						start: 'scale( 1 )', stop: 'scale( 1.05 )',
+						start: 'rotateX(0deg) scale( 1 )', stop: 'rotateX(360deg) scale( 1.05 )',
 						time: interval, duration: dur, effect:'easeInOut'
 					},
-					shadow:{ start: '0px 0px 0px #000', stop: '0px 0px 4px 6px #8B4513',
+					shadow:{ start: '0px 0px 0px #000', stop: wk2_setting_shadow_3rd,
 						time: interval, duration: dur, effect:'easeInOut'
 					}
 				} );
@@ -580,24 +594,22 @@ var wk2TeamAnimetionClass = function() {
 			var pos = clsAnimete.m_srcScoreArray.length-2;
 			var id= clsAnimete.m_srcScoreArray[pos].teamId;
 			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
-			var newPos = 400;
+			var newPos = 410;
 
 			// zIndex
 			var team = document.getElementById( id );
-			team.style.zIndex = '2';
+			team.style.zIndex = 2 + teamCount;
 
 			// 移動＆アニメーション処理
-			var dur = 1;
-			var interval = 0.3;
 			{
 				$( "#"+id ).tween({
 					top:{ start: orgPos, stop: newPos,
 						time: interval, duration: dur, units: 'px', effect: 'bounceOut',
 					},
-					transform:{ start: 'scale( 1 )', stop: 'scale( 1.1 )',
+					transform:{ start: 'rotateX(0deg) scale( 1 )', stop: 'rotateX(720deg) scale( 1.1 )',
 						time: interval, duration: dur, effect:'easeInOut'
 					},
-					shadow:{ start: '0px 0px 0px #000', stop: '0px 0px 4px 6px #00BFFF',
+					shadow:{ start: '0px 0px 0px #000', stop: wk2_setting_shadow_boobee,
 						time: interval, duration: dur, effect:'easeInOut'
 					}
 				} );
@@ -610,24 +622,22 @@ var wk2TeamAnimetionClass = function() {
 			var pos = clsAnimete.m_srcScoreArray.length-1;
 			var id= clsAnimete.m_srcScoreArray[pos].teamId;
 			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
-			var newPos = 480;
+			var newPos = 490;
 
 			// zIndex
 			var team = document.getElementById( id );
-			team.style.zIndex = '3';
+			team.style.zIndex = 3 + teamCount;
 
 			// 移動＆アニメーション処理
-			var dur = 1;
-			var interval = 0.3;
 			{
 				$( "#"+id ).tween({
 					top:{ start: orgPos, stop: newPos,
 						time: interval, duration: dur, units: 'px', effect: 'bounceOut',
 					},
-					transform:{ start: 'scale( 1 )', stop: 'scale( 1.2 )',
+					transform:{ start: 'rotateX(0deg) scale( 1 )', stop: 'rotateX(1080deg) scale( 1.2 )',
 						time: interval, duration: dur, effect:'easeInOut'
 					},
-					shadow:{ start: '0px 0px 0px #000', stop: '0px 0px 4px 6px #BB0000',
+					shadow:{ start: '0px 0px 0px #000', stop: wk2_setting_shadow_last,
 						time: interval, duration: dur, effect:'easeInOut'
 					}
 				} );

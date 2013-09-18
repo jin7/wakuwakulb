@@ -162,8 +162,8 @@
 		io.transports.push('xhr-polling'); 
 		io.transports.push('jsonp-polling');
 		io.transports.push('flashsocket');
-		lb = io.connect("http://wakuwaku.c.node-ninja.com:3000/leadersboard", {
-//		lb = io.connect("http://train211.unoke.pfu.co.jp:3000/leadersboard", {
+//		lb = io.connect("http://wakuwaku.c.node-ninja.com:3000/leadersboard", {
+		lb = io.connect("http://localhost:3000/leadersboard", {
 			'try multiple transports': false, 
 			'force new connection': true 
 		});
@@ -313,13 +313,14 @@
 			var scr = JSON.parse(storage.getItem("_" + plObj[i].plid + ".scr"));
 			if (scr == null) continue;
 
-			dataPlayerScores[i] = new dataPlayerScore();
-			dataPlayerScores[i].playerId = plObj[i].plid;
-			dataPlayerScores[i].playername = plObj[i].user.uname;
-			dataPlayerScores[i].hole_score = scr.holes;
-			dataPlayerScores[i].score_gross = scr.gross;
-			dataPlayerScores[i].score_net = scr.gross;
-			dataPlayerScores[i].teamId = tid;
+			var plScr = new dataPlayerScore()
+			plScr.playerId = plObj[i].plid;
+			plScr.playername = plObj[i].user.uname;
+			plScr.hole_score = scr.holes;
+			plScr.score_gross = scr.gross;
+			plScr.score_net = scr.gross;
+			plScr.teamId = tid;
+			dataPlayerScores.push(plScr);
 
 			// 成績表示用のチーム情報に加算する
 			var flg = false;

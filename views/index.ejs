@@ -9,7 +9,7 @@
 	</meta>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 	<script type="text/javascript" src="http://wakuwaku.c.node-ninja.com:3000/socket.io/socket.io.js"></script>
-<!--	<script tyep="text/javascript" src="/javascripts/top-init.js"></script>-->
+	<script tyep="text/javascript" src="/javascripts/top-init.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2data.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2def.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2dsp.js"></script>
@@ -28,9 +28,10 @@
   <div class"displayArea">
     <div class="slider">
       <ul class="slideLi">
-        <li><a href="#"><img = src="/images/central-01.png" alt="" onclick="location.href='/performance';"/></a></li>
-        <li><a href="#"><img = src="/images/central-02.png" alt="" onclick="location.href='/performance';"/></a></li>
-        <li><a href="#"><img = src="/images/central-03.png" alt="" onclick="location.href='/performance';"/></a></li>
+        <li><img = src="/images/central-01.png" alt=""/></li>
+        <li><img = src="/images/central-02.png" alt=""/></li>
+        <li><img = src="/images/central-03.png" alt=""/></li>
+
       </ul>
       <div class="progress"></div>
       <ul class="slideMark">
@@ -43,12 +44,15 @@
 
 		<section>
 			<nav style="text-align:center; position:absolute; left:20px; bottom:40px;">
+				<input class="button blue" type="button" value="はじめから" onclick="initAll();location.href='/performance'" /> 
 				<input class="button blue" type="button" value="続きから" onclick="initNext();location.href='/performance'" /> 
             </nav>
 		</section>
+<!--
 		<footer>
 			<nav id="globalnavi">Copryright PFU Software Limited
 			</nav>
 		</footer>
+-->
   </body>
 </html>

@@ -21,7 +21,7 @@
 		
 		ctx = cvs.getContext("2d");
         ctx.fillStyle = "#FFF";
-		ctx.fillRect(0, 0, cvs.width, cvs.height);
+//		ctx.fillRect(0, 0, cvs.width, cvs.height);
 		
 		//生成
 		for(var i=0; i<DEF_KAMIKIRE_MAX; i++){
