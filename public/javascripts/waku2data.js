@@ -166,8 +166,7 @@
 		io.transports.push('xhr-polling'); 
 		io.transports.push('jsonp-polling');
 		io.transports.push('flashsocket');
-//		lb = io.connect("http://wakuwaku.c.node-ninja.com:3000/leadersboard", {
-		lb = io.connect("http://10.234.42.211:3000/leadersboard", {
+		lb = io.connect("http://wakuwaku.c.node-ninja.com:3000/leadersboard", {
 			'try multiple transports': false, 
 			'force new connection': true 
 		});
