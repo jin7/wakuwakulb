@@ -36,7 +36,7 @@
 { "plid": "pl002", "cid": "c002", "csubid" : "c002cs03", "rid" : "r002", "uid" : "u002", "holeno" : 18, "score" : 4 }
 { "plid": "pl003", "cid": "c002", "csubid" : "c002cs02", "rid" : "r002", "uid" : "u003", "holeno" : 1, "score" : 4 }
 { "plid": "pl003", "cid": "c002", "csubid" : "c002cs02", "rid" : "r002", "uid" : "u003", "holeno" : 2, "score" : 4 }
-{ "plid": "pl002", "cid": "c002", "csubid" : "c002cs02", "rid" : "r002", "uid" : "u003", "holeno" : 3, "score" : 4 }
+{ "plid": "pl003", "cid": "c002", "csubid" : "c002cs02", "rid" : "r002", "uid" : "u003", "holeno" : 3, "score" : 4 }
 { "plid": "pl003", "cid": "c002", "csubid" : "c002cs02", "rid" : "r002", "uid" : "u003", "holeno" : 4, "score" : 3 }
 { "plid": "pl003", "cid": "c002", "csubid" : "c002cs02", "rid" : "r002", "uid" : "u003", "holeno" : 5, "score" : 5 }
 { "plid": "pl003", "cid": "c002", "csubid" : "c002cs02", "rid" : "r002", "uid" : "u003", "holeno" : 6, "score" : 6 }

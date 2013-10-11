@@ -7,8 +7,8 @@
 //
 
 // 動作モード
-var wk2_setting_mode = "parsonal";		// 動作モード（パーソナル表彰）
-//var wk2_setting_mode = "team";		// 動作モード（チーム表彰）
+//var wk2_setting_mode = "parsonal";		// 動作モード（パーソナル表彰）
+var wk2_setting_mode = "team";		// 動作モード（チーム表彰）
 
 
 ////////////////////////////////////////////////////////
@@ -17,7 +17,7 @@ var wk2_setting_mode = "parsonal";		// 動作モード（パーソナル表彰�
 
 // 順位変更中のパネルの色
 //var wk2_setting_shadow_move		= "8px 3px 10px #444444";			// 移動中の影
-var wk2_setting_shadow_move1		= "0px 3px 12px 2px #000000";		// 移動中の影
+var wk2_setting_shadow_move1		= "0px 3px 10px 2px #000000";		// 移動中の影
 var wk2_setting_shadow_move2		= "0px 0px 0px 0px #000000";		// 移動後の影
 
 

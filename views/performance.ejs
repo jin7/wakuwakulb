@@ -18,6 +18,7 @@
 	<script type="text/javascript" src="/javascripts/jstween-1.1.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2def.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2settings.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2dsp_com.js"></script>	
 	<script type="text/javascript" src="/javascripts/waku2dsp.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2data.js"></script>
 	<script type="text/javascript" src="/javascripts/finale.js"></script>
@@ -59,9 +60,7 @@
 	}
 
 	$(function(){
-		// ダミーデータ
-		var pars = getParData();
-		// 初期化
+		var pars = getArrayHoleInfs();
 		roulette.init(pars, callback, "rouletteArea");
 	});
 
@@ -77,8 +76,10 @@
 		<header>
 			<section>
 				<h1 id="captitle"></h1>
+				<!--
 				<hr id="over"/>
 				<hr id="under"/>
+				-->
 			</section>
 		</header>
 
@@ -88,6 +89,7 @@
 				<input class="button blue" type="button" value="個人成績" onclick="location.href='/performance_personal'"/>
 			</div>
 			<div id="rouletteBtn" style="text-align:right;margin:5px">
+                <span id="drawHole">x / x</span>
 				<input class="button orange" type="button" value="ハンデ抽選" onclick="displayRouletteDialog();"/>
                  <div id="drawHole">x / x</div>
 			</div>
@@ -96,24 +98,26 @@
 
 		<!-- 現在順位表の構成
 			id resultTable
-				class teamResultLabel	ラベル
-				class teamResult		チームスコア：JSによってチーム数分複製される
+				class scoreResultLabel	ラベル
+				class scoreResult		チームスコア：JSによってチーム数分複製される
 		-->
 		<section>
 			<article>
 				<div id="resultTable">
-					<div class="teamResultLabel">
-						<div class="rankingTeamLabel">順位</div>
-						<div class="nameTeamLabel">チーム名</div>
-						<div class="grossTeamLabel">Gross</div>
-						<div class="netTeamLabel">Net</div>
+					<div class="scoreResultLabel">
+						<div class="rankingLabel">順位</div>
+						<div class="nameLabel">チーム名</div>
+						<div class="grossLabel">Gross</div>
+						<div class="netLabel">Net</div>
+						<div class="handiLabel">Handicap</div>
 					</div>
-					<div class="teamResult" id="result">
+					<div class="scoreResult" id="result">
 						<div class="front">
 							<figure class="ranking"></figure>
 							<figure class="name"></figure>
 							<figure class="gross"></figure>
 							<figure class="net"></figure>
+							<figure class="handi"></figure>
 						</div>
 						<div class="back"></div>
 					</div>

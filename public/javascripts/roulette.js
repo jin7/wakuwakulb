@@ -5,7 +5,7 @@ var roulette = {
     BING_NUMBER_HALF : 9, // BING_NUMBERの半分の値を後で入れる
     ROULETTE_SPEED : 100, // ルーレット回転速度(ms)
     FADEIN_SPEED : 2000, // フェードイン速度(ms)
-	DIALOG_WIDTH: 300,
+	DIALOG_WIDTH: 350,
 	
     // 英語表記用英数字
     ENGLISH_NUMBER_LIST_SMALL : [
@@ -17,25 +17,20 @@ var roulette = {
     ],
 
 	// ロングホールなどの設定
-	early_long_numbers : [],
-	early_middle_numbers : [],
-	early_short_numbers : [],
-	late_long_numbers : [],
-	late_middle_numbers : [],
-	late_short_numbers : [],
-    
-	early_selcount : 0,
-	early_long_selcount : 0,
-	early_middle_selcount : 0,
-	early_short_selcount : 0,
-	
-	late_selcount : 0,
-	late_long_selcount : 0,
-	late_middle_selcount : 0,
-	late_short_selcount : 0,
-
+	numbers  : [],
+/*
+	{
+		long_numbers : [],
+		middle_numbers : [],
+		short_numbers : [],
+		total_selcount : 0,
+		long_selcount : 0,
+		middle_selcount: 0,
+		short_selcount : 0,
+	},
+ */   
 	hcholes : [],
-	pars : [],
+	subCourses : [],
 	callback : function() {},
 	
     // プロパティ
@@ -49,8 +44,7 @@ var roulette = {
     past_number_list : [],
 	$root : {},
     $bing_number : {},
-    $past_number_early_ul : {},
-    $past_number_late_ul : {},
+    $past_number_ul : [],
     
     // 初期化する
     initRoulette : function(){
@@ -58,37 +52,32 @@ var roulette = {
 		roulette.$root.empty();
 		roulette.$root.append($('<div id="number_english">&nbsp;</div>'));
 		roulette.$root.append($('<div id="bing_number">&nbsp;</div>'));
-		roulette.$root.append($('<div id="past_number_list_early"></div>'));
-		roulette.$root.append($('<div id="past_number_list_late"></div>'));
+		for (var i = 0; i < roulette.subCourses.length; i++) {
+			roulette.$root.append($('<div class="past_number_list_group" id="past_number_list_' + (i+1) + '"></div>'));
+		}
 		roulette.$root.append($('<button type="button" id="exe_button">ルーレット開始</button>'));
 
         roulette.$bing_number = $('#bing_number');
         
         // 過去に出た数字を表示する領域を生成
-        // 1列目
-        var li = '';
-        roulette.$past_number_early_ul = $('<ul>').addClass('past_number_list');
-        for (var i = 1; i <= roulette.BING_NUMBER_HALF; i++) {
-            li += '<li><div class="background_box">&nbsp;</div></li>';
-        }
-        roulette.$past_number_early_ul.append(li);
-        $('#past_number_list_early').append(roulette.$past_number_early_ul);
-        
-        // 2列目
-        li = '';
-        roulette.$past_number_late_ul = $('<ul>').addClass('past_number_list');
-        for (i = roulette.BING_NUMBER_HALF + 1; i <= roulette.BING_NUMBER; i++) {
-            li += '<li><div class="background_box">&nbsp;</div></li>';
-        }
-        roulette.$past_number_late_ul.append(li);
-        $('#past_number_list_late').append(roulette.$past_number_late_ul);
-        
+		for (var i = 0; i < roulette.subCourses.length; i++) {
+			var li = '';
+			var courseName = roulette.subCourses[i].csubname.substring(0,1);
+			var $courseName = $('<span>' + courseName + '</span>').addClass('course_name');
+			roulette.$past_number_ul[i] = $('<ul>').addClass('past_number_list');
+			for (var j = 0; j < roulette.BING_NUMBER_HALF; j++) {
+				li += '<li><div class="background_box">&nbsp;</div></li>';
+			}
+			roulette.$past_number_ul[i].append(li);
+			$('#past_number_list_' + (i+1)).append($courseName);
+			$('#past_number_list_' + (i+1)).append(roulette.$past_number_ul[i]);
+		}
+          
 	// 各要素の大きさ、font-sizeなどを定義
         // li要素のwidth、height、font-sizeをウインドウサイズに合わせる
 //        var list_size = Math.floor($('.past_number_list').width() / (roulette.BING_NUMBER_HALF+2));
-        var list_size = Math.floor(roulette.DIALOG_WIDTH / (roulette.BING_NUMBER_HALF+4));
-		$('div#past_number_list_early').width((list_size + 4) * 9);
-		$('div#past_number_list_late').width((list_size + 4) * 9);
+        var list_size = Math.floor((roulette.DIALOG_WIDTH - 40) / (roulette.BING_NUMBER_HALF+4));
+		$('div.past_number_list_group').width((list_size + 4) * 9 + 40);
         $('.past_number_list > li').width(list_size);
         $('.past_number_list > li').height(list_size);
         $('.past_number_list > li').css({fontSize:list_size+'px'});
@@ -121,6 +110,7 @@ var roulette = {
             roulette.number = roulette.select_number_list[roulette.rand];
             
             // 英語文字列生成
+/*			
             var english_str = 0;
 			roulette.number_english = '&nbsp;&nbsp;&nbsp;&nbsp;';
             if (roulette.number < 20) {
@@ -142,7 +132,7 @@ var roulette = {
                     }    
                 }
             }
-            
+*/         
             // 出た数字の表示処理
             roulette.$bing_number
             // 一旦非表示
@@ -150,16 +140,17 @@ var roulette = {
             // idを回転用から表示用に変更
             .attr('id', 'bing_number_decide')
             // その隙に数字を入れておく
-            .text(roulette.number)
+            .text(roulette.toHoleStr(roulette.number))
             // フェードインさせる
             .fadeIn(roulette.FADEIN_SPEED);
             
 	    // 英数字を同じようにフェードイン
+/*
             $('#number_english')
             .hide()
             .html(roulette.number_english)
             .fadeIn(roulette.FADEIN_SPEED);
-            
+*/            
             // 出た数を保存
             roulette.past_number_list[roulette.number] = roulette.number;
 
@@ -168,7 +159,6 @@ var roulette = {
 			refreshRouletteNumber(roulette.number);
 
 			// ここで過去に出た数字を表示
-			// 0より大きく半分より下の値であればearlyに入れる
 			displaySelectHoleNumber(roulette.number, true);
 
 			console.log(roulette.select_number_list);
@@ -183,14 +173,15 @@ var roulette = {
 			}
             
 			// 決定した数の記録とCallBack呼び出し
-			roulette.hcholes.push(roulette.number);
-			
-			roulette.callback(roulette.hcholes);
+			roulette.hcholes.push(roulette.number);  // ログ用
 			console.log(roulette.hcholes);
+
+			roulette.remainFixedNumber(roulette.number);
+			roulette.callback(roulette.subCourses);
         }
         else {
             // ストップされなかったら数字を表示するだけ
-            roulette.$bing_number.text(roulette.rand);
+            roulette.$bing_number.text(roulette.toHoleStr(roulette.rand));
         }
     },
     
@@ -232,38 +223,38 @@ var roulette = {
     },
 
 	// 初期化
-	init : function(pars, func, target) {
+	init : function(subCourses, func, target) {
 		roulette.$root = $("#" + target);
-		roulette.pars = pars;
+		roulette.subCourses = subCourses;
+		roulette.BING_NUMBER = subCourses.length * 9;
 		roulette.callback = func;
 		roulette.initHoleInfo();
 		roulette.hcholes = [];
+/*
+		{
+			csubid : 0,
+			hcholes : [],
+		};
+*/		
 	},
 
 	initHoleInfo : function() {
-		roulette.early_long_numbers = [];
-		roulette.early_middle_numbers = [];
-		roulette.early_short_numbers  = [];
-		roulette.late_long_numbers = [];
-		roulette.late_middle_numbers = [];
-		roulette.late_short_numbers = [];
+		roulette.numbers = [];
+		for (var i = 0; i < roulette.subCourses.length; i++) {
+            roulette.numbers[i] = {};
+			roulette.numbers[i].long_numbers = [];
+			roulette.numbers[i].middle_numbers = [];
+			roulette.numbers[i].short_numbers  = [];
+			roulette.subCourses[i].selected = [];
 
-		for (var i = 0; i < roulette.BING_NUMBER_HALF; i++) {
-			if (roulette.pars[i] == 3) {
-				roulette.early_short_numbers.push(i+1);
-			} else if (roulette.pars[i] == 5) {
-				roulette.early_long_numbers.push(i+1);
-			} else {
-				roulette.early_middle_numbers.push(i+1);
-			}
-		}
-		for (var i = roulette.BING_NUMBER_HALF; i < roulette.BING_NUMBER; i++) {
-			if (roulette.pars[i] == 3) {
-				roulette.late_short_numbers.push(i+1);
-			} else if (roulette.pars[i] == 5) {
-				roulette.late_long_numbers.push(i+1);
-			} else {
-				roulette.late_middle_numbers.push(i+1);
+			for (var j = 0; j < roulette.BING_NUMBER_HALF; j++) {
+				if (roulette.subCourses[i].pars[j] == 3) {
+					roulette.numbers[i].short_numbers.push(j+1);
+				} else if (roulette.subCourses[i].pars[j] == 5) {
+					roulette.numbers[i].long_numbers.push(j+1);
+				} else {
+					roulette.numbers[i].middle_numbers.push(j+1);
+				}
 			}
 		}
 	},
@@ -281,31 +272,55 @@ var roulette = {
 		});
 
 		// ルーレットの初期化（過去に選択されたものを反映）
-		roulette.early_selcount = 0;
-		roulette.early_long_selcount = 0;
-		roulette.early_middle_selcount = 0;
-		roulette.early_short_selcount = 0;
-		roulette.late_selcount = 0;
-		roulette.late_long_selcount = 0;
-		roulette.late_middle_selcount = 0;
-		roulette.late_short_selcount  = 0;
+		for (var i = 0; i < roulette.subCourses.length; i++) {
+			roulette.numbers[i].total_selcount = 0;
+			roulette.numbers[i].long_selcount = 0;
+			roulette.numbers[i].short_selcount  = 0;
+			roulette.numbers[i].middle_selcount  = 0;
+		}
 
         roulette.select_number_list = [];
         for (var i = 0; i < roulette.BING_NUMBER; i++) {
             roulette.select_number_list.push(i+1);
         }
 		roulette.initRoulette();
-        for (var i = 0; i < roulette.BING_NUMBER; i++) {
-			if( handys[i] != "" ) {
-				refreshRouletteNumber(i+1);
-				displaySelectHoleNumber(i+1, false);
-			}
-        }
+
+		if (handys != null && handys.length > 0) {
+			for (var i = 0; i < roulette.subCourses.length; i++) {
+				handys[i].selected = convertFromO(handys[i].pars);
+				if (handys[i].selected != null) {
+					if (handys[i].selected.length > 0) {
+						for (var j = 0; j < handys[i].selected.length; j++) {
+							refreshRouletteNumber(i * roulette.BING_NUMBER_HALF + handys[i].selected[j]);
+							displaySelectHoleNumber(i * roulette.BING_NUMBER_HALF + handys[i].selected[j], false);
+						}
+					}
+				}
+			}	
+		}			
 
 		$('#exe_button').off('click')
 			.on('click', roulette.execute);
 		$(".ui-dialog").off('dialogclose')
 			.on('dialogclose', closeRulette );
+	},
+
+	toHoleStr : function(number) {
+		var scn = parseInt((number - 1) / roulette.BING_NUMBER_HALF);
+		var mod = (number - 1) % roulette.BING_NUMBER_HALF;
+		return roulette.subCourses[scn].csubname.substring(0,1) + (mod + 1)
+	},
+
+	toHoleName : function(number) {
+		var scn = parseInt((number - 1) / roulette.BING_NUMBER_HALF);
+		var mod = (number - 1) % roulette.BING_NUMBER_HALF;
+		return roulette.subCourses[scn].names[mod];
+	},
+
+	remainFixedNumber : function(number) {
+		var scn = parseInt((number - 1) / roulette.BING_NUMBER_HALF);
+		var holeNumber = (number - 1) % roulette.BING_NUMBER_HALF + 1;
+		 roulette.subCourses[scn].selected.push(holeNumber);
 	}
 };
 
@@ -330,55 +345,30 @@ function refreshRouletteNumber(holeNumber) {
 	}
 	
 	// ロング、ショートなど条件に合わせて関連する番号を削除
-	if (holeNumber < 10) {
-		roulette.early_selcount++;
-		if (roulette.early_selcount > 5) {
+	var scn = parseInt((holeNumber - 1) / roulette.BING_NUMBER_HALF);
+	var holeNumber2 = (holeNumber - 1) % roulette.BING_NUMBER_HALF + 1;
+	
+	roulette.numbers[scn].total_selcount++;
+	if (roulette.numbers[scn].total_selcount > 5) {
 			for (var i = 1; i < 10; i++) {
-				roulette.sliceNumber(i);
+				roulette.sliceNumber(scn * roulette.BING_NUMBER_HALF + i);
 			}
-		} else {
-			if (isInNumber(roulette.early_long_numbers, holeNumber)) {
-				roulette.early_long_selcount++;
-				for (var i = 0; i < roulette.early_long_numbers.length; i++) {
-					roulette.sliceNumber(roulette.early_long_numbers[i]);
-				}
-			}  else 	if (isInNumber(roulette.early_short_numbers, holeNumber)) {
-				roulette.early_short_selcount++;
-				for (var i = 0; i < roulette.early_short_numbers.length; i++) {
-					roulette.sliceNumber(roulette.early_short_numbers[i]);
-				}
-			} else {
-				roulette.early_middle_selcount++;
-				if (roulette.early_middle_selcount > 3) {
-					for (var i = 0; i < roulette.early_middle_numbers.length; i++) {
-						roulette.sliceNumber(roulette.early_middle_numbers[i]);
-					}
-				}
-			}
-		}
 	} else {
-		roulette.late_selcount++;
-		if (roulette.late_selcount > 5) {
-			for (var i = 10; i < 19; i++) {
-				roulette.sliceNumber(i);
+		if (isInNumber(roulette.numbers[scn].long_numbers, holeNumber2)) {
+			roulette.numbers[scn].long_selcount++;
+			for (var i = 0; i < roulette.numbers[scn].long_numbers.length; i++) {
+				roulette.sliceNumber(scn * roulette.BING_NUMBER_HALF + roulette.numbers[scn].long_numbers[i]);
+			}
+		}  else 	if (isInNumber(roulette.numbers[scn].short_numbers, holeNumber2)) {
+			roulette.numbers[scn].short_selcount++;
+			for (var i = 0; i < roulette.numbers[scn].short_numbers.length; i++) {
+				roulette.sliceNumber(scn * roulette.BING_NUMBER_HALF + roulette.numbers[scn].short_numbers[i]);
 			}
 		} else {
-			if (isInNumber(roulette.late_long_numbers, holeNumber)) {
-				roulette.late_long_selcount++;
-				for (var i = 0; i < roulette.late_long_numbers.length; i++) {
-					roulette.sliceNumber(roulette.late_long_numbers[i]);
-				}
-			}  else 	if (isInNumber(roulette.late_short_numbers, holeNumber)) {
-				roulette.late_short_selcount++;
-				for (var i = 0; i < roulette.late_short_numbers.length; i++) {
-					roulette.sliceNumber(roulette.late_short_numbers[i]);
-				}
-			} else {
-				roulette.late_middle_selcount++;
-				if (roulette.late_middle_selcount > 3) {
-					for (var i = 0; i < roulette.late_middle_numbers.length; i++) {
-						roulette.sliceNumber(roulette.late_middle_numbers[i]);
-					}
+			roulette.numbers[scn].middle_selcount++;
+			if (roulette.numbers[scn].middle_selcount > 3) {
+				for (var i = 0; i < roulette.numbers[scn].middle_numbers.length; i++) {
+					roulette.sliceNumber(scn * roulette.BING_NUMBER_HALF + roulette.numbers[scn].middle_numbers[i]);
 				}
 			}
 		}
@@ -387,26 +377,20 @@ function refreshRouletteNumber(holeNumber) {
 
 // @add iwa
 function displaySelectHoleNumber(holeNumber, anim) {
+	var scn = parseInt((holeNumber - 1) / roulette.BING_NUMBER_HALF);
+	var mod = (holeNumber - 1) % roulette.BING_NUMBER_HALF;
+
 	var textcolor = "black";
-	if (roulette.pars[holeNumber-1] == 3) {
+	if (roulette.subCourses[scn].pars[mod] == 3) {
 		textcolor = "yellow";
-	} else if (roulette.pars[holeNumber-1] == 5) {
+	} else if (roulette.subCourses[scn].pars[mod] == 5) {
 		textcolor = "red";
 	}
-	if (0 < holeNumber && holeNumber <= roulette.BING_NUMBER_HALF) {
-		if (anim) {
-			$(roulette.$past_number_early_ul[0].childNodes[holeNumber-1]).hide().text(holeNumber).css("color", textcolor).fadeIn(1000);
-		} else {
-			$(roulette.$past_number_early_ul[0].childNodes[holeNumber-1]).hide().text(holeNumber).css("color", textcolor).show();
-		}
-	}
-	// 上の値であればlateに入れる
-	else {
-		if (anim) {
-			$(roulette.$past_number_late_ul[0].childNodes[holeNumber - roulette.BING_NUMBER_HALF-1]).hide().text(holeNumber).css("color", textcolor).fadeIn(1000);
-		} else {
-			$(roulette.$past_number_late_ul[0].childNodes[holeNumber - roulette.BING_NUMBER_HALF-1]).hide().text(holeNumber).css("color", textcolor).show();
-		}
+
+	if (anim) {
+		$(roulette.$past_number_ul[scn][0].childNodes[mod]).hide().text(roulette.toHoleName(holeNumber)).css("color", textcolor).fadeIn(1000);
+	} else {
+		$(roulette.$past_number_ul[scn][0].childNodes[mod]).hide().text(roulette.toHoleName(holeNumber)).css("color", textcolor).show();
 	}
 }
 

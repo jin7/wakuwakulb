@@ -5,11 +5,12 @@
     <link rel="stylesheet" href="/stylesheets/reset.css">
     <link rel="stylesheet" href="/stylesheets/common.css">
     <link rel="stylesheet" href="/stylesheets/button.css">
-    <link rel="stylesheet" href="/stylesheets/slider.css">
+    <link rel="stylesheet" href="/stylesheets/slider-animation.css">
 	</meta>
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 	<script type="text/javascript" src="http://wakuwaku.c.node-ninja.com:3000/socket.io/socket.io.js"></script>
 <!--	<script type="text/javascript" src="http://train211.unoke.pfu.co.jp:3000/socket.io/socket.io.js"></script>-->
+	<script tyep="text/javascript" src="/javascripts/top-init.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2data.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2def.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2dsp.js"></script>
@@ -30,57 +31,33 @@
 			</section>
 		</header>
 
-<!--		<section>-->
-<!--			<p style="text-align:center">-->
-<!-- Slider Setup -->
-<input checked type=radio name="slider" id="slide1" />
-<input type=radio name="slider" id="slide2" />
-<input type=radio name="slider" id="slide3" />
-
-				<div id="slides"><div id="overflow"><div class="inner">
-<!--				<img src="./img/01_ryo.jpg" alt="feature" onclick="initAll();location.href='./performance.html';"/>
-				<div style="position:absolute; top:300px; left:200px; width: 600px;color:white; font-size:70px">
-				はじめは<br>　上をたたく
-				</div>-->
-            <article>
-                <div class="info"><h3>Mr Tsubota</h3><br><h4>1H:シャーッ！バーディ！出だし好調！</h4><a href="#"></a></div>
-                <img src="/images/tsubota.kazunori.jpg" alt="feature" onclick="initAll();location.href='/performance';" />
-            </article>
- 
-            <article>
-                <div class="info"><h3>Mr Inaba</h3><a href="#"></a></div>
-                <img src="/images/inaba.toru.jpg" alt="feature" onclick="initAll();location.href='/performance';" />
-            </article>
-
-            <article>
-                <div class="info"><h3>Mr Hiramatsu</h3><a href="#"></a></div>
-                <img src="/images/hiramatsu.hideo.jpg" alt="feature" onclick="initAll();location.href='/performance';" />
-            </article>
-
-        </div></div></div>
-<!-- Controls and Active Slide Display -->
-<div id="controls">
-    <label for="slide1"></label>
-    <label for="slide2"></label>
-    <label for="slide3"></label>
-</div>
- 
-<div id="active">
-    <label for="slide1"></label>
-    <label for="slide2"></label>
-    <label for="slide3"></label>
-</div>
-<!--			</p>-->
-<!--		</section>-->
+  <div class"displayArea">
+    <div class="slider">
+      <ul class="slideLi">
+        <li><img = src="/images/central-01.png" alt=""/></li>
+        <li><img = src="/images/central-02.png" alt=""/></li>
+        <li><img = src="/images/central-03.png" alt=""/></li>
+      </ul>
+      <div class="progress"></div>
+      <ul class="slideMark">
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>
+  </div>
 
 		<section>
 			<nav style="text-align:center; position:absolute; left:20px; bottom:40px;">
+				<input class="button blue" type="button" value="はじめから" onclick="initAll();location.href='/performance'" /> 
 				<input class="button blue" type="button" value="続きから" onclick="initNext();location.href='/performance'" /> 
             </nav>
 		</section>
+<!--
 		<footer>
 			<nav id="globalnavi">Copryright PFU Software Limited
 			</nav>
 		</footer>
+-->
   </body>
 </html>

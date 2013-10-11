@@ -1,6 +1,6 @@
 window.addEventListener( 'DOMContentLoaded', function () {
     document.querySelector('img').addEventListener('click', function() {
-      initAll("/performance");
+      initAll("./performance.html");
     });
     connectTop();
   }, false);

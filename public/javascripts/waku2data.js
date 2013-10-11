@@ -9,17 +9,16 @@
 	/******************************************************************
 	 * 定数
 	 ******************************************************************/
-	var handyMax = 12;
-	var handyScoreMax = 40;
-	var kHandyHole = "compe.handyHole";
+	var kHandicap  = "compe.handicap";
+	var kHandyHole = "compe.handiHole";
 	var kRId       = "compe.rid";
 	var kRName     = "compe.rname";
 	var kCName     = "compe.cname";
 	var kCHoleInfs = "compe.holeinfs";
-	var kSubCArray = "compe.subcourseKey";
 	var kPlayers   = "compe.players";
 	var kScores    = "compe.scores";
 	var kTeams     = "compe.teams";
+	var kHandiMax  = "compe.handiMax";
 
 	var ns = ["leadersboard","live"];
 	var ev = ["connect","uploadscore","getroundinf","score","personalscore","comment"];
@@ -55,6 +54,10 @@
 
            var a2 = a[subfield];
            var b2 = b[subfield];
+	       if (typeof(primer) != 'undefined'){
+	           a2 = primer(a2);
+	           b2 = primer(b2);
+	       }
 
 	       if (a2 < b2) return reverse * -1;
 	       if (a2 > b2) return reverse * 1;
@@ -94,40 +97,38 @@
 	/******************************************************************
 	 * ストレージ初期化処理
 	 ******************************************************************/
-	function initAll()
+	function initAll(pageuri)
 	{
 		// 初期化
-		
-		for (var i = 0; storage.getItem(kSubCArray) != null && i < storage.getItem(kSubCArray).split(",").length; i++)
-		{
-			storage.removeItem(kCHoleInfs + i);
-			storage.removeItem(kHandyHole + i);
-		}
 		storage.removeItem(kRName);
 		storage.removeItem(kRId);
 		storage.removeItem(kCName);
-		storage.removeItem(kSubCArray);
+		storage.removeItem(kCHoleInfs);
+		storage.removeItem(kHandicap);
 		storage.removeItem(kPlayers);
 		storage.removeItem(kScores);
 		storage.removeItem(kTeams);
+		storage.removeItem(kHandyHole);
+		storage.removeItem(kHandiMax);
 
 		// 移行
 		storage.setItem(kRName,     storage.getItem("_" + kRName));
 		storage.setItem(kRId,       storage.getItem("_" + kRId));
 		storage.setItem(kCName,     storage.getItem("_" + kCName));
-		storage.setItem(kSubCArray, storage.getItem("_" + kSubCArray));
-
-		for (var i = 0; storage.getItem(kSubCArray) != null && i < storage.getItem(kSubCArray).split(",").length; i++)
-		{
-			storage.setItem(kCHoleInfs + i, storage.getItem("_" + kCHoleInfs + i));
-		}
-
+		storage.setItem(kCHoleInfs, storage.getItem("_" + kCHoleInfs));
+		storage.setItem(kHandicap,  storage.getItem("_" + kHandicap));
 		storage.setItem(kPlayers,   storage.getItem("_" + kPlayers));
 		storage.setItem(kScores, storage.getItem("_" + kScores));
 		storage.setItem(kTeams, storage.getItem("_" + kTeams));
+		storage.setItem(kHandiMax, storage.getItem("_" + kHandiMax));
 
 		// 初期化2
 		initNext();
+
+    if (pageuri) {
+      window.location = "_blank";
+      window.location = pageuri;
+    }
 	}
 
 
@@ -136,18 +137,15 @@
 	 ******************************************************************/
 	function initNext()
 	{
-		for (var i = 0; storage.getItem("_" + kSubCArray) != null && i < storage.getItem("_" + kSubCArray).split(",").length; i++)
-		{
-			storage.removeItem("_" + kCHoleInfs + i);
-			storage.removeItem("_" + kHandyHole + i);
-		}
 		storage.removeItem("_" + kRName);
 		storage.removeItem("_" + kRId);
 		storage.removeItem("_" + kCName);
-		storage.removeItem("_" + kSubCArray);
+		storage.removeItem("_" + kCHoleInfs);
+		storage.removeItem("_" + kHandicap);
 		storage.removeItem("_" + kPlayers);
 		storage.removeItem("_" + kScores);
 		storage.removeItem("_" + kTeams);
+		storage.removeItem("_" + kHandiMax);
 	}
 
 	/******************************************************************
@@ -168,7 +166,8 @@
 		io.transports.push('xhr-polling'); 
 		io.transports.push('jsonp-polling');
 		io.transports.push('flashsocket');
-		lb = io.connect("http://wakuwaku.c.node-ninja.com:3000/leadersboard", {
+//		lb = io.connect("http://wakuwaku.c.node-ninja.com:3000/leadersboard", {
+		lb = io.connect("http://10.234.42.211:3000/leadersboard", {
 			'try multiple transports': false, 
 			'force new connection': true 
 		});
@@ -240,6 +239,9 @@
 		// ラウンド名
 		storage.setItem("_" + kRName, roundData[0].rname);
 
+		// ハンディキャップ方式
+		storage.setItem("_" + kHandicap, JSON.stringify(roundData[0].handicapinf));
+
 		// コース名
 		storage.setItem("_" + kCName, roundData[0].cinf.cname);
 
@@ -247,10 +249,22 @@
 		var arraySubCourses = [];
 		for (var i = 0; i < roundData[0].cinf.holeinfs.length; i++)
 		{
-			storage.setItem("_" + kCHoleInfs + i, JSON.stringify(roundData[0].cinf.holeinfs[i]));
-			arraySubCourses[i] = roundData[0].cinf.holeinfs[i].csubid;
+			arraySubCourses[i] = roundData[0].cinf.holeinfs[i];
 		}
-		storage.setItem("_" + kSubCArray, arraySubCourses);
+		storage.setItem("_" + kCHoleInfs, JSON.stringify(arraySubCourses));
+
+		// ハンデ選択数
+		var h = 6;
+/*		if (JSON.parse(storage.getItem(kHandicap)).method == 1) {
+			h = 4;
+		} else if (JSON.parse(storage.getItem(kHandicap)).method == 2) {
+			h = 6;
+		} else if (JSON.parse(storage.getItem(kHandicap)).method == 3) {
+			h = 8;
+		}
+*/
+		storage.setItem("_" + kHandiMax, h * JSON.parse(storage.getItem("_" + kCHoleInfs)).length);
+
 	}
 
 
@@ -319,13 +333,13 @@
 			if (scr == null) continue;
 
 			var plScr = new dataPlayerScore()
-			plScr.playerId = plObj[i].plid;
-			plScr.playername = plObj[i].user.uname;
+			plScr.dataId = plObj[i].plid;
+			plScr.name = plObj[i].user.uname;
 			plScr.hole_score = scr.holes;
 			plScr.score_gross = scr.gross;
 			plScr.score_net = scr.gross;
 			plScr.teamId = tid;
-			plScr.brthdy = plObj[i].user.brthdy;
+			plScr.age = getCulculateAge(plObj[i].user.brthdy);
 			dataPlayerScores.push(plScr);
 
 			// 成績表示用のチーム情報に加算する
@@ -333,16 +347,13 @@
 			var cnt = dataTeamScores.length;
 			for (var j = 0; j < cnt; j++)
 			{
-				if (dataTeamScores[j].teamId == tid)
+				if (dataTeamScores[j].dataId == tid)
 				{
 					// 既にチームが登録されている
 					dataTeamScores[j].score_gross += scr.gross;
 					dataTeamScores[j].count += 1;
-					// 最年長のプレイヤー生年月日を登録
-					if (dataTeamScores[j].brthdy > plObj[i].user.brthdy)
-					{
-					   dataTeamScores[j].brthdy = plObj[i].user.brthdy;
-    				}
+					// 年齢の加算
+					dataTeamScores[j].age += getCulculateAge(plObj[i].user.brthdy);
 					flg = true;
 					break;
 				}
@@ -352,11 +363,11 @@
 			if (!flg)
 			{
 				dataTeamScores[cnt] = new dataTeamScore();
-				dataTeamScores[cnt].teamId = tid;
-				dataTeamScores[cnt].teamname = tname;
+				dataTeamScores[cnt].dataId = tid;
+				dataTeamScores[cnt].name = tname;
 				dataTeamScores[cnt].score_gross = scr.gross;
 				dataTeamScores[cnt].count = 1;
-				dataTeamScores[cnt].brthdy = plObj[i].user.brthdy;
+				dataTeamScores[cnt].age = getCulculateAge(plObj[i].user.brthdy);
 			}
 
 			// 不要になったstorageを削除
@@ -368,6 +379,7 @@
 		{
 			dataTeamScores[i].score_gross = Math.round(dataTeamScores[i].score_gross * 10 / dataTeamScores[i].count) / 10;
 			dataTeamScores[i].score_net = Math.round(dataTeamScores[i].score_gross * 10) /10;
+			dataTeamScores[i].age = Math.round(dataTeamScores[i].age / dataTeamScores[i].count);
 		}
 
 		storage.setItem("_" + kScores, JSON.stringify(dataPlayerScores));
@@ -382,7 +394,7 @@
 	function initializePerformance()
 	{
 		if( clsAnimete == null ) {
-			clsAnimete = new wk2TeamAnimetionClass;
+			clsAnimete = new wk2AnimetionClass;
 		}
 
 		// 初期化共通処理呼出し
@@ -394,7 +406,7 @@
 		if (document.getElementById('drawHole') !=  null)
 		{
 			countHandy = countSelectHandy();
-			document.getElementById('drawHole').innerHTML  = countHandy + " / " + handyMax;
+			document.getElementById('drawHole').innerHTML  = countHandy + " / " + storage.getItem(kHandiMax);
 		}
 
 		// チームデータを作成する
@@ -402,7 +414,7 @@
 		var isUpdate = false;
 		var animeType = "none";
 
-		teamData = sortDisplayData(kTeams, "score_net", "brthdy");
+		teamData = sortDisplayData(kTeams, "score_net", "age");
 		clsAnimete.setSrcScore( teamData );
 
 		// TODO
@@ -418,8 +430,8 @@
 */
 
 		// データをアニメーションクラスに設定し、初期表示を行う
-		clsAnimete.CreateTeamObjects();
-		clsAnimete.restoreData( false );  // アニメーションあり
+		clsAnimete.CreateObjects();
+		clsAnimete.restoreData( true );  // アニメーションあり
 //		if (isUpdate)
 //		{
 //			clsAnimete.updaeData(animeType);
@@ -433,23 +445,23 @@
 	function initializePerformancePersonal()
 	{
 		if( clsAnimete2 == null ) {
-			clsAnimete2 = new wk2PersonalAnimetionClass;
+			clsAnimete2 = new wk2AnimetionClass("parsonal");
 		}
 		// 初期化共通
 		initializeCommon();
 
 		if (document.getElementById('drawHole') !=  null)
 		{
-			document.getElementById('drawHole').innerHTML  = countSelectHandy() + " / " + handyMax;
+			document.getElementById('drawHole').innerHTML  = countSelectHandy() + " / " + storage.getItem(kHandiMax);
 		}
 
 		// データ反映
-		var dataPlayerScore = sortDisplayData(kScores, "score_net", "brthdy");
+		var dataPlayerScore = sortDisplayData(kScores, "score_net", "age");
 
 		// データをアニメーションクラスに設定し、初期表示を行う
 		clsAnimete2.setSrcScore( dataPlayerScore );
-		clsAnimete2.CreateTeamObjects();
-		clsAnimete2.restoreData( false );  // アニメーションあり
+		clsAnimete2.CreateObjects();
+		clsAnimete2.restoreData( true );  // アニメーションあり
 	}
 
 
@@ -510,7 +522,7 @@
 	function culcHandy()
 	{
 		// ハンデホールのパー数取得
-		var arrays = getHandyPars();
+		var arrays = getHandiPars();
 
 		// 各人のハンデ計算
 		var dataPlayerScores = culcHandyPerson(arrays);
@@ -523,6 +535,74 @@
 	/******************************************************************
 	 * ハンデホールのパー数を取得
 	 ******************************************************************/
+	function getHandiPars()
+	{
+		var handiPars = new Array();
+		var pars = new Object();
+
+		var handyArray = JSON.parse(storage.getItem(kHandyHole));
+		var holeArray = JSON.parse(storage.getItem(kCHoleInfs));
+
+		// サブごとのオブジェクト配列
+		for (var ix in handyArray)
+		{
+			var h = handyArray[ix];
+			if (h == null || h.pars.length < 9)	continue;
+
+			for (var hix in holeArray)
+			{
+				pars = holeArray[hix];
+				if (h.csubid != pars.csubid) continue;
+
+				var arrays = new Array();
+				for (var k = 0; k < h.pars.length; k++)
+				{
+					if (h.pars[k] == "") {
+						arrays[k] = 0;
+					} else {
+						arrays[k] = pars.pars[k];
+					}
+				}
+				var obj = new Object();
+				obj.csubid = h.csubid;
+				obj.hole_score = arrays;
+				handiPars.push(obj);
+				break;
+			}
+		}
+		return handiPars;
+	}
+
+/*
+
+		hHandys = storage.getItem(kHandyHole).split(",");
+		var holes = storage.getItem(kCHoleInfs).split(",");
+		for (var i = 0; i < hHandys.length; i++)
+		{
+			var h = JSON.parse(hHandys[i]);
+			if (h == null || h.pars.length < 9)	continue;
+
+			for (var j = 0; j < holes.length; j++)
+			{
+				pars = JSON.parse(holes[j]);
+				if (h.csubid != pars.csubid) continue;
+
+				for (var k = 0; k < h.pars.length; k++)
+				{
+					if (h.pars[k] == "") {
+						arrays[k] = 0;
+					} else {
+						arrays[k] = pars.pars[k];
+					}
+				}
+				var obj = new Object();
+				obj.csubid = h.csubid;
+				obj.hole_score = arrays;
+				handiPars.push(obj);
+			}
+		}
+		return handiPars;
+
 	function getHandyPars()
 	{
 		var arrays = new Array();
@@ -534,6 +614,7 @@
 				return [];
 			}
 
+			// TODO サブごとのオブジェクト配列に！
 			hHandys = storage.getItem(kHandyHole + i).split(",");
 
 			var h = JSON.parse(storage.getItem(kCHoleInfs + i));
@@ -541,6 +622,7 @@
 			hPars = h.pars;
 
 			// ハンデホールのパー数を取得し、配列に格納する
+			// TODO 不要？
 
 			for (var j = 0; j < hHandys.length; j++)
 			{
@@ -555,6 +637,7 @@
 		}
 		return arrays;
 	}
+*/
 
 
 	/******************************************************************
@@ -567,13 +650,42 @@
 		var plObj = JSON.parse(storage.getItem(kScores));
 		var dataPlayerScores = new Array();
 		var k = 0;
+		var handiScoreMax = JSON.parse(storage.getItem(kHandicap)).upperLimit;
 
 		for (var i = 0; i < plObj.length; i++)
 		{
-			plObj[i]
+			var net = 0;
+			for (var x = 0; x < arrays.length; x++)
+			{
+				for (var j = 0; j < plObj[i].hole_score.length; j++)
+				{
+					if (plObj[i].hole_score[j].csubid != arrays[x].csubid) {
+						continue;
+					}
+
+					for (var k = 0; k < arrays[x].hole_score.length; k++)
+					{
+						if (arrays[x].hole_score[k] != 0) {
+							// TODO マイナスハンデがないなら、コメントをはずす
+							//if (plObj[i].score.hole[j].scores[k] > arrays[x].hole_score[k])
+							net += plObj[i].hole_score[j].scores[k] - arrays[x].hole_score[k];
+						}
+					}
+					break;
+				}
+			}
+			net = net * 1.2;
+			if (net > handiScoreMax) net = handiScoreMax;
+			plObj[i].score_net = plObj[i].score_gross - net;
+		}
+
+/*		for (var i = 0; i < plObj.length; i++)
+		{
 			var net = 0;
 			for (var j = 0; j < plObj[i].hole_score.length; j++)
 			{
+				var holes = JSON.parse(plObj[i].hole_score[j]);
+
 				// TODO 18この同一連番Holeであることを信頼
 				if (arrays.length > j && arrays[j] != 0) {
 					// TODO マイナスハンデがないなら、コメントをはずす
@@ -582,12 +694,13 @@
 				}
 			}
 			net = net * 1.2;
-			if (net > handyScoreMax) net = handyScoreMax;
+			if (net > handiScoreMax) net = handiScoreMax;
 			plObj[i].score_net = plObj[i].score_gross - net;
 		}
+*/
 
 		// ソートし、順位付け
-		plObj.sort(sort_ary("score_net", false, parseFloat, "brthdy"));
+		plObj.sort(sort_ary("score_net", false, parseFloat, "age"));
 
 		for (var i = 0; i < plObj.length; i++)
 		{
@@ -617,7 +730,7 @@
 		{
 			for (var j = 0; j < teams.length; j++)
 			{
-				if (teams[j].teamId == plObj[i].teamId)
+				if (teams[j].dataId == plObj[i].teamId)
 				{
 					teams[j].score_net += plObj[i].score_net;
 					break;
@@ -626,7 +739,7 @@
 		}
 
 		// ソートし、順位付け
-		teams.sort(sort_ary("score_net", false, parseFloat, "brthdy"));
+		teams.sort(sort_ary("score_net", false, parseFloat, "age"));
 		for (var i = 0; i < teams.length; i++)
 		{
 			teams[i].ranking = i + 1;
@@ -645,10 +758,48 @@
 	 ******************************************************************/
 	function setHandy(holeNumbers)
 	{
-		var handys = holeNumbers;
+		var handis = holeNumbers;
 		var arrayHandyHole = getHandyData();
+		var array = new Array();
 
-		for (var i = 0; i < storage.getItem(kSubCArray).split(",").length; i++)
+		for (var i = 0; i < arrayHandyHole.length; i++)
+		{
+			for (var j = 0; j < handis.length; j++)
+			{
+				if (arrayHandyHole[i].csubid != holeNumbers[j].csubid) continue;
+
+				var wkArray = new Array();
+				for (var k = 0; k < 9; k++)
+				{
+					wkArray[k] = arrayHandyHole[i].pars[k];
+				}
+/*
+				var wkHole = handis[j].pars;
+				for (var l = 0; l < wkHole.length; l++)
+				{
+					if (wkHole[l] >= 0 && wkHole[l] <= 9 )
+					{
+						wkArray[wkHole - 1] = "○";
+					}
+				}
+*/
+				for (var l = 0; l < handis[j].selected.length; l++) 
+				{
+					wkArray[handis[j].selected[l] - 1] = "○";
+				}	
+
+				var a = new Object();
+				a.csubid = arrayHandyHole[i].csubid;
+				a.csubname = arrayHandyHole[i].csubname;
+				a.name = arrayHandyHole[i].names;
+				a.pars = wkArray;
+				array.push(a);
+				break;
+			}
+		}
+		storage.setItem(kHandyHole, JSON.stringify(array));
+
+/*		for (var i = 0; i < storage.getItem(kSubCArray).split(",").length; i++)
 		{
 			var wkArray = new Array();
 			for (var k = 0; k < 9; k++)
@@ -666,39 +817,26 @@
 			}
 			storage.setItem(kHandyHole + i, wkArray);
 		}
+*/
 	}
 
 
 	/******************************************************************
-	 * 初期化処理（ハンディキャップ画面）（←削除予定）
-	 ******************************************************************/
-	function initializeHandyCap()
-	{
-		// 初期化共通
-		initializeCommon();
-
-		// データ反映
-		updateParDataDisplay();
-	}
-
-
-	/******************************************************************
-	 * 抽選済みのホール数をカウント（←削除予定）
+	 * 抽選済みのホール数をカウント
 	 ******************************************************************/
 	function countSelectHandy()
 	{
 		var count = 0;
-		var array = [];
 
-		for (var i = 0; i < storage.getItem(kSubCArray).split(",").length; i++)
+		var arrayHoles = getHandyData();
+		for (var ix in  arrayHoles)
 		{
-			if (storage.getItem(kHandyHole + i) == null) continue;
+			var holes = arrayHoles[ix];
+			if (holes == null) continue;
 
-			array[i] = storage.getItem(kHandyHole + i).split(",");
-
-			for (var j = 0; j < array[i].length; j++)
+			for (var j = 0; j < holes.pars.length; j++)
 			{
-				if (array[i][j] != "")
+				if (holes.pars[j] != "")
 				{
 					count++;
 				}
@@ -706,86 +844,96 @@
 		}
 
 		return count;
-	}
 
-
-	/******************************************************************
-	 * パーデータを画面に反映する（←削除予定）
-	 ******************************************************************/
-	function updateParDataDisplay()
-	{
-		var js_h = [];
-		var parent_object = [];
-		var thole = [];
-		var ch = [];
-		var set = [];
-
-		hHandys = ["","","","","","","","",""];
-
-		for (var i = 0; i < storage.getItem(kSubCArray).split(",").length; i++)
+/*		var arrayHoleInfs = storage.getItem(kCHoleInfs).split(",");
+		for (var i = 0; i < arrayHoleInfs.length; i++)
 		{
-			if (storage.getItem(kHandyHole + i) != null)
+			var holes = JSON.parse(arrayHoleInfs[i]);
+			if (holes == null) continue;
+
+			for (var j = 0; j < holes.pars.length; j++)
 			{
-				hHandys = storage.getItem(kHandyHole + i).split(",");
+				if (holes.pars[j] != "" && holes.pars[j] != 0)
+				{
+					count++;
+				}
 			}
-
-			js_h[i] = JSON.parse(storage.getItem(kCHoleInfs + i));
-			parent_object[i] = document.getElementById("hole" + i);
-
-			thole[i] = document.createElement('tr');
-			thole[i].innerHTML = '<th>' + js_h[i].csubname + '</th>';
-
-			for (var j = 0; j < 9; j++) {
-				thole[i].innerHTML += '<th>' + js_h[i].names[j]  + '</th>';
-			}
-			parent_object[i].appendChild(thole[i]);
-
-			ch[i] = document.createElement('tr');
-			ch[i].innerHTML = '<td>PAR</td>';
-			set[i] = document.createElement('tr');
-			set[i].innerHTML = '<td>Handy</td>';
-
-			hPars[i] = js_h[i].pars;
-
-			for (var k = 0; k < 9; k++) {
-				ch[i].innerHTML = ch[i].innerHTML + '<td>' + js_h[i].pars[k]  + '</td>';
-				set[i].innerHTML = set[i].innerHTML + '<td><input type="text" size="7" id="set' + k + '" value="' + hHandys[k] + '"></td>';
-			}
-			parent_object[i].appendChild(ch[i]);
-			parent_object[i].appendChild(set[i]);
 		}
 
+		return count;
+*/
 	}
+
 
 	/******************************************************************
 	 * パーデータ配列を通知する
 	 ******************************************************************/
 	function getParData()
 	{
-		var js_h = [];
 		var parArray = new Array();
+		var arrayHoleInfs = JSON.parse(storage.getItem(kCHoleInfs));
 
-		hHandys = ["","","","","","","","",""];
-
-		for (var i = 0; i < storage.getItem(kSubCArray).split(",").length; i++)
+		for (var i in arrayHoleInfs)
 		{
-			js_h[i] = JSON.parse(storage.getItem(kCHoleInfs + i));
-			parArray = parArray.concat(js_h[i].pars);
-
-			if (storage.getItem(kHandyHole + i) != null)
-			{
-				hHandys = storage.getItem(kHandyHole + i).split(",");
-			}
+			var js_h = new Object();
+			js_h.pars = arrayHoleInfs[i].pars;
+			js_h.csubid = arrayHoleInfs[i].csubid;
+			parArray = parArray.concat(js_h);
 		}
 		return parArray;
+
+/*
+		var parArray = new Array();
+
+		//hHandys = ["","","","","","","","",""];
+
+		var arrayHoleInfs = storage.getItem(kCHoleInfs).split(",");
+		for (var i = 0; i < arrayHoleInfs.length; i++)
+		{
+			var js_h = new Object();
+			js_h.pars = JSON.parse(arrayHoleInfs[i]).pars;
+			js_h.csubid = JSON.parse(arrayHoleInfs[i]).csubid;
+			parArray = parArray.concat(js_h);
+
+			//if (storage.getItem(kHandyHole + i) != null)
+			//{
+			//	hHandys = storage.getItem(kHandyHole + i).split(",");
+			//}
+		}
+		return parArray;
+*/
 	}
+
 
 	/******************************************************************
 	 * ハンデ選択されたホールを取得する
 	 ******************************************************************/
 	function getHandyData()
 	{
-		var arrayHandyHole = new Array();
+		var arrayHandiHole = [];
+		var defaultValue = ["","","","","","","","",""];
+		var hData = JSON.parse(storage.getItem(kHandyHole));
+		
+		var arrayHoleInfs = JSON.parse(storage.getItem(kCHoleInfs));
+		for (var i = 0; i < arrayHoleInfs.length; i++)
+		{
+			var wkData = new Object();
+			wkData.csubid = arrayHoleInfs[i].csubid;
+			wkData.csubname = arrayHoleInfs[i].csubname;
+			wkData.names = arrayHoleInfs[i].names;
+			if (hData == null || hData == undefined || hData.length <= i) {
+				wkData.pars = defaultValue;
+			} else if( hData[i] == null || hData[i] == undefined || hData[i].csubid != arrayHoleInfs[i].csubid) {
+				wkData.pars = defaultValue;
+			} else {
+				wkData.pars = hData[i].pars;
+			}
+			arrayHandiHole.push( wkData );
+		}
+
+		return arrayHandiHole;
+
+/*		var arrayHandyHole = new Array();
 		var arrayDefaultValue = ["","","","","","","","",""];
 		for (var i = 0; i < storage.getItem(kSubCArray).split(",").length; i++)
 		{
@@ -799,7 +947,9 @@
 			arrayHandyHole = arrayHandyHole.concat( wkData );
 		}
 		return arrayHandyHole;
+*/
 	}
+
 
 	/******************************************************************
 	 * チーム成績表：更新  @iwa
@@ -808,23 +958,74 @@
 	function updatePerformance()
 	{
 		var countHandy = 0;
+		var handiMax = storage.getItem(kHandiMax);
 
 		// ハンデ抽選状況の更新
 		if (document.getElementById('drawHole') !=  null)
 		{
 			countHandy = countSelectHandy();
-			document.getElementById('drawHole').innerHTML  = countHandy + " / " + handyMax;
+			document.getElementById('drawHole').innerHTML  = countHandy + " / " + handiMax;
 		}
 
 		// チームデータを作成してソートする
 		var teamData;
 		teamData = culcHandy();
-		teamData = sortDisplayData(kTeams, "score_net", "brthdy");
+		teamData = sortDisplayData(kTeams, "score_net", "age");
 
 		// データを設定して表示を更新
 		clsAnimete.setDstScore( teamData );
-		animeType = countHandy == 12 ? "finale" : "update";
+		animeType = countHandy == handiMax ? "finale" : "update";
 		clsAnimete.updaeData(animeType);
 	}
+
+
+	/******************************************************************
+	 * 年齢（経過日数）取得
+	 *   yyyy-MM-ddThh:mm:ss.sssZから現在年齢（経過日数）を求める
+	 ******************************************************************/
+	function getCulculateAge(birthday)
+	{
+		// yyyy-MM-ddのみ取得
+		var birth = birthday.substr(0,10).split('-');
+		var _birth = new Date(parseInt(birth[0]), parseInt(birth[1]-1),  parseInt(birth[2]));
+		var today = new Date();
+
+		return (Math.floor( (today.getTime() - _birth.getTime()) / (1000 * 60 * 60 * 24)) + 1);
+	}
+
+	function getArrayHoleInfs() 
+	{
+		return JSON.parse(storage.getItem(kCHoleInfs));
+	}
+
+	/******************************************************************
+	 * 変換
+   *  src["3","5","o",....] を "o" の部分だけの 番号（左記なら3）の
+   * 配列に変換する
+	 ******************************************************************/
+	function convertFromO(src)
+	{
+		var dst = [];
+		for (var i = 0; i < src.length; i++) {
+			if (src[i] == "○") {
+				dst.push(i+1);
+			}
+		}
+		return dst;
+	}
+
+	/******************************************************************
+	 * 上の反対
+	 ******************************************************************/
+	function convertToO(src, dst)
+	{
+		var dst2 = dst;
+		for (var i = 0; i < src.length; i++) {
+			dst2[src[i]] = "○";
+		}
+		return dst2;
+	}
+
+
 
 // -->

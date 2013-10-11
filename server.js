@@ -98,7 +98,8 @@ var userSchema = new Schema({
     uid    : { type: String }
   , uname: { type: String, validate: [validator, "Empty Error"] }
   , mail   : { type: String }
-  , brthdy : { type: Date }
+//  , brthdy : { type: Date }
+  , brthdy : { type: String }
   , sex    : { type: Number }
   , uimg   : { type: String }
   , created: { type: Date, default: Date.now }
@@ -209,11 +210,131 @@ var act = io
   .of('/account')
   .on('connection', function(socket) {
     // add
-    socket.on('add', function(socket) {
-      // ユーザー登録
+    socket.on('add', function(data) {
+      // ユーザー情報登録
+      addUser(socket, data);
+    });
 
+    // update
+    socket.on('update', function(data) {
+      // ユーザー情報更新
+      updateUser(socket, data);
+    });
+
+    // delete
+    socket.on('delete', function(data) {
+      // ユーザー情報削除
+      deleteUser(socket, data);
     });
   });
+
+// ユーザー登録
+function addUser(socket, data) {
+  console.log('addUser');
+  var calls = [];
+  calls.push(function (callback) {
+    User.findOne({ 'uid': data.uid },
+      function (err, user) {
+        if (!err) {
+          if (user) {
+            // found, then error(already exist)
+            console.log("addUser err: alreay exists:" + data.uid);
+            socket.emit('add', { result: false, err: "already exists." });
+          } else {
+            // Not found, then add user
+            var addUser = new User(data);
+            addUser.save(function(err) {
+              if (!err) {
+                console.log('User.save err' + err);
+                socket.emit('add', { result: false, err: "save failed:" + err });
+              }
+            });
+          }
+        } else {
+          // findOne error
+          console.log('User.findOne err:' + err);
+          socket.emi('add', { result: false, err: "findOne err:" + err });
+        }
+        callback();
+      });
+  });
+
+  async.series(calls, function (err, result) {
+    console.log('add user[END]');
+    if (err) {
+      console.log('addUser error:' + err);
+    }
+  });
+}
+
+// ユーザー更新
+function updateUser(socket, data) {
+  console.log('updateUser');
+  var calls = [];
+  calls.push(function (callback) {
+    User.findOne({ 'uid': data.uid },
+      function (err, user) {
+        if (!err) {
+          if (user) {
+            // found, then update
+            if (data.uname) {
+              user.uname = data.uname;
+            }
+            if (data.brthdy) {
+              user.brthdy = data.brthdy;
+            }
+            if (data.sex) {
+              user.sex = data.sex;
+            }
+            if (data.mail) {
+              user.mail = data.mail;
+            }
+            if (data.uimg) {
+              user.uimg = data.uimg;
+            }
+            user.save(function(err) {
+              if (err) {
+                console.log('updata user err' + err);
+                socket.emit('update', { result: false, err: "" + err });
+              } else {
+                socket.emit('update', { result: true });
+              }
+            });
+          } else {
+            // Not found, then error(not found user)
+            socket.emit('updataUser', { result: false, err: "not found user" });
+          }
+        } else {
+          console.log('User.findOne error:' + err);
+          socket.emit('update', { result: true, err: "findOne err:" + err });
+        }
+        callback();
+      });
+  });
+  async.series(calls, function(err, result) {
+    console.log('update user[END]');
+    if (err) {
+      console.log('updateUser error:' + err);
+    }
+  });
+}
+
+// ユーザー削除
+function deleteUser(socket, data) {
+  if (data.uid) {
+    User.remove({ 'uid': data.uid }, function(err) {
+      if (!err) {
+        socket.emit('delete', { 'result': true });
+      } else {
+        console.log('deleteUser error:' + err);
+        socket.emit('delete', { 'result': false, err: "" + err });
+      }
+    });
+  } else {
+    // uid is not specified.
+    socket.emit('delete', { 'result': false, err: "not specified UID." });
+  }
+}
 
 ///
 /// live service
@@ -507,19 +628,37 @@ function notifyPersonalRank(socket, rid) {
                             if (!err && scores != null && scores.length > 0) {
                                 var gross = 0;
                                 var holes = [];
+                                var holesOut;
+                                var holesIn;
+                                var scoresOut = [];
+                                var scoresIn = [];
                                 async.forEachSeries(scores, function(score, scoreCb) {
+                                    // まわった順のコースサブID、ホール毎スコアをプッシュ
+                                    if (scoresOut.length < 9) {
+                                      if (!holesOut) {
+                                        holesOut = { "csubid": score.csubid, "scores": null };
+                                      }
+                                      scoresOut.push(score.score);
+                                    } else {
+                                      if (!holesIn) {
+                                        holesIn = { "csubid": score.csubid, "scores": null };
+                                      }
+                                      scoresIn.push(score.score);
+                                    }
+                                    // グロス変数に足しこみ
                                     gross += score.score;
-                                    holes.push(score.score);
                                     scoreCb();
                                 }, function (err) {
                                     console.log("score created");
                                     Team.findOne({ 'tid': player.tid }, function (err, team) {
                                         if (!err) {
+                                            holesOut.scores = scoresOut;
+                                            holesIn.scores = scoresIn;
                                             User.findOne({ 'uid': player.uid }, function (err, user) {
                                                 pscores.push({
                                                     "user": { "uid": user.uid, "uname": user.uname, "mail": user.mail, "brthdy": user.brthdy, "sex": user.sex, "uimg": user.uimg, "created": user.created },
                                                     "team": { "tid": team.tid, "tname": team.tname, "timg": team.timg },
-                                                    "score": { "gross": gross, "holes": holes },
+                                                    "score": { "gross": gross, "holes": [ holesOut, holesIn] },
                                                     "plid": player.plid
                                                 });
                                                 cb();

@@ -5,14 +5,16 @@
 	    <link rel="stylesheet" href="/stylesheets/reset.css">
 	    <link rel="stylesheet" href="/stylesheets/common.css">
 	    <link rel="stylesheet" href="/stylesheets/button.css">
-	    <link rel="stylesheet" type="text/css" href="/stylesheets/result.css">
+	    <link rel="stylesheet" type="text/css" href="/stylesheets/resultParsonal.css">
       <link rel="stylesheet" href="/stylesheets/webkit.css">
 	</meta>
     
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2settings.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2data.js"></script>
 	<script type="text/javascript" src="/javascripts/waku2def.js"></script>
-	<script type="text/javascript" src="/javascripts/waku2dsp2.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2dsp_com.js"></script>
+	<script type="text/javascript" src="/javascripts/waku2dsp.js"></script>
 	<script type="text/javascript" src="/javascripts/jstween-1.1.js"></script>
    	<script type="text/javascript">
 <!--
@@ -27,8 +29,6 @@
 		<header>
 			<section>
 				<h1 id="captitle"></h1>
-				<hr id="over"/>
-				<hr id="under"/>
 			</section>
 		</header>
 
@@ -42,26 +42,28 @@
 		<section>
 			<article>
 				<div id="resultTable">
-					<div class="personalResultLabel">
+					<div class="scoreResultLabel">
 						<div class="rankingLabel">順位</div>
 						<div class="nameLabel">氏名</div>
 						<div class="grossLabel">Gross</div>
 						<div class="netLabel">Net</div>
+						<div class="handiLabel">Handicap</div>
 					</div>
-					<div class="personalResult" id="result">
-						<figure class="ranking"></figure>
-						<figure class="name"></figure>
-						<figure class="gross"></figure>
-						<figure class="net"></figure>
+					<div class="scoreResult" id="result">
+						<div class="front">
+							<figure class="ranking"></figure>
+							<figure class="name"></figure>
+							<figure class="gross"></figure>
+							<figure class="net"></figure>
+							<figure class="handi"></figure>
+						</div>
+						<div class="back"></div>
 					</div>
 				</div>
 			</article>
 		</section>
+		<canvas id="finale" style="visibility:hidden" onclick="onclick_finale();"></canvas>
 
-		<footer>
-			<nav id="footer">Copryright PFU Software Limited
-			</nav>
-		</footer>
 	</body>
   </body>
 </html>

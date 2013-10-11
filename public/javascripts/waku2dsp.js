@@ -2,18 +2,12 @@
 ////////////////////////////////////////////////////////
 // Created by k.iwamine
 
-// アニメーションフィナーレ非表示
-function onclick_finale() {
-	cvs = document.getElementById("finale");
-	cvs.style.visibility = "hidden";
-}
-
 
 ////////////////////////////////////////////////////////
 // チームスコア表示制御クラス
 //
 //  使い方：
-//    1)wk2TeamAnimetionClassクラスのインスタンスを作成
+//    1)wk2AnimetionClassクラスのインスタンスを作成
 //    2)setSrcScoreで更新前のデータを設定
 //    3)setDstScoreで更新後のデータを設定
 //    4)CreateTeamObjectsで更新前のデータを元にHTMLのオブジェクトを調整する
@@ -22,17 +16,19 @@ function onclick_finale() {
 //        クリックしてめくれるようにするなどHTMLのオブジェクトを調整する
 //  備考：
 //    ・アニメーション処理はタイマーなど遅延処理を入れないとうまくアニメーションしない
-//      本クラス内で
-var wk2TeamAnimetionClass = function() {
+
+var wk2AnimetionClass = function( mode ) {
 
 	////////////////////////////////////////////////////////
 	// プロパティ
+	this.m_mode = (typeof(mode) == "undefined") ? "team" : mode;
+	gAnimetionMode = this.m_mode;
 	this.m_dstScoreArray = null;			// 更新後のチームスコア(dataTeamScoreの配列)
 	this.m_srcScoreArray = null;			// 更新前のチームスコア(dataTeamScoreの配列)
 	this.animStartTime = 1000;				// アニメーション開始までの時間
 
 	// 定数
-	this.m_stObjName = "div.teamResult";	// 操作対象オブジェクト名
+	this.m_stObjName = "div.scoreResult";	// 操作対象オブジェクト名
 
 	// プライベート変数
 	var mCountAnimTarget;					// アニメ処理用カウンタ
@@ -50,11 +46,14 @@ var wk2TeamAnimetionClass = function() {
 		this.m_dstScoreArray = tmArray;
 	}
 
+	// チームモードか
+	this.isModeTeam = function( ) { return (this.m_mode == "team"); }
 
-	// チームオブジェクトの生成
-	this.CreateTeamObjects = function() {
+
+	// オブジェクトの生成
+	this.CreateObjects = function() {
 		if(this.m_srcScoreArray == null) {
-			alert("データが設定されていません。\nCreateTeamObjects");
+			alert("データが設定されていません。\nCreateObjects");
 			return;
 		}
 
@@ -65,29 +64,31 @@ var wk2TeamAnimetionClass = function() {
 			elms.style.visibility ="hidden";
 
 			// スコアのタイトルを氏名に変更する
-			elms = document.getElementsByClassName("nameTeamLabel");
+			elms = document.getElementsByClassName("nameLabel");
 			elms[0].innerText = "氏名";
 		}
 
 		// ノードを複製
 		//   読み込み済みのデータ数分ノードを複製
-		//   チームIDをオブジェクトIDとして設定
+		//   チームID/プレイヤーIDをオブジェクトIDとして設定
 		var obj = document.querySelectorAll( this.m_stObjName );
 		var array = this.m_srcScoreArray;
+		var nId;
 		for (var i = 0; i < array.length; i++) {
+			nId = array[i].dataId;
 			if( i == 0 ) {
 				// 先頭を雛型ノードにする
-				obj[0].setAttribute( "id", array[i].teamId );
+				obj[0].setAttribute( "id", nId );
 			} else {
 				// 雛型ノードを複製する
 				var copy = obj[0].cloneNode(true);
-				copy.setAttribute( "id", array[i].teamId );
+				copy.setAttribute( "id", nId );
 				obj[0].parentNode.appendChild(copy);
 			}
 		}
 
 		// アニメーション用の設定
-		prvAnimInitialize();
+		this.prvAnimInitialize( this );
 
 	}
 
@@ -95,20 +96,22 @@ var wk2TeamAnimetionClass = function() {
 	//   bAnime :アニメーション有無
 	this.restoreData = function( bAnime ) {
 		if(this.m_srcScoreArray == null) {
-			alert("データが設定されていません。\nCreateTeamObjects");
+			alert("データが設定されていません。\nCreateObjects");
 			return;
 		}
 
-		{
+		// 座標更新
+		if( !bAnime ) {
 			// データ更新
 			for (var i = 0; i < this.m_srcScoreArray.length; i++) {
-				prvUpdateScore(this.m_srcScoreArray[i]);
+				this.prvUpdateScore(this.m_srcScoreArray[i], this.m_srcScoreArray.length);
 			}
 
-			// 座標更新
 			this.m_dstScoreArray = this.m_srcScoreArray;
-			setTimeout( animNone, 0 );	// 更新
+			setTimeout( this.animNone.bind(this), 0 );	// 更新
 			return;
+		} else {
+			setTimeout( prvJST_FadeIn, 0 );	// 更新
 		}
 	}
 
@@ -126,14 +129,14 @@ var wk2TeamAnimetionClass = function() {
 		// アニメーション設定
 		switch( animeType ) {
 		case "finale":	// 最終結果表示用
-			setTimeout( prvAnimFinale, this.animStartTime );
+			setTimeout( this.prvAnimFinale.bind(this), this.animStartTime );
 			break;
 		case "update":	// 中間結果用
-			setTimeout( prvAnimUpdate, this.animStartTime );
+			setTimeout( this.prvAnimUpdate.bind(this), this.animStartTime );
 			break;
 		case "none":	// アニメなし
 		default:
-			setTimeout( animNone, this.animStartTime );
+			setTimeout( this.animNone.bind(this), this.animStartTime );
 			break;
 		}
 
@@ -148,89 +151,58 @@ var wk2TeamAnimetionClass = function() {
 	////////////////////////////////////////////////////////
 	// 内部メソッド
 
-	// Y座標計算
-	//    ranking：順位
-	function prvCalcPos( ranking ) {
-		var y = (ranking) * 60;
-		return y;
-	}
-
-	// スコア桁揃え（四捨五入して小数1桁にする）
-	//    scoreValue：スコア
-	function prvPreValue( scoreValue ) {
-		var val;
-		if( typeof(scoreValue) == "string" ) {
-			val = parseFloat( scoreValue );
-		} else {
-			val = scoreValue
-		}
-		var num = new Number( val );
-		var str = num.toPrecision( 6 );
-		var n = str.split(".")[0].length;
-		str = num.toPrecision( n+1 );
-		return str;
-	}
 
 	// データ更新
 	//    score：スコアデータ
-	function prvUpdateScore( score ) {
-		var team = document.getElementById( score.teamId );
+	//    cnt  ：スコアデータ総数
+	this.prvUpdateScore = function ( score, cnt ) {
+		var nId = score.dataId;
+		var elm = document.getElementById( nId );
 		// 表面のデータを更新する
-		var ch = team.children[0].children;
+		var ch = elm.children[0].children;
 		for (var j = 0; j < ch.length; j++) {
 			// クラス名を元にデータを設定する
 			switch( ch[j].getAttribute("class") ) {
 			case "ranking":
 				ch[j].innerHTML = score.ranking; break;
 			case "name":
-				ch[j].innerHTML = score.teamname; break;
+				ch[j].innerHTML = score.name; break;
 			case "gross":
 				ch[j].innerHTML = prvPreValue( score.score_gross ); break;
 			case "net":
 				ch[j].innerHTML = prvPreValue( score.score_net ); break;
+			case "handi":
+				{
+					var num = prvStoN(score.score_gross) - prvStoN(score.score_net);
+					ch[j].innerHTML = prvPreValue( num );
+					break;
+				}
 			}
 		}
 
 		// 裏面のデータを設定
-		ch = team.children[1];
+		ch = elm.children[1];
 		ch.innerHTML = score.ranking;
 
 		// zIndex設定
-		team.style.zIndex = clsAnimete.m_srcScoreArray.length - score.ranking;
-	}
-
-	// Y座標設定
-	//    newPos：新しい順位（1から開始）
-	//    id    ：チームID
-	function prvSetPosition( newPos, id ) {
-		var y = prvCalcPos( newPos );
-		var team = document.getElementById( id );
-		team.style.top = y + "px";
-	}
-
-	// Y座標取得
-	//    id    ：チームID
-	function prvGetPosition( id ) {
-		var team = document.getElementById( id );
-		var y = parseInt( team.style.top, 10 );
-		return y;
+		elm.style.zIndex = cnt - score.ranking;
 	}
 
 	// チームデータ差し替え
-	function prvDataExchange() {
-		clsAnimete.m_srcScoreArray = clsAnimete.m_dstScoreArray;
-		clsAnimete.m_dstScoreArray = null;
+	this.prvDataExchange = function() {
+		this.m_srcScoreArray = this.m_dstScoreArray;
+		this.m_dstScoreArray = null;
 	}
 
 	// アニメーションエフェクトの後始末
-	function prvAnimClear() {
+	this.prvAnimClear = function() {
 		prvJST_Clear();
 	}
 
 	// アニメーション初期化
-	function prvAnimInitialize() {
+	this.prvAnimInitialize = function( aniObj ) {
 		// フリップアニメーションの設定
-		prvR3Di_initialize();
+		prvR3Di_initialize( aniObj );
 	}
 
 
@@ -257,35 +229,41 @@ var wk2TeamAnimetionClass = function() {
 	//アニメーション関連
 
 	// 最終結果表示用
-	function prvAnimFinale() {
+	this.prvAnimFinale = function() {
 		// スコアを裏返してクリックしたらめくれるように設定する
 		mCountAnimTarget = 0;
-		for (var i = 0; i < clsAnimete.m_srcScoreArray.length; i++) {
+		var objAnime = getAnimationObject();
+		for (var i = 0; i < objAnime.m_srcScoreArray.length; i++) {
 			setTimeout( prvR3Di_SetFlipBack, 300*i );
 		}
 	}
 
 	// 中間結果表示用
-	function prvAnimUpdate() {
+	this.prvAnimUpdate = function() {
 		prvJST_MovePositionStart();
 	}
 
 	// アニメーションなし
-	function animNone() {
+	this.animNone = function() {
+		if( this.m_dstScoreArray == null ) {
+			return;
+		}
+
 		// 座標書き換え
 		var data;
-		for (var i = 0; i < clsAnimete.m_dstScoreArray.length; i++) {
-			data = clsAnimete.m_dstScoreArray[i];
-            prvSetPosition( data.ranking, data.teamId );
-
+		var nId;
+		for (var i = 0; i < this.m_dstScoreArray.length; i++) {
+			data = this.m_dstScoreArray[i];
+			nId = data.dataId;
+            prvSetPosition( data.ranking, nId );
 		}
 
 		// データ差し替え
-		prvDataExchange();
+		this.prvDataExchange();
 
 		// 値書き換え
-		for (var i = 0; i < clsAnimete.m_srcScoreArray.length; i++) {
-			prvUpdateScore( clsAnimete.m_srcScoreArray[i] );
+		for (var i = 0; i < this.m_srcScoreArray.length; i++) {
+			this.prvUpdateScore( this.m_srcScoreArray[i], this.m_srcScoreArray.length );
 		}
 	}
 
@@ -333,45 +311,51 @@ var wk2TeamAnimetionClass = function() {
 
 
 	// 3Di初期化
-	function prvR3Di_initialize() {
+	function prvR3Di_initialize( aniObj ) {
 		// rotate3Di関連
-		for (var i = 0; i < clsAnimete.m_srcScoreArray.length; i++) {
-			$( "#"+clsAnimete.m_srcScoreArray[i].teamId ).click( prvR3Di_Click );
-			$("#"+clsAnimete.m_srcScoreArray[i].teamId).find('div.front').show();
-			$("#"+clsAnimete.m_srcScoreArray[i].teamId).find('div.back').hide();
+		var nId;
+		for (var i = 0; i < aniObj.m_srcScoreArray.length; i++) {
+			nId = aniObj.m_srcScoreArray[i].dataId;
+			$("#"+nId).click( prvR3Di_Click );
+			$("#"+nId).find('div.front').show();
+			$("#"+nId).find('div.back').hide();
 		}
 	}
 
 	// めくり設定完了後の操作
 	function prvR3Di_ExitFlipBackSetting() {
+		var objAnime = getAnimationObject();
+
 		// データを差し替える
-        prvDataExchange();
+        objAnime.prvDataExchange();
 
 		// スコア更新
 		var teamData;
-		for (var i = 0; i < clsAnimete.m_srcScoreArray.length; i++) {
-			teamData = clsAnimete.m_srcScoreArray[i];
+		for (var i = 0; i < objAnime.m_srcScoreArray.length; i++) {
+			teamData = objAnime.m_srcScoreArray[i];
             // 座標書き換え
-            prvSetPosition( teamData.ranking, teamData.teamId );
+            prvSetPosition( teamData.ranking, teamData.dataId );
             // 値更新
-			prvUpdateScore( teamData );
+			objAnime.prvUpdateScore( teamData, objAnime.m_srcScoreArray.length );
 		}
 
 		// カウントリセット
-		mCountAnimTarget = clsAnimete.m_srcScoreArray.length;
+		mCountAnimTarget = objAnime.m_srcScoreArray.length;
 	}
 
 	// スコアを裏返す
 	function prvR3Di_SetFlipBack() {
+		var objAnime = getAnimationObject();
+
 		// 裏返す
-		$("#"+clsAnimete.m_srcScoreArray[mCountAnimTarget].teamId).rotate3Di( '360', 500 );
-		$("#"+clsAnimete.m_srcScoreArray[mCountAnimTarget].teamId).find('div.front').hide();
-		$("#"+clsAnimete.m_srcScoreArray[mCountAnimTarget].teamId).find('div.back').show();
+		$("#"+objAnime.m_srcScoreArray[mCountAnimTarget].dataId).rotate3Di( '360', 500 );
+		$("#"+objAnime.m_srcScoreArray[mCountAnimTarget].dataId).find('div.front').hide();
+		$("#"+objAnime.m_srcScoreArray[mCountAnimTarget].dataId).find('div.back').show();
 
 		mCountAnimTarget++;
 
 		// 最後
-		if( mCountAnimTarget == clsAnimete.m_srcScoreArray.length - 1 ) {
+		if( mCountAnimTarget == objAnime.m_srcScoreArray.length - 1 ) {
 			setTimeout( prvR3Di_ExitFlipBackSetting, 300 );
 		}
 	}
@@ -380,13 +364,90 @@ var wk2TeamAnimetionClass = function() {
 	///////////////////////////////////////////////
 	// JSTween関連
 
+	function prvSetOpacity(id, val) {
+		$("#"+id).css('opacity', val);
+	}
+
+	// フェードイン
+	function prvJST_FadeIn() {
+		var objAnime = getAnimationObject();
+
+		mCountAnimTarget = objAnime.m_srcScoreArray.length;
+
+		// 先頭から順に移動
+		for (var i = 0; i < objAnime.m_srcScoreArray.length; i++) {
+			// データ更新
+			objAnime.prvUpdateScore(objAnime.m_srcScoreArray[i], objAnime.m_srcScoreArray.length);
+
+			prvSetOpacity(objAnime.m_srcScoreArray[i].dataId, 0);
+
+			// 位置計算
+			var id= objAnime.m_srcScoreArray[i].dataId;
+			var posY = prvCalcPos( objAnime.m_srcScoreArray[i].ranking );
+			var posX = prvGetPositionX( objAnime.m_srcScoreArray[i].dataId );
+
+			// zIndex設定
+			var elm = document.getElementById( id );
+			elm.style.zIndex = objAnime.m_srcScoreArray.length - objAnime.m_srcScoreArray[i].ranking;
+
+			// 移動＆アニメーション処理
+			var dur = 0.2;
+			var interval = 0.05;
+			var moveY = -10;
+			var moveX = -40;
+			{
+				$( "#"+id ).tween({
+					top:{
+						start: posY + moveY,
+						stop: posY,
+						time: interval * i,
+						duration: dur,
+						units: 'px',
+						effect: 'easeInOut',
+					},
+					left:{
+						start: posX + moveX,
+						stop: posX,
+						time: interval * i,
+						duration: dur,
+						units: 'px',
+						effect: 'easeInOut',
+					},
+					opacity:{
+					  start: 0,
+					  stop: 100,
+					  time: interval * i,
+					  duration: dur,
+					  effect:'easeInOut'
+					},
+					onStop: function( elem ) {
+						// 最後の場合は後始末
+						mCountAnimTarget--;
+						if( mCountAnimTarget == 0 ) {
+							var obAni = getAnimationObject();
+							obAni.animNone();
+							for (var i = 0; i < obAni.m_srcScoreArray.length; i++) {
+								obAni.prvUpdateScore( obAni.m_srcScoreArray[i], obAni.m_srcScoreArray.length );
+							}
+						}
+					}
+				} );
+				// アニメーション実行
+				$.play();
+			}
+		}
+	}
+
+
 	// 移動開始
 	function prvJST_MovePositionStart() {
-		mCountAnimTarget = clsAnimete.m_srcScoreArray.length;
+		var objAnime = getAnimationObject();
+
+		mCountAnimTarget = objAnime.m_srcScoreArray.length;
 
 		// 変更前先頭からシャドウ追加
-		for (var i = 0; i < clsAnimete.m_srcScoreArray.length; i++) {
-			var id= clsAnimete.m_srcScoreArray[i].teamId;
+		for (var i = 0; i < objAnime.m_srcScoreArray.length; i++) {
+			var id= objAnime.m_srcScoreArray[i].dataId;
 
 			// アニメーション処理
 			var dur = 0.2;
@@ -416,21 +477,23 @@ var wk2TeamAnimetionClass = function() {
 
 	// 移動
 	function prvJST_MovePosition() {
-		mCountAnimTarget = clsAnimete.m_srcScoreArray.length;
+		var objAnime = getAnimationObject();
+
+		mCountAnimTarget = objAnime.m_srcScoreArray.length;
 
 		// 変更前先頭から順に移動
-		for (var i = 0; i < clsAnimete.m_srcScoreArray.length; i++) {
-			var id= clsAnimete.m_srcScoreArray[i].teamId;
-			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[i].teamId );
+		for (var i = 0; i < objAnime.m_srcScoreArray.length; i++) {
+			var id= objAnime.m_srcScoreArray[i].dataId;
+			var orgPos = prvGetPosition( getAnimationObject().m_srcScoreArray[i].dataId );
 			var newPos = orgPos;
-			for (var j = 0; j < clsAnimete.m_dstScoreArray.length; j++) {
-				if( clsAnimete.m_dstScoreArray[j].teamId == id ) {
+			for (var j = 0; j < objAnime.m_dstScoreArray.length; j++) {
+				if( objAnime.m_dstScoreArray[j].dataId == id ) {
 					// 位置計算
-					newPos = prvCalcPos( clsAnimete.m_dstScoreArray[j].ranking );
+					newPos = prvCalcPos( objAnime.m_dstScoreArray[j].ranking );
 
 					// zIndex設定
 					var elm = document.getElementById( id );
-					elm.style.zIndex = clsAnimete.m_dstScoreArray.length - clsAnimete.m_dstScoreArray[j].ranking;
+					elm.style.zIndex = objAnime.m_dstScoreArray.length - objAnime.m_dstScoreArray[j].ranking;
 					break;
 				}
 			}
@@ -452,11 +515,12 @@ var wk2TeamAnimetionClass = function() {
 						// 最後の場合は後始末
 						mCountAnimTarget--;
 						if( mCountAnimTarget == 0 ) {
-							animNone();
-							for (var i = 0; i < clsAnimete.m_srcScoreArray.length; i++) {
-								prvUpdateScore( clsAnimete.m_srcScoreArray[i] );
+							var obAni = getAnimationObject();
+							obAni.animNone();
+							for (var i = 0; i < obAni.m_srcScoreArray.length; i++) {
+								obAni.prvUpdateScore( obAni.m_srcScoreArray[i], obAni.m_srcScoreArray.length );
 							}
-							prvAnimClear();
+							prvJST_Clear();
 						}
 					}
 				} );
@@ -468,9 +532,11 @@ var wk2TeamAnimetionClass = function() {
 
 	// 効果の削除
 	function prvJST_Clear() {
-		for (var i = 0; i < clsAnimete.m_srcScoreArray.length; i++) {
+		var objAnime = getAnimationObject();
+
+		for (var i = 0; i < objAnime.m_srcScoreArray.length; i++) {
 			// 影をクリアする
-			$( "#"+clsAnimete.m_srcScoreArray[i].teamId ).tween({
+			$( "#"+objAnime.m_srcScoreArray[i].dataId ).tween({
 				shadow:{
 					start: wk2_setting_shadow_move1,
 					stop: wk2_setting_shadow_move2,
@@ -487,7 +553,9 @@ var wk2TeamAnimetionClass = function() {
 
 	// トップとラストの拡大
 	function prvJST_Zoom() {
-		mCountAnimTarget = clsAnimete.m_srcScoreArray.length;
+		var objAnime = getAnimationObject();
+
+		mCountAnimTarget = objAnime.m_srcScoreArray.length;
 
 		// 上へスクロール
 		document.getElementById("resultTable").scrollTop = 0;
@@ -496,12 +564,12 @@ var wk2TeamAnimetionClass = function() {
 		// 拡大表示
 		var dur = 1;
 		var interval = 0.3;
-		var teamCount = clsAnimete.m_srcScoreArray.length;
+		var teamCount = objAnime.m_srcScoreArray.length;
 		// 1st
 		{
 			var pos = 0;
-			var id= clsAnimete.m_srcScoreArray[pos].teamId;
-			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
+			var id= objAnime.m_srcScoreArray[pos].dataId;
+			var orgPos = prvGetPosition( objAnime.m_srcScoreArray[pos].dataId );
 			var newPos = 20;
 
 			// zIndex
@@ -528,12 +596,12 @@ var wk2TeamAnimetionClass = function() {
 		}
 
 		// 2nd
-		if(clsAnimete.m_srcScoreArray.length > 2)
+		if(objAnime.m_srcScoreArray.length > 2)
 		{
 			var pos = 1;
-			var id= clsAnimete.m_srcScoreArray[pos].teamId;
-			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
-			var newPos = 100;
+			var id= objAnime.m_srcScoreArray[pos].dataId;
+			var orgPos = prvGetPosition( objAnime.m_srcScoreArray[pos].dataId );
+			var newPos = 90;
 
 			// zIndex
 			var team = document.getElementById( id );
@@ -558,12 +626,12 @@ var wk2TeamAnimetionClass = function() {
 			}
 		}
 		// 3rd
-		if(clsAnimete.m_srcScoreArray.length > 4)
+		if(objAnime.m_srcScoreArray.length > 4)
 		{
 			var pos = 2;
-			var id= clsAnimete.m_srcScoreArray[pos].teamId;
-			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
-			var newPos = 175;
+			var id= objAnime.m_srcScoreArray[pos].dataId;
+			var orgPos = prvGetPosition( objAnime.m_srcScoreArray[pos].dataId );
+			var newPos = 155;
 
 			// zIndex
 			var team = document.getElementById( id );
@@ -589,12 +657,12 @@ var wk2TeamAnimetionClass = function() {
 		}
 
 		// boobee
-		if(clsAnimete.m_srcScoreArray.length > 3)
+		if(objAnime.m_srcScoreArray.length > 3)
 		{
-			var pos = clsAnimete.m_srcScoreArray.length-2;
-			var id= clsAnimete.m_srcScoreArray[pos].teamId;
-			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
-			var newPos = 410;
+			var pos = objAnime.m_srcScoreArray.length-2;
+			var id= objAnime.m_srcScoreArray[pos].dataId;
+			var orgPos = prvGetPosition( objAnime.m_srcScoreArray[pos].dataId );
+			var newPos = 500;
 
 			// zIndex
 			var team = document.getElementById( id );
@@ -619,10 +687,10 @@ var wk2TeamAnimetionClass = function() {
 		}
 		// last
 		{
-			var pos = clsAnimete.m_srcScoreArray.length-1;
-			var id= clsAnimete.m_srcScoreArray[pos].teamId;
-			var orgPos = prvGetPosition( clsAnimete.m_srcScoreArray[pos].teamId );
-			var newPos = 490;
+			var pos = objAnime.m_srcScoreArray.length-1;
+			var id= objAnime.m_srcScoreArray[pos].dataId;
+			var orgPos = prvGetPosition( objAnime.m_srcScoreArray[pos].dataId );
+			var newPos = 570;
 
 			// zIndex
 			var team = document.getElementById( id );

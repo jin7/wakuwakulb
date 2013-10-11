@@ -156,3 +156,8 @@ div#past_number_list_late {
     text-align: center;
 }
 
+span.course_name {
+	width: 40px;
+	color: white;
+	float: left;
+}
