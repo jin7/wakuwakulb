@@ -59,8 +59,8 @@
 	           b2 = primer(b2);
 	       }
 
-	       if (a2 < b2) return reverse * -1;
-	       if (a2 > b2) return reverse * 1;
+	       if (a2 < b2) return reverse * 1;
+	       if (a2 > b2) return reverse * -1;
 	       return 0;
 	   }
 	}
