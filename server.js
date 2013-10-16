@@ -581,7 +581,7 @@ function inputScore(socket, data) {
             // found, then update
             score.score = data.score;
             score.save(function(err) {
-              if (err) console.log(err);
+              if (err) console.log("score update error:" + err);
             });
           } else {
             // NOT found, then add
@@ -589,15 +589,16 @@ function inputScore(socket, data) {
             updScore.save(function(err) {
               // notify personal rank
               if (!err) {
+                console.log("score saved:" + data);
                 //notifyPersonalRank();
               } else {
-                console.log(err);
+                console.log("score save error:" + err);
               }
             });
           }
         } else {
           // findOne error
-          console.log(err);
+          console.log("Score.findOne error:" + err);
         }
         callback(null, null);
       });
