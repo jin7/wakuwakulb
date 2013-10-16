@@ -653,8 +653,12 @@ function notifyPersonalRank(socket, rid) {
                                     console.log("score created");
                                     Team.findOne({ 'tid': player.tid }, function (err, team) {
                                         if (!err) {
-                                            holesOut.scores = scoresOut;
-                                            holesIn.scores = scoresIn;
+                                            if (holesOut) {
+                                              holesOut.scores = scoresOut;
+                                            }
+                                            if (holesIn) {
+                                              holesIn.scores = scoresIn;
+                                            }
                                             User.findOne({ 'uid': player.uid }, function (err, user) {
                                                 pscores.push({
                                                     "user": { "uid": user.uid, "uname": user.uname, "mail": user.mail, "brthdy": user.brthdy, "sex": user.sex, "uimg": user.uimg, "created": user.created },
