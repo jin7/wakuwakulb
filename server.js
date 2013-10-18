@@ -89,7 +89,7 @@ var playerModel = new Schema({
   , rid: { type: String }
   , uid: { type: String }
   , tid: { type: String }
-  , csubids: { type: Array }
+  , csubids: { type: [String] }
 });
 var Player = mongoose.model('Player', playerModel);
 
@@ -626,7 +626,8 @@ function notifyPersonalRank(socket, rid) {
             if (!err && players != null) {
                 async.forEachSeries(players, function (player, cb) {
                     var csubids;
-                    csubids = JSON.parse(player.csubids);
+//                    csubids = JSON.parse(player.csubids);
+                    csubids = player.csubids;
                     Score.find({'uid': player.uid}).sort({'csubid':'asc', 'holeno':'asc'}).exec(
                         function(err, scores) {
                             if (!err && scores != null && scores.length > 0) {
