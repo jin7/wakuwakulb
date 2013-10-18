@@ -624,6 +624,8 @@ function notifyPersonalRank(socket, rid) {
         Player.find({'rid': rid}, function (err, players) {
             if (!err && players != null) {
                 async.forEachSeries(players, function (player, cb) {
+                    var csubids;
+                    csubids = JSON.parse(player.csubids);
                     Score.find({'uid': player.uid}).sort({'csubid':'asc', 'holeno':'asc'}).exec(
                         function(err, scores) {
                             if (!err && scores != null && scores.length > 0) {
@@ -635,7 +637,7 @@ function notifyPersonalRank(socket, rid) {
                                 var scoresIn = [];
                                 async.forEachSeries(scores, function(score, scoreCb) {
                                     // まわった順のコースサブID、ホール毎スコアをプッシュ
-                                    if (score.csubid == player.csubids[0]) {
+                                    if (score.csubid == csubids[0]) {
                                       if (!holesOut) {
                                         holesOut = { "csubid": score.csubid, "scores": null };
                                       }
