@@ -217,7 +217,7 @@ var wk2AnimetionClass = function( mode ) {
 	// アニメーションフィナーレ
 	function prvAnimFinaleEnd() {
 		// 内容表示
-		prvJST_Zoom();
+//		prvJST_Zoom();
 
 		// 紙ふぶき
 		setTimeout( prvAnimFinaleEnd2, 2000 );
