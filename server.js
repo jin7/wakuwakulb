@@ -635,7 +635,7 @@ function notifyPersonalRank(socket, rid) {
                                 var scoresIn = [];
                                 async.forEachSeries(scores, function(score, scoreCb) {
                                     // まわった順のコースサブID、ホール毎スコアをプッシュ
-                                    if (scoresOut.length < 9) {
+                                    if (score.csubid == player.csubids[0]) {
                                       if (!holesOut) {
                                         holesOut = { "csubid": score.csubid, "scores": null };
                                       }
