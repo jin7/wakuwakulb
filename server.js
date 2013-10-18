@@ -89,6 +89,7 @@ var playerModel = new Schema({
   , rid: { type: String }
   , uid: { type: String }
   , tid: { type: String }
+  , csubids: { type: Array }
 });
 var Player = mongoose.model('Player', playerModel);
 
