@@ -170,7 +170,7 @@
 		io.transports.push('htmlfile');
 		lb = io.connect("http://wakuwaku.c.node-ninja.com:3000/leadersboard", {
 //		lb = io.connect("http://localhost:3000/leadersboard", {
-			'try multiple transports': false, 
+			'try multiple transports': true, 
 			'force new connection': true 
 		});
 		console.log("leadersboard attempt connect...");
