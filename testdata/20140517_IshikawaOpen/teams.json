@@ -1,0 +1,12 @@
+﻿{ "tid" : "t001", "tname" : "情報KIOSK", "timg" : "" }
+{ "tid" : "t002", "tname" : "ものづくり", "timg" : "" }
+{ "tid" : "t003", "tname" : "PSW", "timg" : "" }
+{ "tid" : "t004", "tname" : "エンベ", "timg" : "" }
+{ "tid" : "t005", "tname" : "イメプロ", "timg" : "" }
+{ "tid" : "t006", "tname" : "PTC", "timg" : "" }
+{ "tid" : "t007", "tname" : "PTW", "timg" : "" }
+{ "tid" : "t008", "tname" : "SSG", "timg" : "" }
+{ "tid" : "t009", "tname" : "コーポレート", "timg" : "" }
+{ "tid": "t010", "tname": "イメージ", "timg": "" }
+{ "tid": "t011", "tname": "プラット", "timg": "" }
+{ "tid": "t012", "tname": "KIOSK", "timg": "" }
