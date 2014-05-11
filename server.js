@@ -433,7 +433,8 @@ function notifyRoundData(socket) {
         Round.find(function (err, rounds) {
             //console.log('rounds:' + rounds.length);
             if (!err && rounds != null) {
-                if (rounds.length == 1) {
+//                if (rounds.length == 1) {
+                  if (rounds.length >= 1) {
                     console.log('csubids:' + rounds[0].csubids);
                     var round = { "rid": rounds[0].rid, "rname": rounds[0].rname, "date": rounds[0].date, "time": rounds[0].time, "handicapinf": rounds[0].handicapinf, "cinf": [], "prtyinfs": rounds[0].prtyifs };
                     var courseinf = { "cid": rounds[0].cid };
@@ -623,12 +624,15 @@ function notifyPersonalRank(socket, rid) {
 
     calls.push(function (callback) {
         Player.find({'rid': rid}, function (err, players) {
+//            console.log("1:Player uid:" + player.uid + ",rid:" + player.rid);
             if (!err && players != null) {
                 async.forEachSeries(players, function (player, cb) {
                     var csubids;
 //                    csubids = JSON.parse(player.csubids);
                     csubids = player.csubids;
-                    Score.find({'uid': player.uid}).sort({'csubid':'asc', 'holeno':'asc'}).exec(
+//                    console.log("Player uid:" + player.uid + ",rid:" + player.rid);
+                    Score.find({'uid': player.uid, 'rid': player.rid}).sort({'csubid':'asc', 'holeno':'asc'}).exec(
+//                    Score.find({'uid': player.uid}).sort({'csubid':'asc', 'holeno':'asc'}).exec(
                         function(err, scores) {
                             if (!err && scores != null && scores.length > 0) {
                                 var gross = 0;
