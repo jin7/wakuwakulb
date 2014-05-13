@@ -468,7 +468,7 @@ function notifyRoundData(socket) {
                                     var plyrinfs = [];  // プレーヤー情報配列
                                     async.forEachSeries(prtyinf.plyrifs, function (plyrid, plyrinfCb) {
                                         // プレーヤー情報サーチ
-                                        Player.findOne({ 'plid': plyrid }, function (err, plyr) {
+                                        Player.findOne({ 'plid': plyrid, 'rid': rounds[0].rid }, function (err, plyr) {
                                             if (!err && plyr) {
                                                 plyrinfs.push({ "plid": plyr.plid, "rid": plyr.rid, "uid": plyr.uid, "tid": plyr.tid });
                                             } else {

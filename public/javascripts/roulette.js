@@ -46,6 +46,9 @@ var roulette = {
     $bing_number : {},
     $past_number_ul : [],
     
+    // これがtrueのとき、サブコース名とホール名をくっつけたものを中央に表示する
+    holestr_use : false,
+
     // 初期化する
     initRoulette : function(){
 
@@ -62,7 +65,8 @@ var roulette = {
         // 過去に出た数字を表示する領域を生成
 		for (var i = 0; i < roulette.subCourses.length; i++) {
 			var li = '';
-			var courseName = roulette.subCourses[i].csubname.substring(0,1);
+//			var courseName = roulette.subCourses[i].csubname.substring(0,1);
+			var courseName = roulette.subCourses[i].csubname;
 			var $courseName = $('<span>' + courseName + '</span>').addClass('course_name');
 			roulette.$past_number_ul[i] = $('<ul>').addClass('past_number_list');
 			for (var j = 0; j < roulette.BING_NUMBER_HALF; j++) {
@@ -76,7 +80,7 @@ var roulette = {
 	// 各要素の大きさ、font-sizeなどを定義
         // li要素のwidth、height、font-sizeをウインドウサイズに合わせる
 //        var list_size = Math.floor($('.past_number_list').width() / (roulette.BING_NUMBER_HALF+2));
-        var list_size = Math.floor((roulette.DIALOG_WIDTH - 40) / (roulette.BING_NUMBER_HALF+4));
+        var list_size = Math.floor((roulette.DIALOG_WIDTH - 44) / (roulette.BING_NUMBER_HALF+4));
 		$('div.past_number_list_group').width((list_size + 4) * 9 + 40);
         $('.past_number_list > li').width(list_size);
         $('.past_number_list > li').height(list_size);
@@ -236,6 +240,14 @@ var roulette = {
 			hcholes : [],
 		};
 */		
+
+		// 2つのsubCourceの1ホール目のホール名が同じだった場合、区別するために
+		// 表示するホール名を サブコース名+ホール番号 にする。(holestr_use = true)
+		if (subCourses.length > 1) {
+			if (subCourses[0].names[0] == subCourses[1].names[0]) {
+				roulette.holestr_use = true;
+			}
+		}
 	},
 
 	initHoleInfo : function() {
@@ -306,9 +318,13 @@ var roulette = {
 	},
 
 	toHoleStr : function(number) {
-		var scn = parseInt((number - 1) / roulette.BING_NUMBER_HALF);
-		var mod = (number - 1) % roulette.BING_NUMBER_HALF;
-		return roulette.subCourses[scn].csubname.substring(0,1) + (mod + 1)
+		if (roulette.holestr_use == true) {
+			var scn = parseInt((number - 1) / roulette.BING_NUMBER_HALF);
+			var mod = (number - 1) % roulette.BING_NUMBER_HALF;
+			return roulette.subCourses[scn].csubname.substring(0,1) + (mod + 1)
+		} else {
+			return roulette.toHoleName(number);
+		}
 	},
 
 	toHoleName : function(number) {

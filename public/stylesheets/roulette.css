@@ -158,6 +158,8 @@ div#past_number_list_late {
 
 span.course_name {
 	width: 40px;
+	text-align: right;
+	margin-right: 4px;
 	color: white;
 	float: left;
 }
