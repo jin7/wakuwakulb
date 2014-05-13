@@ -87,6 +87,7 @@ div#past_number_list_early, div#past_number_list_late {
 }
 
 ul.past_number_list {
+    width: 300px;
     height: 30px;
 }
 
