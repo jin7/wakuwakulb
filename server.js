@@ -606,14 +606,14 @@ function inputScore(socket, data) {
       });
   });
 
-  calls.push(function(callback) {
-    // 個人順位を参加プレーヤー全員に通知
-    notifyPersonalRank(socket, data.rid);
-    callback(null, null);
-  });
+//  calls.push(function(callback) {
+//    // 個人順位を参加プレーヤー全員に通知
+//    notifyPersonalRank(socket, data.rid);
+//    callback(null, null);
+//  });
 
   async.series(calls, function(err, result) {
-    console.log('end main');
+    console.log('end inputScore');
   });
 }
 

@@ -374,8 +374,10 @@ var wk2AnimetionClass = function( mode ) {
 
 		mCountAnimTarget = objAnime.m_srcScoreArray.length;
 
-		// 先頭から順に移動
-		for (var i = 0; i < objAnime.m_srcScoreArray.length; i++) {
+//		// 先頭から順に移動
+//		for (var i = 0; i < objAnime.m_srcScoreArray.length; i++) {
+		// 最後から順に移動
+		for (var i = objAnime.m_srcScoreArray.length - 1; i >= 0; i--) {
 			// データ更新
 			objAnime.prvUpdateScore(objAnime.m_srcScoreArray[i], objAnime.m_srcScoreArray.length);
 
@@ -392,15 +394,16 @@ var wk2AnimetionClass = function( mode ) {
 
 			// 移動＆アニメーション処理
 			var dur = 0.2;
-			var interval = 0.05;
+			var interval = 0.5;
 			var moveY = -10;
 			var moveX = -40;
+			var objNum = objAnime.m_srcScoreArray.length;
 			{
 				$( "#"+id ).tween({
 					top:{
 						start: posY + moveY,
 						stop: posY,
-						time: interval * i,
+						time: interval * (objNum-i),
 						duration: dur,
 						units: 'px',
 						effect: 'easeInOut',
@@ -408,7 +411,7 @@ var wk2AnimetionClass = function( mode ) {
 					left:{
 						start: posX + moveX,
 						stop: posX,
-						time: interval * i,
+						time: interval * (objNum-i),
 						duration: dur,
 						units: 'px',
 						effect: 'easeInOut',
@@ -416,7 +419,7 @@ var wk2AnimetionClass = function( mode ) {
 					opacity:{
 					  start: 0,
 					  stop: 100,
-					  time: interval * i,
+					  time: interval * (objNum-i),
 					  duration: dur,
 					  effect:'easeInOut'
 					},

@@ -463,7 +463,8 @@
 		// データをアニメーションクラスに設定し、初期表示を行う
 		clsAnimete2.setSrcScore( dataPlayerScore );
 		clsAnimete2.CreateObjects();
-		clsAnimete2.restoreData( true );  // アニメーションあり
+//		clsAnimete2.restoreData( true );  // アニメーションあり
+		clsAnimete2.restoreData( false );  // アニメーションなし
 	}
 
 
