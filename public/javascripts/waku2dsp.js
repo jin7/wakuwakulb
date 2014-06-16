@@ -112,6 +112,8 @@ var wk2AnimetionClass = function( mode ) {
 			return;
 		} else {
 			setTimeout( prvJST_FadeIn, 0 );	// 更新
+// 以下は Web Animation 版
+//			setTimeout( prvJST_FadeInWebAnimation, 0 );	// 更新
 		}
 	}
 
@@ -151,7 +153,15 @@ var wk2AnimetionClass = function( mode ) {
 	////////////////////////////////////////////////////////
 	// 内部メソッド
 
-
+	// 透明化
+	this.setOpacity0 = function () {
+		if (!this.isModeTeam()) {
+			var objAnime = getAnimationObject();
+			for (var i = 0; i < objAnime.m_srcScoreArray.length; i++) {
+				prvSetOpacity(objAnime.m_srcScoreArray[i].dataId, 0);
+			}
+		}
+	}
 	// データ更新
 	//    score：スコアデータ
 	//    cnt  ：スコアデータ総数
@@ -190,8 +200,10 @@ var wk2AnimetionClass = function( mode ) {
 
 	// チームデータ差し替え
 	this.prvDataExchange = function() {
-		this.m_srcScoreArray = this.m_dstScoreArray;
-		this.m_dstScoreArray = null;
+		if (this.isModeTeam()) {
+		  this.m_srcScoreArray = this.m_dstScoreArray;
+		  this.m_dstScoreArray = null;
+		}
 	}
 
 	// アニメーションエフェクトの後始末
@@ -248,6 +260,9 @@ var wk2AnimetionClass = function( mode ) {
 		if( this.m_dstScoreArray == null ) {
 			return;
 		}
+
+		// 透明化
+		this.setOpacity0();
 
 		// 座標書き換え
 		var data;
@@ -351,6 +366,7 @@ var wk2AnimetionClass = function( mode ) {
 		$("#"+objAnime.m_srcScoreArray[mCountAnimTarget].dataId).rotate3Di( '360', 500 );
 		$("#"+objAnime.m_srcScoreArray[mCountAnimTarget].dataId).find('div.front').hide();
 		$("#"+objAnime.m_srcScoreArray[mCountAnimTarget].dataId).find('div.back').show();
+		prvSetOpacity(objAnime.m_srcScoreArray[mCountAnimTarget].dataId, 1);  // 不透明化
 
 		mCountAnimTarget++;
 
@@ -398,6 +414,7 @@ var wk2AnimetionClass = function( mode ) {
 			var moveY = -10;
 			var moveX = -40;
 			var objNum = objAnime.m_srcScoreArray.length;
+//      var worker = new Worker("javascripts/play_tween.js");
 			{
 				$( "#"+id ).tween({
 					top:{
@@ -437,10 +454,70 @@ var wk2AnimetionClass = function( mode ) {
 				} );
 				// アニメーション実行
 				$.play();
+//        worker.postMessage(null);
 			}
 		}
 	}
 
+  // フェードイン（web animation 版）
+  function prvJST_FadeInWebAnimation() {
+		var objAnime = getAnimationObject();
+
+		mCountAnimTarget = objAnime.m_srcScoreArray.length;
+    var lank = [];
+    var posY = [];
+    var posX = [];
+    var finishedNum = 0;
+    var objAnimeNum = objAnime.m_srcScoreArray.length;
+
+  	// 最後から順に移動
+  	for (var i = objAnime.m_srcScoreArray.length - 1; i >= 0; i--) {
+  		// データ更新
+  		objAnime.prvUpdateScore(objAnime.m_srcScoreArray[i], objAnime.m_srcScoreArray.length);
+
+  		prvSetOpacity(objAnime.m_srcScoreArray[i].dataId, 0);
+
+  		// 位置計算
+  		var id= objAnime.m_srcScoreArray[i].dataId;
+  		posY[i] = prvCalcPos( objAnime.m_srcScoreArray[i].ranking );
+  		posX[i] = prvGetPositionX( objAnime.m_srcScoreArray[i].dataId );
+
+  		// zIndex設定
+  		var elm = document.getElementById( id );
+  		elm.style.zIndex = objAnime.m_srcScoreArray.length - objAnime.m_srcScoreArray[i].ranking;
+
+  		// 移動＆アニメーション処理
+  		var dur = 200;
+  		var interval = 500;
+  		var moveY = -10;
+  		var moveX = -20;
+  		var objNum = objAnime.m_srcScoreArray.length;
+  //      var worker = new Worker("javascripts/play_tween.js");
+      {
+        lank[i] = document.getElementById(id);
+        var player = lank[i].animate([
+          {transform: 'translate(' + (posX[i] + moveX - 90) + 'px,' + (posY[i] + moveY - 20) + 'px) scale(1)', opacity: 0},
+          {transform: 'translate(' + (posX[i] - 90) + 'px,' + (posY[i] - 20) + 'px) scale(1)', opacity: 1 }
+        ], {
+          duration: dur,
+          iterations: 1,
+          delay: interval * (objNum - i)
+        });
+        player.onfinish = function(e) {
+      		// 座標書き換え
+//          lank[objAnimeNum - 1 - finishedNum].style.top = '(' + (posX[objAnimeNum - 1 - finishedNum] - 90) + 'px, ' + (posY[objAnimeNum - 1 - finishedNum] - 20) + 'px)';
+          lank[objAnimeNum - 1 - finishedNum].style.left = posX[objAnimeNum - 1 - finishedNum] + 'px';
+          lank[objAnimeNum - 1 - finishedNum].style.top = posY[objAnimeNum - 1 - finishedNum] + 'px';
+          lank[objAnimeNum - 1 - finishedNum].style.opacity = 1;
+          finishedNum++;
+//					var obAni = getAnimationObject();
+//					obAni.animNone();
+        }
+//        player.finish();
+//        player.cancel();
+      }
+  	}
+  }
 
 	// 移動開始
 	function prvJST_MovePositionStart() {

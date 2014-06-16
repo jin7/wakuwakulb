@@ -388,7 +388,6 @@
 		storage.setItem("_" + kTeams, JSON.stringify(dataTeamScores));
 	}
 
-
 	/******************************************************************
 	 * チーム成績表：初期反映
 	 *   チーム成績表のDOMContentLoadedで呼び出される
@@ -465,6 +464,7 @@
 		clsAnimete2.CreateObjects();
 //		clsAnimete2.restoreData( true );  // アニメーションあり
 		clsAnimete2.restoreData( false );  // アニメーションなし
+		clsAnimete2.updaeData("finale");
 	}
 
 
