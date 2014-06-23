@@ -445,6 +445,8 @@
 	 ******************************************************************/
 	function initializePerformancePersonal()
 	{
+		var hide = scoreHide
+
 		if( clsAnimete2 == null ) {
 			clsAnimete2 = new wk2AnimetionClass("parsonal");
 		}
@@ -463,8 +465,10 @@
 		clsAnimete2.setSrcScore( dataPlayerScore );
 		clsAnimete2.CreateObjects();
 //		clsAnimete2.restoreData( true );  // アニメーションあり
-		clsAnimete2.restoreData( false );  // アニメーションなし
-		clsAnimete2.updaeData("finale");
+		clsAnimete2.restoreData( false, hide );  // アニメーションなし
+		if (hide == "yes") {
+			clsAnimete2.updaeData("finale");
+		}
 	}
 
 

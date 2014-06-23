@@ -94,10 +94,15 @@ var wk2AnimetionClass = function( mode ) {
 
 	// 更新前スコアを復元する
 	//   bAnime :アニメーション有無
-	this.restoreData = function( bAnime ) {
+	this.restoreData = function( bAnime, hide ) {
 		if(this.m_srcScoreArray == null) {
 			alert("データが設定されていません。\nCreateObjects");
 			return;
+		}
+
+		// 透明化
+		if (hide == "yes") {
+			this.setOpacity0();
 		}
 
 		// 座標更新
@@ -155,11 +160,9 @@ var wk2AnimetionClass = function( mode ) {
 
 	// 透明化
 	this.setOpacity0 = function () {
-		if (!this.isModeTeam()) {
-			var objAnime = getAnimationObject();
-			for (var i = 0; i < objAnime.m_srcScoreArray.length; i++) {
-				prvSetOpacity(objAnime.m_srcScoreArray[i].dataId, 0);
-			}
+		var objAnime = getAnimationObject();
+		for (var i = 0; i < objAnime.m_srcScoreArray.length; i++) {
+			prvSetOpacity(objAnime.m_srcScoreArray[i].dataId, 0);
 		}
 	}
 	// データ更新
@@ -246,7 +249,11 @@ var wk2AnimetionClass = function( mode ) {
 		mCountAnimTarget = 0;
 		var objAnime = getAnimationObject();
 		for (var i = 0; i < objAnime.m_srcScoreArray.length; i++) {
-			setTimeout( prvR3Di_SetFlipBack, 300*i );
+			if (this.isModeTeam()) {
+				setTimeout( prvR3Di_SetFlipBack, 300*i );
+			} else {
+				prvR3Di_SetFlipBack();
+			}
 		}
 	}
 
@@ -260,9 +267,6 @@ var wk2AnimetionClass = function( mode ) {
 		if( this.m_dstScoreArray == null ) {
 			return;
 		}
-
-		// 透明化
-		this.setOpacity0();
 
 		// 座標書き換え
 		var data;
