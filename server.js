@@ -12,6 +12,8 @@ var express = require('express')
   , scoreboard = require('./routes/scoreboard')
   , http = require('http')
   , path = require('path')
+  , url = require('url')
+  , fs = require('fs')
   , mongoose = require('mongoose')
   , async = require('async');
 
@@ -172,6 +174,14 @@ app.get('/users', user.list);
 app.get('/performance', performance.performance);
 app.get('/performance_personal', performance_personal.performance_personal);
 app.get('/scoreboard', scoreboard.scoreboard);
+app.get('/sff', function(req, res) {
+  var urlobj = url.parse(req.url);
+  var path = urlobj.pathname;
+  var body = fs.readFileSync(path);
+  res.set('Content-Type', 'application/x-sff');
+  res.set('Content-Length', body.length);
+  res.end(body);
+});
 
 // Server
 
