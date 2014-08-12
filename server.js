@@ -5,11 +5,13 @@
 process.env.TZ = 'Asia/Tokyo';
 
 var express = require('express')
+  , resource = require('express-resource')
   , routes = require('./routes')
   , user = require('./routes/user')
   , performance = require('./routes/performance')
   , performance_personal = require('./routes/performance_personal')
   , scoreboard = require('./routes/scoreboard')
+  , setting = require('./routes/setting')
   , http = require('http')
   , path = require('path')
   , url = require('url')
@@ -17,13 +19,33 @@ var express = require('express')
   , mongoose = require('mongoose')
   , async = require('async');
 
-var app = express();
+mongoose = require('mongoose')
+app = express();
 
 var mongoUri = 'mongodb://127.0.0.1/wakuwakulb2';
 var Schema = mongoose.Schema;
 
 function validator(v) {
   return v.length > 0;
+}
+
+responseSuccess = ResponseSuccess;
+function ResponseSuccess(res, json) {
+  if (!json) {
+    res.json({ 'result':0 });
+  } else {
+    res.json(json)
+  }
+}
+
+responseError = ResponseError;
+function ResponseError(status, res, err) {
+  res.statusCode = status;
+  if (err) {
+    res.json({ 'error': err });
+  } else {
+    res.json({ 'error': http.STATUS_CODES[status] });
+  }
 }
 
 ///
@@ -49,7 +71,7 @@ var roundModel = new Schema({
   , csubids: { type: Array }
   , prtyifs: { type: Array }
 });
-var Round = mongoose.model('Round', roundModel);
+Round = mongoose.model('Round', roundModel);
 
 // Party model
 var partyModel = new Schema({
@@ -61,7 +83,7 @@ var partyModel = new Schema({
   , number: { type: Number }
   , plyifs: { type: Array }
 });
-var Party = mongoose.model('Party', partyModel);
+Party = mongoose.model('Party', partyModel);
 
 // Course model
 var courseModel = new Schema({
@@ -70,7 +92,7 @@ var courseModel = new Schema({
   , cname: { type: String }
   , holeinfs: { type: Array }
 });
-var Course = mongoose.model('Course', courseModel);
+Course = mongoose.model('Course', courseModel);
 
 // Hole model
 var holeModel = new Schema({
@@ -79,7 +101,7 @@ var holeModel = new Schema({
   , names: { type: Array }
   , pars: { type: Array }
 });
-var Hole = mongoose.model('Hole', holeModel);
+Hole = mongoose.model('Hole', holeModel);
 
 // Player model
 var playerModel = new Schema({
@@ -93,7 +115,7 @@ var playerModel = new Schema({
   , tid: { type: String }
   , csubids: { type: [String] }
 });
-var Player = mongoose.model('Player', playerModel);
+Player = mongoose.model('Player', playerModel);
 
 // User model
 var userSchema = new Schema({
@@ -107,7 +129,7 @@ var userSchema = new Schema({
   , uimg   : { type: String }
   , created: { type: Date, default: Date.now }
 });
-var User = mongoose.model('User', userSchema);
+User = mongoose.model('User', userSchema);
 
 // Team model
 var teamSchema = new mongoose.Schema({
@@ -116,7 +138,7 @@ var teamSchema = new mongoose.Schema({
   , tname: { type: String, validate: [validator, "Empty Error"] }
   , timg   : { type: String }
 });
-var Team = mongoose.model('Team', teamSchema);
+Team = mongoose.model('Team', teamSchema);
 
 // Round model
 //var roundSchema = new mongoose.Schema({
@@ -139,7 +161,7 @@ var scoreSchema = new mongoose.Schema({
   , holeno: { type: Number }
   , score : { type: Number }
 });
-var Score = mongoose.model('Score', scoreSchema);
+Score = mongoose.model('Score', scoreSchema);
 
 // Configuration
 
@@ -167,13 +189,22 @@ app.configure('development', function(){
 //  app.use(express.errorHandler()); 
 //});
 
-// Routes
+// Routes of setting API
+app.resource('holes', require('./routes/holes'), { id: 'csubid' });
+app.resource('courses', require('./routes/courses'), { id: 'cid' });
+app.resource('users', require('./routes/users'), { id: 'uid' });
+app.resource('teams', require('./routes/teams'), { id: 'tid' });
+app.resource('players', require('./routes/players'), { id: 'plid' });
+//app.resource('rounds', require('./routes/rounds'), { id: 'rid' });
+app.get('/setting', setting.setting);
 
+// Routes
 app.get('/', routes.index);
 app.get('/users', user.list);
 app.get('/performance', performance.performance);
 app.get('/performance_personal', performance_personal.performance_personal);
 app.get('/scoreboard', scoreboard.scoreboard);
+// Smart帳票
 app.get('/sff', function(req, res) {
   var urlobj = url.parse(req.url);
   var path = urlobj.pathname;
@@ -182,6 +213,8 @@ app.get('/sff', function(req, res) {
   res.set('Content-Length', body.length);
   res.end(body);
 });
+
+
 
 // Server
 

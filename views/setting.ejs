@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+<!--    <link rel='stylesheet' href='/stylesheets/style.css' />-->
+
+  <script type="text/javascript">
+    $(function() {
+
+      ///
+      /// チーム情報アクセス
+      ///
+      // チーム一覧
+      $("#getbutton").click( function(){
+            get("/teams", $("#getresponse"));
+        })
+
+      // チーム情報追加
+      $("#createbutton").click( function(){
+          var JSONdata = {
+              'tid': $("#tid").val(),
+              'tname': $("#tname").val()
+          };
+//          alert(JSON.stringify(JSONdata));
+          post("/teams", JSONdata, $("#createresponse"));
+        })
+
+      // チーム情報削除
+      $("#removebutton").click( function(){
+          var url = "/teams/" + $("#removetid").val();
+          remove(url, $("#removeresponse"));
+        })
+
+      // チーム情報更新
+      $("#updatebutton").click( function(){
+          var url = "/teams/" + $("#tid").val();
+          var JSONdata = {
+              'tid': $("#tid").val(),
+              'tname': $("#tname").val()
+          };
+//          alert(JSON.stringify(JSONdata));
+          update(url, JSONdata, $("#createresponse"));
+        })
+
+      ///
+      /// ホール情報アクセス
+      ///
+      // ホール情報一覧
+      $("#getholebutton").click( function(){
+          get("/holes", $("#getholeresponse"));
+        })
+
+      // ホール情報追加
+      $("#createholebutton").click( function() {
+          var JSONdata = {
+              'csubid': $("#csubid").val(),
+              'csubname': $("#csubname").val()
+// TODO: names
+// TODO: pars
+          };
+          post("/holes", JSONdata, $("#createholeresponse"));
+        })
+
+      // ホール情報削除
+      $("#removeholebutton").click( function() {
+          var url = "/holes/" + $("#removeholeid").val();
+          remove(url, $("#removeholeresponse"));
+        })
+
+      // ホール情報更新
+      $("#updateholebutton").click( function(){
+          var url = "/holes/" + $("#csubid").val();
+          var JSONdata = {
+              'csubid': $("#csubid").val(),
+              'csubname': $("#csubname").val()
+// TODO: names
+// TODO: pars
+          };
+          update(url, JSONdata, $("#createresponse"));
+        })
+
+      ///
+      /// コース情報アクセス
+      ///
+      // 一覧取得
+      $("#getcoursebutton").click( function(){
+          get("/courses", $("#getcourseresponse"));
+        })
+
+      // 追加
+      $("#createcoursebutton").click( function() {
+          var JSONdata = {
+              'cid': $("#cid").val(),
+              'cname': $("#cname").val()
+// TODO: holeinfs
+          };
+          post("/courses", JSONdata, $("#createcourseresponse"));
+        })
+
+      // 削除
+      $("#removecoursebutton").click( function() {
+          var url = "/courses/" + $("#removecid").val();
+          remove(url, $("#removecourseresponse"));
+        })
+
+      // 更新
+      $("#updatecoursebutton").click( function() {
+          var url = "/courses/" + $("#cid").val();
+          var JSONdata = {
+              'cid': $("#cid").val(),
+              'cname': $("#cname").val()
+// TODO: holeinfs
+          };
+          update(url, JSONdata, $("#createcourseresponse"));
+        })
+
+      ///
+      /// ユーザー情報アクセス
+      ///
+      // 一覧取得
+      $("#getuserbutton").click( function(){
+          get("/users", $("#getuserresponse"));
+        })
+
+      // 追加
+      $("#createuserbutton").click( function() {
+          var JSONdata = {
+              'uid': $("#uid").val(),
+              'uname': $("#uname").val(),
+              'brthdy': $("#brthdy").val(),
+              'mail': $("#mail").val(),
+              'sex': $("#sex").val(),
+// TODO: uimg
+          };
+          post("/users", JSONdata, $("#createuserresponse"));
+        })
+
+      // 削除
+      $("#removeuserbutton").click( function() {
+          var url = "/users/" + $("#removeuid").val();
+          remove(url, $("#removeuserresponse"));
+        })
+
+      // 更新
+      $("#updateuserbutton").click( function() {
+          var url = "/users/" + $("#uid").val();
+          var JSONdata = {
+              'uid': $("#uid").val(),
+              'uname': $("#uname").val(),
+              'brthdy': $("#brthdy").val(),
+              'mail': $("#mail").val(),
+              'sex': $("#sex").val(),
+// TODO: uimg
+          };
+          update(url, JSONdata, $("#createuserresponse"));
+        })
+
+      ///
+      /// プレーヤー情報アクセス
+      ///
+      // 一覧取得
+      $("#getplayerbutton").click( function(){
+          get("/players", $("#getplayerresponse"));
+        })
+
+      // 追加
+      $("#createplayerbutton").click( function() {
+          var JSONdata = {
+              'plid': $("#plid").val(),
+              'rid': $("#player-rid").val(),
+              'uid': $("#player-uid").val(),
+              'tid': $("#player-tid").val(),
+// TODO: csubids
+          };
+          post("/players", JSONdata, $("#createplayerresponse"));
+        })
+
+      // 削除
+      $("#removeplayerbutton").click( function() {
+          var url = "/players/" + $("#removeplid").val();
+          remove(url, $("#removeplayerresponse"));
+        })
+
+      // 更新
+      $("#updateplayerbutton").click( function() {
+          var url = "/players/" + $("#plid").val();
+          var JSONdata = {
+              'plid': $("#plid").val(),
+              'rid': $("#player-rid").val(),
+              'tid': $("#player-tid").val(),
+// TODO: csubids
+          };
+          update(url, JSONdata, $("#createplayerresponse"));
+        })
+
+    })
+
+    // 一覧取得
+    function get(url, resultElem) {
+      $.ajax({
+          type : 'get',
+          url : url,
+          scriptCharset: 'utf-8',
+          success : function(data) {
+              // Success
+              resultElem.html(JSON.stringify(data));
+          },
+          error : function(data) {
+              // Error
+              alert("error");
+              alert(JSON.stringify(data));
+              resultElem.html(JSON.stringify(data));
+          }
+      });
+    }
+    // 追加
+    function post(url, body, resultElem) {
+      $.ajax({
+          type : 'post',
+          url : url,
+          data : JSON.stringify(body),
+          contentType: 'application/json',
+          dataType : 'json',
+          scriptCharset: 'utf-8',
+          success : function(data) {
+              // Success
+              resultElem.html(JSON.stringify(data));
+          },
+          error : function(data) {
+              // Error
+              alert("error");
+              alert(JSON.stringify(data));
+              resultElem.html(JSON.stringify(data));
+          }
+      });
+    }
+    // 更新
+    function update(url, body, resultElem) {
+      $.ajax({
+          type : 'put',
+          url : url,
+          data : JSON.stringify(body),
+          contentType: 'application/json',
+          dataType : 'json',
+          scriptCharset: 'utf-8',
+          success : function(data) {
+              // Success
+              resultElem.html(JSON.stringify(data));
+          },
+          error : function(data) {
+              // Error
+              alert("error");
+              alert(JSON.stringify(data));
+              resultElem.html(JSON.stringify(data));
+          }
+      });
+    }
+    // 削除
+    function remove(url, resultElem) {
+      $.ajax({
+          type : 'delete',
+          url : url,
+          scriptCharset: 'utf-8',
+          success : function(data) {
+              // Success
+              resultElem.html(JSON.stringify(data));
+          },
+          error : function(data) {
+              // Error
+              alert("error");
+              alert(JSON.stringify(data));
+              resultElem.html(JSON.stringify(data));
+          }
+      });
+    }
+  </script>
+
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <hr>
+    <h2>ホール情報一覧</h2>
+<p>
+GET /holes
+</p>
+    <p><button id="getholebutton" type="button">一覧取得</button></p>
+    <textarea id="getholeresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>ホール情報追加／更新</h2>
+<p>
+追加　：　POST /holes<br>
+更新　：　PUT /holes<br>
+body例：<br>
+{ 
+"csubid": "c001cs01", 
+"csubname": "IN", 
+"names": [ "01H", "02H", "03H", "04H", "05H", "06H", "07H", "08H", "09H" ], 
+"pars": [ 4, 3, 4, 5, 4, 5, 3, 4, 4 ] 
+}
+</p>
+    <p>csubid: <input type="text" id="csubid" size="30" value="c100cs01"></p>
+    <p>csubname: <input type="text" id="csubname" size="30" value="IN"></p>
+    <p>names: not supported.</p>
+    <p>pars: not supported.</p>
+    <p><button id="createholebutton" type="button">追加</button></p>
+    <p><button id="updateholebutton" type="button">更新</button></p>
+    <textarea id="createholeresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>ホール情報削除</h2>
+<p>
+DELETE /holes/:csubid<br>
+:csubid にコースサブIDを指定する
+</p>
+    <p>csubid: <input type="text" id="removeholeid" size="30" value="c100cs01"></p>
+    <p><button id="removeholebutton" type="button">削除</button></p>
+    <textarea id="removeholeresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>コース情報一覧</h2>
+<p>
+GET /courses
+</p>
+    <p><button id="getcoursebutton" type="button">一覧取得</button></p>
+    <textarea id="getcourseresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>コース情報追加／更新</h2>
+<p>
+追加　：　POST /courses<br>
+更新　：　PUT /courses<br>
+body例：<br>
+{ "cid": "c002", "cname": "能登ゴルフ倶楽部", "holeinfs": [ "c002cs01", "c002cs02", "c002cs03" ] }
+</p>
+    <p>cid: <input type="text" id="cid" size="30" value="c100"></p>
+    <p>cname: <input type="text" id="cname" size="30" value="PSWゴルフ倶楽部"></p>
+    <p>holeinfs: not supported.</p>
+    <p><button id="createcoursebutton" type="button">追加</button></p>
+    <p><button id="updatecoursebutton" type="button">更新</button></p>
+    <textarea id="createcourseresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>コース情報削除</h2>
+<p>
+DELETE /courses/:cid<br>
+:cid にコースID cid を指定する
+</p>
+    <p>cid: <input type="text" id="removecid" size="30" value="c100"></p>
+    <p><button id="removecoursebutton" type="button">削除</button></p>
+    <textarea id="removecourseresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>ユーザー情報一覧</h2>
+<p>
+GET /users
+</p>
+    <p><button id="getuserbutton" type="button">一覧取得</button></p>
+    <textarea id="getuserresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>ユーザー情報追加／更新</h2>
+<p>
+追加　：　POST /users<br>
+更新　：　PUT /users<br>
+body例：<br>
+{ "brthdy" : "2000-01-01", "mail" : "hoge@hoge.com", "sex" : 1, "uid" : "u1000", "uimg" : "", "uname" : "ＰＳＷ　飛び男" }
+</p>
+    <p>uid: <input type="text" id="uid" size="30" value="u1000"></p>
+    <p>uname: <input type="text" id="uname" size="30" value="ＰＳＷ　飛び男"></p>
+    <p>brthdy: <input type="text" id="brthdy" size="30" value="2000-01-01"></p>
+    <p>mail: <input type="text" id="mail" size="30" value="hoge@hoge.com"></p>
+    <p>sex: <input type="text" id="sex" size="30" value="1"></p>
+    <p>uimg: not supported.</p>
+    <p><button id="createuserbutton" type="button">追加</button></p>
+    <p><button id="updateuserbutton" type="button">更新</button></p>
+    <textarea id="createuserresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>ユーザー情報削除</h2>
+<p>
+DELETE /users/:uid<br>
+:uid にユーザーID uid を指定する
+</p>
+    <p>uid: <input type="text" id="removeuid" size="30" value="u1000"></p>
+    <p><button id="removeuserbutton" type="button">削除</button></p>
+    <textarea id="removeuserresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>チーム情報一覧</h2>
+<p>
+GET /teams
+</p>
+    <p><button id="getbutton" type="button">一覧取得</button></p>
+    <textarea id="getresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>チーム情報追加／更新</h2>
+<p>
+追加　：　POST /teams<br>
+更新　：　PUT /teams<br>
+body例：<br>
+{ "tid" : "t003", "tname" : "PSW", "timg" : "" }
+</p>
+    <p>tid: <input type="text" id="tid" size="30" value="t001"></p>
+    <p>tname: <input type="text" id="tname" size="30" value="チームNo.1"></p>
+    <p><button id="createbutton" type="button">追加</button></p>
+    <p><button id="updatebutton" type="button">更新</button></p>
+    <textarea id="createresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>チーム情報削除</h2>
+<p>
+DELETE /teams/:tid<br>
+:tid にチームID tid を指定する
+</p>
+    <p>tid: <input type="text" id="removetid" size="30" value="t001"></p>
+    <p><button id="removebutton" type="button">削除</button></p>
+    <textarea id="removeresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>プレーヤー情報一覧</h2>
+<p>
+GET /players
+</p>
+    <p><button id="getplayerbutton" type="button">一覧取得</button></p>
+    <textarea id="getplayerresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>プレーヤー情報追加／更新</h2>
+<p>
+追加　：　POST /players<br>
+更新　：　PUT /players<br>
+body例：<br>
+{ "plid" : "pl1000", "rid" : "r1000", "uid" : "u1000", "tid" : "t1000", "csubids" : [ "c1000cs01", "c1000cs02" ] }
+</p>
+    <p>plid: <input type="text" id="plid" size="30" value="pl1000"></p>
+    <p>rid: <input type="text" id="player-rid" size="30" value="r1000"></p>
+    <p>tid: <input type="text" id="player-tid" size="30" value="t1000"></p>
+    <p>csubids: not supported.</p>
+    <p><button id="createplayerbutton" type="button">追加</button></p>
+    <p><button id="updateplayerbutton" type="button">更新</button></p>
+    <textarea id="createplayerresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>プレーヤー情報削除</h2>
+<p>
+DELETE /players/:plid<br>
+:plid にプレーヤーID plid を指定する
+</p>
+    <p>plid: <input type="text" id="removeplid" size="30" value="pl1000"></p>
+    <p><button id="removeplayerbutton" type="button">削除</button></p>
+    <textarea id="removeplayerresponse" cols=100 rows=10 disabled></textarea>
+
+  </body>
+</html>
