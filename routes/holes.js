@@ -16,6 +16,18 @@ module.exports = {
   create: function(req, res) {
     console.log(req.body);
     var newHole = new Hole(req.body);
+    if (isNullOrEmpty(newHole.csubname)) {
+      responseError(400, res, "invalid:csubname");
+      return;
+    }
+    if (isNullOrEmpty(newHole.names) || newHole.names.length != 9) {
+      responseError(400, res, "invalid:names");
+      return;
+    }
+    if (isNullOrEmpty(newHole.pars) || newHole.pars.length != 9) {
+      responseError(400, res, "invalid:pars");
+      return;
+    }
     createCsubid(function(csubid) {
       newHole.csubid = csubid;
       newHole.save(function(err) {
@@ -43,6 +55,22 @@ module.exports = {
   },
   // ホール情報更新
   update: function(req, res) {
+    if (isNullOrEmpty(req.params.csubid)) {
+      responseError(400, res, "invalid:csubid");
+      return;
+    }
+    if (isNullOrEmpty(req.body.csubname)) {
+      responseError(400, res, "invalid:csubname");
+      return;
+    }
+    if (isNullOrEmpty(req.body.names) || req.body.names.length != 9) {
+      responseError(400, res, "invalid:names");
+      return;
+    }
+    if (isNullOrEmpty(req.body.pars) || req.body.pars.length != 9) {
+      responseError(400, res, "invalid:pars");
+      return;
+    }
     Hole.findOne({ 'csubid': req.params.csubid },
       function(err, hole) {
         if (!err) {

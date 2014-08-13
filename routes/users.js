@@ -16,6 +16,18 @@ module.exports = {
   create: function(req, res) {
     console.log(req.body);
     var newUser = new User(req.body);
+    if (isNullOrEmpty(newUser.uname)) {
+      responseError(400, res, "invalid:uname");
+      return;
+    }
+    if (isNullOrEmpty(newUser.brthdy) || !isDate(newUser.brthdy)) {
+      responseError(400, res, "invalid:brthdy");
+      return;
+    }
+    if (isNullOrEmpty(newUser.sex) || (newUser.sex != 1 && newUser.sex != 2)) {
+      responseError(400, res, "invalid:sex");
+      return;
+    }
     createUid(function(uid) {
       newUser.uid = uid;
       newUser.save(function(err) {

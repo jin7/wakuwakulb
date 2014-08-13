@@ -16,6 +16,14 @@ module.exports = {
   create: function(req, res) {
     console.log(req.body);
     var newCourse = new Course(req.body);
+    if (isNullOrEmpty(newCourse.cname)) {
+      responseError(400, res, "invalid:cname");
+      return;
+    }
+    if (isNullOrEmpty(newCourse.holeinfs) || newCourse.holeinfs.length < 2) {
+      responseError(400, res, "invalid:holeinfs");
+      return;
+    }
     createCid(function(cid) {
       newCourse.cid = cid;
       newCourse.save(function(err) {
@@ -43,6 +51,18 @@ module.exports = {
   },
   // コース情報更新
   update: function(req, res) {
+    if (isNullOrEmpty(req.params.cid)) {
+      responseError(400, res, "invalid:cid");
+      return;
+    }
+    if (isNullOrEmpty(req.body.cname)) {
+      responseError(400, res, "invalid:cname");
+      return;
+    }
+    if (isNullOrEmpty(req.body.holeinfs) || req.body.holeinfs.length < 2) {
+      responseError(400, res, "invalid:holeinfs");
+      return;
+    }
     Course.findOne({ 'cid': req.params.cid },
       function(err, course) {
         if (!err) {
