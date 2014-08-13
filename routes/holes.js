@@ -44,13 +44,13 @@ module.exports = {
       function(err, hole) {
         if (!err) {
           if (hole) {
-            if (hole.body.csubname) {
+            if (req.body.csubname) {
               hole.csubname = req.body.csubname;
             }
-            if (hole.body.names) {
+            if (req.body.names) {
               hole.names = req.body.names;
             }
-            if (hole.body.pars) {
+            if (req.body.pars) {
               hole.pars = req.body.pars;
             }
             hole.save(function(err) {

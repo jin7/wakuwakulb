@@ -53,11 +53,13 @@
 
       // ホール情報追加
       $("#createholebutton").click( function() {
+          var namearray = csv2array($("#csubnames").val());
+          var pararray = csv2array($("#pars").val());
           var JSONdata = {
               'csubid': $("#csubid").val(),
-              'csubname': $("#csubname").val()
-// TODO: names
-// TODO: pars
+              'csubname': $("#csubname").val(),
+              'names': namearray,
+              'pars': pararray
           };
           post("/holes", JSONdata, $("#createholeresponse"));
         })
@@ -71,13 +73,15 @@
       // ホール情報更新
       $("#updateholebutton").click( function(){
           var url = "/holes/" + $("#csubid").val();
+          var namearray = csv2array($("#csubnames").val());
+          var pararray = csv2array($("#pars").val());
           var JSONdata = {
               'csubid': $("#csubid").val(),
-              'csubname': $("#csubname").val()
-// TODO: names
-// TODO: pars
+              'csubname': $("#csubname").val(),
+              'names': namearray,
+              'pars': pararray
           };
-          update(url, JSONdata, $("#createresponse"));
+          update(url, JSONdata, $("#createholeresponse"));
         })
 
       ///
@@ -90,10 +94,11 @@
 
       // 追加
       $("#createcoursebutton").click( function() {
+          var holeinfarray = csv2array($("#holeinfs").val());
           var JSONdata = {
               'cid': $("#cid").val(),
-              'cname': $("#cname").val()
-// TODO: holeinfs
+              'cname': $("#cname").val(),
+              'holeinfs': holeinfarray
           };
           post("/courses", JSONdata, $("#createcourseresponse"));
         })
@@ -107,10 +112,11 @@
       // 更新
       $("#updatecoursebutton").click( function() {
           var url = "/courses/" + $("#cid").val();
+          var holeinfarray = csv2array($("#holeinfs").val());
           var JSONdata = {
               'cid': $("#cid").val(),
-              'cname': $("#cname").val()
-// TODO: holeinfs
+              'cname': $("#cname").val(),
+              'holeinfs': holeinfarray
           };
           update(url, JSONdata, $("#createcourseresponse"));
         })
@@ -166,12 +172,13 @@
 
       // 追加
       $("#createplayerbutton").click( function() {
+          var csubarray = csv2array($("#player-csubids").val());
           var JSONdata = {
-              'plid': $("#plid").val(),
-              'rid': $("#player-rid").val(),
-              'uid': $("#player-uid").val(),
-              'tid': $("#player-tid").val(),
-// TODO: csubids
+            'plid': $("#plid").val(),
+            'rid': $("#player-rid").val(),
+            'uid': $("#player-uid").val(),
+            'tid': $("#player-tid").val(),
+            'csubids': csubarray
           };
           post("/players", JSONdata, $("#createplayerresponse"));
         })
@@ -185,15 +192,61 @@
       // 更新
       $("#updateplayerbutton").click( function() {
           var url = "/players/" + $("#plid").val();
+          var csubarray = csv2array($("#player-csubids").val());
           var JSONdata = {
-              'plid': $("#plid").val(),
-              'rid': $("#player-rid").val(),
-              'tid': $("#player-tid").val(),
-// TODO: csubids
+            'rid': $("#player-rid").val(),
+            'uid': $("#player-uid").val(),
+            'tid': $("#player-tid").val(),
+            'csubids': csubarray
           };
           update(url, JSONdata, $("#createplayerresponse"));
         })
 
+      ///
+      /// ラウンド情報アクセス
+      ///
+      // 一覧取得
+      $("#getroundbutton").click( function(){
+          get("/rounds", $("#getroundresponse"));
+        })
+
+      // 追加
+      $("#createroundbutton").click( function() {
+          var handicapinf = { 'method' : parseInt($("#handicapinf-method").val()), 'upperLimit': parseInt($("#handicapinf-upperlimit").val()) };
+          var prtyifs = JSON.parse($("#prtyifs").val());
+          var JSONdata = {
+            'rid': $("#rid").val(),
+            'rname': $("#rname").val(),
+            'cid': $("#round-cid").val(),
+            'csubids': $("#round-csubids").val(),
+            'handicapinf': handicapinf,
+            'prtyifs': prtyifs,
+            'date': $("#round-date").val(),
+          };
+          post("/rounds", JSONdata, $("#createroundresponse"));
+        })
+
+      // 削除
+      $("#removeroundbutton").click( function() {
+          var url = "/rounds/" + $("#removerid").val();
+          remove(url, $("#removeroundresponse"));
+        })
+
+      // 更新
+      $("#updateroundbutton").click( function() {
+          var url = "/rounds/" + $("#rid").val();
+          var handicapinf = { 'method' : parseInt($("#handicapinf-method").val()), 'upperLimit': parseInt($("#handicapinf-upperlimit").val()) };
+          var prtyifs = JSON.parse($("#prtyifs").val());
+          var JSONdata = {
+            'rname': $("#rname").val(),
+            'cid': $("#round-cid").val(),
+            'csubids': $("#round-csubids").val(),
+            'handicapinf': handicapinf,
+            'prtyifs': prtyifs,
+            'date': $("#round-date").val(),
+          };
+          update(url, JSONdata, $("#createroundresponse"));
+        })
     })
 
     // 一覧取得
@@ -274,6 +327,20 @@
           }
       });
     }
+
+    // csv2array
+    function csv2array(str) {
+      str = str.replace( /\r\n/g , "\n" );        // IE対策　改行コード\r\nを\rに変換
+      str = str.replace( /^(\n+)|(\n+)$/g , "" ); // 文頭と文末の余計な改行を除去
+
+      var data = [];
+      var reg = /[,\t]/g;   // タブまたはカンマで分割
+      data = str.split( reg );
+      for( var i = 0 , m = data.length; i < m; i++ ) { // trimも同時に行っておく
+    		data[i] = data[i].replace( /(^\s+)|(\s+$)/g , ""  );
+      }
+      return data;
+    }
   </script>
 
   </head>
@@ -302,8 +369,8 @@ body例：<br>
 </p>
     <p>csubid: <input type="text" id="csubid" size="30" value="c100cs01"></p>
     <p>csubname: <input type="text" id="csubname" size="30" value="IN"></p>
-    <p>names: not supported.</p>
-    <p>pars: not supported.</p>
+    <p>names: <input type="text" id="csubnames" size="100" value="01H,02H,03H,04H,05H,06H,07H,08H,09H"></p>
+    <p>pars: <input type="text" id="pars" size="100" value="4, 3, 4, 5, 4, 5, 3, 4, 4"></p>
     <p><button id="createholebutton" type="button">追加</button></p>
     <p><button id="updateholebutton" type="button">更新</button></p>
     <textarea id="createholeresponse" cols=100 rows=10 disabled></textarea>
@@ -336,7 +403,7 @@ body例：<br>
 </p>
     <p>cid: <input type="text" id="cid" size="30" value="c100"></p>
     <p>cname: <input type="text" id="cname" size="30" value="PSWゴルフ倶楽部"></p>
-    <p>holeinfs: not supported.</p>
+    <p>holeinfs: <input type="text" id="holeinfs" size="100" value="c100cs01, c100cs02"></p>
     <p><button id="createcoursebutton" type="button">追加</button></p>
     <p><button id="updatecoursebutton" type="button">更新</button></p>
     <textarea id="createcourseresponse" cols=100 rows=10 disabled></textarea>
@@ -401,9 +468,9 @@ GET /teams
 追加　：　POST /teams<br>
 更新　：　PUT /teams<br>
 body例：<br>
-{ "tid" : "t003", "tname" : "PSW", "timg" : "" }
+{ "tid" : "t100", "tname" : "PSW", "timg" : "" }
 </p>
-    <p>tid: <input type="text" id="tid" size="30" value="t001"></p>
+    <p>tid: <input type="text" id="tid" size="30" value="t100"></p>
     <p>tname: <input type="text" id="tname" size="30" value="チームNo.1"></p>
     <p><button id="createbutton" type="button">追加</button></p>
     <p><button id="updatebutton" type="button">更新</button></p>
@@ -436,9 +503,10 @@ body例：<br>
 { "plid" : "pl1000", "rid" : "r1000", "uid" : "u1000", "tid" : "t1000", "csubids" : [ "c1000cs01", "c1000cs02" ] }
 </p>
     <p>plid: <input type="text" id="plid" size="30" value="pl1000"></p>
+    <p>uid: <input type="text" id="player-uid" size="30" value="u1000"></p>
     <p>rid: <input type="text" id="player-rid" size="30" value="r1000"></p>
     <p>tid: <input type="text" id="player-tid" size="30" value="t1000"></p>
-    <p>csubids: not supported.</p>
+    <p>csubids: <input type="text" id="player-csubids" size="100" value="c1000cs01, c1000cs02"></p>
     <p><button id="createplayerbutton" type="button">追加</button></p>
     <p><button id="updateplayerbutton" type="button">更新</button></p>
     <textarea id="createplayerresponse" cols=100 rows=10 disabled></textarea>
@@ -452,6 +520,66 @@ DELETE /players/:plid<br>
     <p>plid: <input type="text" id="removeplid" size="30" value="pl1000"></p>
     <p><button id="removeplayerbutton" type="button">削除</button></p>
     <textarea id="removeplayerresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>ラウンド情報一覧</h2>
+<p>
+GET /rounds
+</p>
+    <p><button id="getroundbutton" type="button">一覧取得</button></p>
+    <textarea id="getroundresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>ラウンド情報追加／更新</h2>
+<p>
+追加　：　POST /rounds<br>
+更新　：　PUT /rounds<br>
+body例：<br>
+{ "cid": "c100", "csubids": [ "c100cs01", "c100cs02" ], "date": { "$date": 1382140800 }, "handicapinf": { "method": 2, "upperLimit": 36 }, "prtyifs": [ { "cid": "c100", "csubids": [ "c100cs01", "c100cs02" ], "number": 1, "pid": "party01", "plyrifs": [ "pl1000", "pl1001", "pl1002", "pl1003" ], "pname": "1組目", "rid": "r1000" }], "rid": "r1000", "rname": "第１回　ＰＳＷオープン 20YY/MM/DD" }
+</p>
+    <p>rid: <input type="text" id="rid" size="30" value="r1000"></p>
+    <p>rname: <input type="text" id="rname" size="30" value="ＰＳＷオープン"></p>
+    <p>cid: <input type="text" id="round-cid" size="30" value="c1000"></p>
+    <p>csubids: <input type="text" id="round-csubids" size="30" value="c100cs01, c100cs02"></p>
+    <p>handicapinf-method: <input type="text" id="handicapinf-method" size="30" value="2"></p>
+    <p>handicapinf-upperLimit: <input type="text" id="handicapinf-upperlimit" size="30" value="36"></p>
+    <p>date: not supported.</p>
+<!--    <p>date: <input type="text" id="round-date" size="30" value=""></p>-->
+    <textarea id="prtyifs" cols=100 rows=20>
+[
+  {
+    "cid": "c100", 
+    "csubids": [
+        "c100cs01", 
+        "c100cs02"
+    ], 
+    "number": 1, 
+    "pid": "party01", 
+    "plyrifs": [
+        "pl1000", 
+        "pl1001", 
+        "pl1002", 
+        "pl1003"
+    ], 
+    "pname": "1組目", 
+    "rid": "r1000"
+  }
+]
+</textarea>
+<!--    <p>prtyifs: <input type="text" id="prtyifs" size="30" value=""></p>-->
+    <p><button id="createroundbutton" type="button">追加</button></p>
+    <p><button id="updateroundbutton" type="button">更新</button></p>
+    <textarea id="createroundresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>ラウンド情報削除</h2>
+<p>
+DELETE /rounds/:rid<br>
+:rid にラウンドID rid を指定する
+</p>
+    <p>rid: <input type="text" id="removerid" size="30" value="r1000"></p>
+    <p><button id="removeroundbutton" type="button">削除</button></p>
+    <textarea id="removeroundresponse" cols=100 rows=10 disabled></textarea>
 
   </body>
 </html>

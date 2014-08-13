@@ -44,10 +44,10 @@ module.exports = {
       function(err, course) {
         if (!err) {
           if (course) {
-            if (course.body.cname) {
+            if (req.body.cname) {
               course.cname = req.body.cname;
             }
-            if (course.body.holeinfs) {
+            if (req.body.holeinfs) {
               course.holeinfs = req.body.holeinfs;
             }
             course.save(function(err) {

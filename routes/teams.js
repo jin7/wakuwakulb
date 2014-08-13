@@ -45,7 +45,7 @@ module.exports = {
       function(err, team) {
         if (!err) {
           if (team) {
-            if (team.body.tname) {
+            if (req.body.tname) {
               team.tname = req.body.tname;
             }
             if (req.body.timg) {

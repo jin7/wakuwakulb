@@ -195,7 +195,7 @@ app.resource('courses', require('./routes/courses'), { id: 'cid' });
 app.resource('users', require('./routes/users'), { id: 'uid' });
 app.resource('teams', require('./routes/teams'), { id: 'tid' });
 app.resource('players', require('./routes/players'), { id: 'plid' });
-//app.resource('rounds', require('./routes/rounds'), { id: 'rid' });
+app.resource('rounds', require('./routes/rounds'), { id: 'rid' });
 app.get('/setting', setting.setting);
 
 // Routes
