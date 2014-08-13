@@ -236,7 +236,7 @@
           var csubarray = csv2array($("#player-csubids").val());
           var JSONdata = {
             'plid': $("#plid").val(),
-            'rid': $("#player-rid").val(),
+//            'rid': $("#player-rid").val(),
             'uid': $("#player-uid").val(),
             'tid': $("#player-tid").val(),
             'csubids': csubarray
@@ -723,6 +723,7 @@ uri : <b>/players/:plid</b><br>
     <p>&nbsp;&nbsp;plid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="plid" size="30" value="pl1000"></p>
     <p><font color="#FF0000">*</font>uid: <input type="text" id="player-uid" size="30" value="u1000"><br>
     &nbsp;&nbsp;&nbsp;&nbsp;(ユーザーのID uid を指定します)</p>
+<p>rid は、指定しない</p>
     <p><font color="#FF0000">*</font>rid: <input type="text" id="player-rid" size="30" value="r1000"><br>
     &nbsp;&nbsp;&nbsp;&nbsp;(ラウンド情報のID rid を指定します)</p>
     <p><font color="#FF0000">*</font>tid: <input type="text" id="player-tid" size="30" value="t100"><br>

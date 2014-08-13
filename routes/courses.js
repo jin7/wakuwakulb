@@ -20,19 +20,21 @@ module.exports = {
       responseError(400, res, "invalid:cname");
       return;
     }
-    if (isNullOrEmpty(newCourse.holeinfs) || newCourse.holeinfs.length < 2) {
-      responseError(400, res, "invalid:holeinfs");
-      return;
-    }
-    createCid(function(cid) {
-      newCourse.cid = cid;
-      newCourse.save(function(err) {
-        if (!err) {
-          responseSuccess(res);
-        } else {
-          responseError(500, res, err);
-        }
-      });
+    isValidHoleinfs(newCourse.holeinfs, function(isValid) {
+      if (isValid) {
+        createCid(function(cid) {
+          newCourse.cid = cid;
+          newCourse.save(function(err) {
+            if (!err) {
+              responseSuccess(res);
+            } else {
+              responseError(500, res, err);
+            }
+          });
+        });
+      } else {
+        responseError(400, res, "invalid:holeinfs");
+      }
     });
   },
   // コース情報取得
@@ -59,33 +61,35 @@ module.exports = {
       responseError(400, res, "invalid:cname");
       return;
     }
-    if (isNullOrEmpty(req.body.holeinfs) || req.body.holeinfs.length < 2) {
-      responseError(400, res, "invalid:holeinfs");
-      return;
-    }
-    Course.findOne({ 'cid': req.params.cid },
-      function(err, course) {
-        if (!err) {
-          if (course) {
-            if (req.body.cname) {
-              course.cname = req.body.cname;
-            }
-            if (req.body.holeinfs) {
-              course.holeinfs = req.body.holeinfs;
-            }
-            course.save(function(err) {
-              if (!err) {
-                responseSuccess(res);
-              } else {
-                responseError(500, res, err);
+    isValidHoleinfs(req.body.holeinfs, function(isValid) {
+      if (!isValid) {
+        responseError(400, res, "invalid:holeinfs");
+        return;
+      }
+      Course.findOne({ 'cid': req.params.cid },
+        function(err, course) {
+          if (!err) {
+            if (course) {
+              if (req.body.cname) {
+                course.cname = req.body.cname;
               }
-            });
+              if (req.body.holeinfs) {
+                course.holeinfs = req.body.holeinfs;
+              }
+              course.save(function(err) {
+                if (!err) {
+                  responseSuccess(res);
+                } else {
+                  responseError(500, res, err);
+                }
+              });
+            } else {
+              responseError(404, res);
+            }
           } else {
-            responseError(404, res);
+            responseError(500, res, err);
           }
-        } else {
-          responseError(500, res, err);
-        }
+        });
       });
   },
   destroy: function(req, res) {

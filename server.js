@@ -62,6 +62,94 @@ function IsValidHandicapUpperLimit(val) {
   }
   return true;
 }
+isValidHoleinfs = IsValidHoleinfs;
+function IsValidHoleinfs(vals, retCallback) {
+  if (IsNullOrEmpty(vals)) {
+    retCallback(false);
+    return;
+  }
+  if (vals.length < 2) {
+    retCallback(false);
+    return;
+  }
+  var isValid = true;
+  async.forEach(vals, function(holeinf, holeinfCb) {
+    Hole.findOne({ 'csubid': holeinf },
+      function(err, hole) {
+        if (err) {
+          isValid = false;
+        }
+        if (hole == null) {
+          isValid = false;
+        }
+        holeinfCb();
+      });
+    },
+    function(err) {
+      if (err) {
+        throw err;
+      }
+      retCallback(isValid);
+    }
+  );
+}
+isValidUid = IsValidUid;
+function IsValidUid(val, retCallback) {
+  if (IsNullOrEmpty(val)) {
+    retCallback(false);
+    return;
+  }
+  var isValid = true;
+  User.findOne({ 'uid': val },
+    function(err, user) {
+      if (err) {
+        throw err;
+      }
+      if (user == null) {
+        isValid = false;
+      }
+      retCallback(isValid);
+    }
+  );
+}
+isValidTid = IsValidTid;
+function IsValidTid(val, retCallback) {
+  if (IsNullOrEmpty(val)) {
+    retCallback(false);
+    return;
+  }
+  var isValid = true;
+  Team.findOne({ 'tid': val },
+    function(err, team) {
+      if (err) {
+        throw err;
+      }
+      if (team == null) {
+        isValid = false;
+      }
+      retCallback(isValid);
+    }
+  );
+}
+isValidPlid = IsValidPlid;
+function IsValidPlid(val, retCallback) {
+  if (IsNullOrEmpty(val)) {
+    retCallback(false);
+    return;
+  }
+  var isValid = true;
+  Player.findOne({ 'plid': val },
+    function(err, player) {
+      if (err) {
+        throw err;
+      }
+      if (player == null) {
+        isValid = false;
+      }
+      retCallback(isValid);
+    }
+  );
+}
 isDate = IsDate;
 function IsDate(datestr) {
   // 正規表現による書式チェック
