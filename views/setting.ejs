@@ -16,6 +16,11 @@
             get("/teams", $("#getresponse"));
         })
 
+      // チーム情報取得
+      $("#getoneteambutton").click( function() {
+          get("/teams/" + $("#getoneteamid").val(), $("#getoneteamresponse"));
+        })
+
       // チーム情報追加
       $("#createbutton").click( function(){
           var JSONdata = {
@@ -49,6 +54,11 @@
       // ホール情報一覧
       $("#getholebutton").click( function(){
           get("/holes", $("#getholeresponse"));
+        })
+
+      // ホール情報取得
+      $("#getoneholebutton").click( function() {
+          get("/holes/" + $("#getoneholeid").val(), $("#getoneholeresponse"));
         })
 
       // ホール情報追加
@@ -92,6 +102,11 @@
           get("/courses", $("#getcourseresponse"));
         })
 
+      // 取得
+      $("#getonecoursebutton").click( function() {
+          get("/courses/" + $("#getonecourseid").val(), $("#getonecourseresponse"));
+        })
+
       // 追加
       $("#createcoursebutton").click( function() {
           var holeinfarray = csv2array($("#holeinfs").val());
@@ -127,6 +142,11 @@
       // 一覧取得
       $("#getuserbutton").click( function(){
           get("/users", $("#getuserresponse"));
+        })
+
+      // 取得
+      $("#getoneuserbutton").click( function() {
+          get("/users/" + $("#getoneuserid").val(), $("#getoneuserresponse"));
         })
 
       // 追加
@@ -170,6 +190,11 @@
           get("/players", $("#getplayerresponse"));
         })
 
+      // 取得
+      $("#getoneplayerbutton").click( function() {
+          get("/players/" + $("#getoneplayerid").val(), $("#getoneplayerresponse"));
+        })
+
       // 追加
       $("#createplayerbutton").click( function() {
           var csubarray = csv2array($("#player-csubids").val());
@@ -208,6 +233,11 @@
       // 一覧取得
       $("#getroundbutton").click( function(){
           get("/rounds", $("#getroundresponse"));
+        })
+
+      // 取得
+      $("#getoneroundbutton").click( function() {
+          get("/rounds/" + $("#getoneroundid").val(), $("#getoneroundresponse"));
         })
 
       // 追加
@@ -371,6 +401,17 @@ uri : <b>/holes</b><br>
     <textarea id="getholeresponse" cols=100 rows=10 disabled></textarea>
 
     <hr>
+    <h2>ホール情報取得</h2>
+<p>
+http method : <b>GET</b><br>
+uri : <b>/holes/:csubid</b><br>
+　　:csubid にコースサブIDを指定する
+</p>
+    <p><font color="#FF0000">*</font>csubid: <input type="text" id="getoneholeid" size="30" value="cs100"></p>
+    <p><button id="getoneholebutton" type="button">取得</button></p>
+    <textarea id="getoneholeresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
     <h2>ホール情報追加／更新</h2>
 <p>
 ・追加<br>
@@ -417,6 +458,17 @@ uri : <b>/courses</b>
     <textarea id="getcourseresponse" cols=100 rows=10 disabled></textarea>
 
     <hr>
+    <h2>コース情報取得</h2>
+<p>
+http method : <b>GET</b><br>
+uri : <b>/courses/:cid</b><br>
+　　:cid にコースIDを指定する
+</p>
+    <p><font color="#FF0000">*</font>cid: <input type="text" id="getonecourseid" size="30" value="c100"></p>
+    <p><button id="getonecoursebutton" type="button">取得</button></p>
+    <textarea id="getonecourseresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
     <h2>コース情報追加／更新</h2>
 <p>
 ・追加<br>
@@ -459,6 +511,17 @@ uri : <b>/users</b>
 </p>
     <p><button id="getuserbutton" type="button">一覧取得</button></p>
     <textarea id="getuserresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>ユーザー情報取得</h2>
+<p>
+http method : <b>GET</b><br>
+uri : <b>/users/:uid</b><br>
+　　:uid にユーザーIDを指定する
+</p>
+    <p><font color="#FF0000">*</font>uid: <input type="text" id="getoneuserid" size="30" value="u1000"></p>
+    <p><button id="getoneuserbutton" type="button">取得</button></p>
+    <textarea id="getoneuserresponse" cols=100 rows=10 disabled></textarea>
 
     <hr>
     <h2>ユーザー情報追加／更新</h2>
@@ -510,6 +573,17 @@ uri : <b>/teams</b>
     <textarea id="getresponse" cols=100 rows=10 disabled></textarea>
 
     <hr>
+    <h2>チーム情報取得</h2>
+<p>
+http method : <b>GET</b><br>
+uri : <b>/teams/:tid</b><br>
+　　:tid にチームIDを指定する
+</p>
+    <p><font color="#FF0000">*</font>uid: <input type="text" id="getoneteamid" size="30" value="t100"></p>
+    <p><button id="getoneteambutton" type="button">取得</button></p>
+    <textarea id="getoneteamresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
     <h2>チーム情報追加／更新</h2>
 <p>
 ・追加<br>
@@ -550,6 +624,17 @@ uri : <b>/players</b>
 </p>
     <p><button id="getplayerbutton" type="button">一覧取得</button></p>
     <textarea id="getplayerresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>プレーヤー情報取得</h2>
+<p>
+http method : <b>GET</b><br>
+uri : <b>/players/:plid</b><br>
+　　:plid にプレーヤーIDを指定する
+</p>
+    <p><font color="#FF0000">*</font>plid: <input type="text" id="getoneplayerid" size="30" value="pl1000"></p>
+    <p><button id="getoneplayerbutton" type="button">取得</button></p>
+    <textarea id="getoneplayerresponse" cols=100 rows=10 disabled></textarea>
 
     <hr>
     <h2>プレーヤー情報追加／更新</h2>
@@ -598,6 +683,17 @@ uri : <b>/rounds</b>
 </p>
     <p><button id="getroundbutton" type="button">一覧取得</button></p>
     <textarea id="getroundresponse" cols=100 rows=10 disabled></textarea>
+
+    <hr>
+    <h2>ラウンド情報取得</h2>
+<p>
+http method : <b>GET</b><br>
+uri : <b>/rounds/:rid</b><br>
+　　:rid にラウンドIDを指定する
+</p>
+    <p><font color="#FF0000">*</font>rid: <input type="text" id="getoneroundid" size="30" value="r1000"></p>
+    <p><button id="getoneroundbutton" type="button">取得</button></p>
+    <textarea id="getoneroundresponse" cols=100 rows=10 disabled></textarea>
 
     <hr>
     <h2>ラウンド情報追加／更新</h2>

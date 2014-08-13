@@ -29,7 +29,7 @@ module.exports = {
   },
   // ユーザー情報取得
   show: function(req, res) {
-    User.findOne({ 'tid': req.params.uid },
+    User.findOne({ 'uid': req.params.uid },
       function(err, user) {
         if (!err) {
           responseSuccess(res, user);
