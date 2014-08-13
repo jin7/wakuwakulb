@@ -17,12 +17,15 @@ module.exports = {
     console.log(req.body);
     var newTeam = new Team(req.body);
 //    var newTeam = new Team({ 'tid': req.body.tid ? req.body.tid : "", 'tname': req.body.tname ? req.body.tname : "" });
-    newTeam.save(function(err) {
-      if (!err) {
-        responseSuccess(res);
-      } else {
-        responseError(500, res, err);
-      }
+    createTid(function(tid) {
+      newTeam.tid = tid;
+      newTeam.save(function(err) {
+        if (!err) {
+          responseSuccess(res);
+        } else {
+          responseError(500, res, err);
+        }
+      });
     });
   },
   // チーム情報取得

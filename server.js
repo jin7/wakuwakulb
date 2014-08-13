@@ -48,15 +48,93 @@ function ResponseError(status, res, err) {
   }
 }
 
+// get sequence numbers
+// Counterスキーマを定義
+// Counterは_idで複数個管理できる。
+var counterSchema = new Schema({
+  _id: String,
+  seq: Number
+});
+// Counterスキーマに新しいIDを発行させるメソッドを追加
+// MongoDBのfindAndModifyを用いて参照とともにカウンターの値を＋１する。
+// staticsに追加したメソッドは、クラスメソッドのような感覚で使える。
+counterSchema.statics.createNewId = function (name, callback) {
+  return this.collection.findAndModify(
+    { _id: name }, //Query
+    [], //sort
+    { $inc: { seq: 1 } }, //update document
+    { new: true, upsert: true }, //options
+    callback
+  );
+};
+// モデルを作成
+IDCreater = mongoose.model('counters', counterSchema);
+// ID作成共通関数
+function CreateID(idname, retCallback) {
+  var retid;
+  var calls = [];
+  calls.push(function (callback) {
+    IDCreater.createNewId(idname, function(err, id) {
+      if (err) {
+        throw err;
+      }
+      retid = idname + id.seq;
+      callback();
+    });
+  });
+  async.series(calls, function (err, result ) {
+    if (err) {
+      throw err;
+    }
+    retCallback(retid);
+  });
+}
+createCsubid = CreateCsubid;
+function CreateCsubid(retCallback) {
+  CreateID("cs", retCallback);
+}
+createCid = CreateCid;
+function CreateCid(retCallback) {
+  CreateID("c", retCallback);
+}
+createUid = CreateUid;
+function CreateUid(retCallback) {
+  CreateID("u", retCallback);
+}
+createTid = CreateTid
+function CreateTid(retCallback) {
+  CreateID("t", retCallback);
+}
+createPlid = CreatePlid
+function CreatePlid(retCallback) {
+  CreateID("pl", retCallback);
+}
+createRid = CreateRid;
+function CreateRid(retCallback) {
+  CreateID("r", retCallback);
+}
+createPid = CreatePid;
+function CreatePid(num, retCallback) {
+  var calls = [];
+  var pids = [];
+  for (i = 0; i < num; i++) {
+    calls.push(function(callback) {
+      CreateID("p", function(pid) {
+        pids.push(pid);
+        callback();
+      });
+    });
+  }
+  async.series(calls, function (err, result) {
+    if (err) {
+      throw err;
+    }
+    retCallback(pids);
+  });
+}
 ///
 /// Database schema
 ///
-// get sequence numbers
-function counter(name) {
-    var ret = db.counters.findAndModify({query:{_id:name}, update:{$inc : {next:1}}, "new":true, upsert:true});
-    // ret == { "_id" : "users", "next" : 1 }
-    return ret.next;
-}
 
 // Round model
 var roundModel = new Schema({

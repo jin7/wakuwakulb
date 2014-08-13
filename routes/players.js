@@ -16,12 +16,15 @@ module.exports = {
   create: function(req, res) {
     console.log(req.body);
     var newPlayer = new Player(req.body);
-    newPlayer.save(function(err) {
-      if (!err) {
-        responseSuccess(res);
-      } else {
-        responseError(500, res, err);
-      }
+    createPlid(function(plid) {
+      newPlayer.plid = plid;
+      newPlayer.save(function(err) {
+        if (!err) {
+          responseSuccess(res);
+        } else {
+          responseError(500, res, err);
+        }
+      });
     });
   },
   // プレーヤー情報取得

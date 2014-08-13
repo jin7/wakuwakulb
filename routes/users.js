@@ -16,12 +16,15 @@ module.exports = {
   create: function(req, res) {
     console.log(req.body);
     var newUser = new User(req.body);
-    newUser.save(function(err) {
-      if (!err) {
-        responseSuccess(res);
-      } else {
-        responseError(500, res, err);
-      }
+    createUid(function(uid) {
+      newUser.uid = uid;
+      newUser.save(function(err) {
+        if (!err) {
+          responseSuccess(res);
+        } else {
+          responseError(500, res, err);
+        }
+      });
     });
   },
   // ユーザー情報取得

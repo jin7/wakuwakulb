@@ -16,12 +16,25 @@ module.exports = {
   create: function(req, res) {
     console.log(req.body);
     var newRound = new Round(req.body);
-    newRound.save(function(err) {
-      if (!err) {
+    createRid(function(rid) {
+      newRound.rid = rid;
+      var async = require('async');
+      var calls = [];
+      var prtyifs = newRound.prtyifs;
+      createPid(prtyifs.length, function(pids) {
+        for (i = 0, l = prtyifs.length; i < l; i++) {
+          prtyifs[i].cid = newRound.cid;
+          prtyifs[i].pid = pids[i];
+          prtyifs[i].rid = rid;
+          prtyifs[i].number = i + 1;
+          newRound.save(function(err) {
+            if (err) {
+              responseError(500, res, err);
+            }
+          });
+        }
         responseSuccess(res);
-      } else {
-        responseError(500, res, err);
-      }
+      });
     });
   },
   // ラウンド情報取得

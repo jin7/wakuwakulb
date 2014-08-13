@@ -16,12 +16,15 @@ module.exports = {
   create: function(req, res) {
     console.log(req.body);
     var newHole = new Hole(req.body);
-    newHole.save(function(err) {
-      if (!err) {
-        responseSuccess(res);
-      } else {
-        responseError(500, res, err);
-      }
+    createCsubid(function(csubid) {
+      newHole.csubid = csubid;
+      newHole.save(function(err) {
+        if (!err) {
+          responseSuccess(res);
+        } else {
+          responseError(500, res, err);
+        }
+      });
     });
   },
   // ホール情報取得

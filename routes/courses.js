@@ -16,12 +16,15 @@ module.exports = {
   create: function(req, res) {
     console.log(req.body);
     var newCourse = new Course(req.body);
-    newCourse.save(function(err) {
-      if (!err) {
-        responseSuccess(res);
-      } else {
-        responseError(500, res, err);
-      }
+    createCid(function(cid) {
+      newCourse.cid = cid;
+      newCourse.save(function(err) {
+        if (!err) {
+          responseSuccess(res);
+        } else {
+          responseError(500, res, err);
+        }
+      });
     });
   },
   // コース情報取得
