@@ -24,7 +24,7 @@ module.exports = {
       responseError(400, res, "invalid:names");
       return;
     }
-    if (isNullOrEmpty(newHole.pars) || newHole.pars.length != 9) {
+    if (isNullOrEmpty(newHole.pars) || !isValidPars(newHole.pars)) {
       responseError(400, res, "invalid:pars");
       return;
     }

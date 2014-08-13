@@ -16,6 +16,22 @@ module.exports = {
   create: function(req, res) {
     console.log(req.body);
     var newPlayer = new Player(req.body);
+    if (isNullOrEmpty(newPlayer.uid)) {
+      responseError(400, res, "invalid:uid");
+      return;
+    }
+    if (isNullOrEmpty(newPlayer.rid)) {
+      responseError(400, res, "invalid:rid");
+      return;
+    }
+    if (isNullOrEmpty(newPlayer.tid)) {
+      responseError(400, res, "invalid:tid");
+      return;
+    }
+    if (isNullOrEmpty(newPlayer.csubids) || newPlayer.csubids.length != 2) {
+      responseError(400, res, "invalid:csubids");
+      return;
+    }
     createPlid(function(plid) {
       newPlayer.plid = plid;
       newPlayer.save(function(err) {
@@ -43,6 +59,26 @@ module.exports = {
   },
   // プレーヤー情報更新
   update: function(req, res) {
+    if (isNullOrEmpty(req.params.plid)) {
+      responseError(400, res, "invalid:plid");
+      return;
+    }
+    if (isNullOrEmpty(req.body.uid)) {
+      responseError(400, res, "invalid:uid");
+      return;
+    }
+    if (isNullOrEmpty(req.body.rid)) {
+      responseError(400, res, "invalid:rid");
+      return;
+    }
+    if (isNullOrEmpty(req.body.tid)) {
+      responseError(400, res, "invalid:tid");
+      return;
+    }
+    if (isNullOrEmpty(req.body.csubids) || req.body.csubids.length != 2) {
+      responseError(400, res, "invalid:csubids");
+      return;
+    }
     Player.findOne({ 'plid': req.params.plid },
       function(err, player) {
         if (!err) {

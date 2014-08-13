@@ -16,6 +16,30 @@ module.exports = {
   create: function(req, res) {
     console.log(req.body);
     var newRound = new Round(req.body);
+    if (isNullOrEmpty(newRound.rname)) {
+      responseError(400, res, "invalid:rname");
+      return;
+    }
+    if (isNullOrEmpty(newRound.cid)) {
+      responseError(400, res, "invalid:cid");
+      return;
+    }
+    if (isNullOrEmpty(newRound.csubids) || newRound.csubids.length < 2) {
+      responseError(400, res, "invalid:csubids");
+      return;
+    }
+    if (isNullOrEmpty(newRound.handicapinf) || !isValidHandicapMethod(newRound.handicapinf.method)) {
+      responseError(400, res, "invalid:handicapinf.method");
+      return;
+    }
+    if (isNullOrEmpty(newRound.handicapinf) || !isValidHandicapUpperLimit(newRound.handicapinf.upperLimit)) {
+      responseError(400, res, "invalid:handicapinf.upperLimit");
+      return;
+    }
+    if (isNullOrEmpty(newRound.prtyifs)) {
+      responseError(400, res, "invalid:prtyifs");
+      return;
+    }
     createRid(function(rid) {
       newRound.rid = rid;
       var async = require('async');
@@ -53,6 +77,34 @@ module.exports = {
   },
   // ラウンド情報更新
   update: function(req, res) {
+    if (isNullOrEmpty(req.params.rid)) {
+      responseError(400, res, "invalid:rid");
+      return;
+    }
+    if (isNullOrEmpty(req.body.rname)) {
+      responseError(400, res, "invalid:rname");
+      return;
+    }
+    if (isNullOrEmpty(req.body.cid)) {
+      responseError(400, res, "invalid:cid");
+      return;
+    }
+    if (isNullOrEmpty(req.body.csubids) || req.body.csubids.length < 2) {
+      responseError(400, res, "invalid:csubids");
+      return;
+    }
+    if (isNullOrEmpty(req.body.handicapinf) || !isValidHandicapMethod(req.body.handicapinf.method)) {
+      responseError(400, res, "invalid:handicapinf.method");
+      return;
+    }
+    if (isNullOrEmpty(req.body.handicapinf) || !isValidHandicapUpperLimit(req.body.handicapinf.upperLimit)) {
+      responseError(400, res, "invalid:handicapinf.upperLimit");
+      return;
+    }
+    if (isNullOrEmpty(req.body.prtyifs)) {
+      responseError(400, res, "invalid:prtyifs");
+      return;
+    }
     Round.findOne({ 'rid': req.params.rid },
       function(err, round) {
         if (!err) {

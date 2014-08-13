@@ -15,6 +15,10 @@ module.exports = {
   // チーム情報追加
   create: function(req, res) {
     console.log(req.body);
+    if (isNullOrEmpty(req.body.tname)) {
+      responseError(400, res, "invalid:tname");
+      return;
+    }
     var newTeam = new Team(req.body);
 //    var newTeam = new Team({ 'tid': req.body.tid ? req.body.tid : "", 'tname': req.body.tname ? req.body.tname : "" });
     createTid(function(tid) {

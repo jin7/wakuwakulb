@@ -32,6 +32,36 @@ isNullOrEmpty = IsNullOrEmpty;
 function IsNullOrEmpty(val) {
   return !val || val == null || val.length == 0
 }
+isValidPars = IsValidPars;
+function IsValidPars(vals) {
+  var l = vals.length;
+  if (l != 9) {
+    return false;
+  }
+  for (i = 0; i < l; i++) {
+    if (isNaN(vals[i])) {
+      return false
+    }
+  }
+  return true;
+}
+isValidHandicapMethod = IsValidHandicapMethod;
+function IsValidHandicapMethod(val) {
+  if (isNaN(val)) {
+    return false;
+  }
+  if (val != 1 && val != 2) {
+    return false;
+  }
+  return true;
+}
+isValidHandicapUpperLimit = IsValidHandicapUpperLimit;
+function IsValidHandicapUpperLimit(val) {
+  if (!val || val == null || isNaN(val)) {
+    return false;
+  }
+  return true;
+}
 isDate = IsDate;
 function IsDate(datestr) {
   // 正規表現による書式チェック

@@ -289,12 +289,16 @@
       // 追加
       $("#createroundbutton").click( function() {
           var handicapinf = { 'method' : parseInt($("#handicapinf-method").val()), 'upperLimit': parseInt($("#handicapinf-upperlimit").val()) };
-          var prtyifs = JSON.parse($("#prtyifs").val());
+          var prtyifs = [];
+          var csubarray = csv2array($("#round-csubids").val());
+          if ($("#prtyifs").val()) {
+            prtyifs = JSON.parse($("#prtyifs").val());
+          }
           var JSONdata = {
             'rid': $("#rid").val(),
             'rname': $("#rname").val(),
             'cid': $("#round-cid").val(),
-            'csubids': $("#round-csubids").val(),
+            'csubids': csubarray,
             'handicapinf': handicapinf,
             'prtyifs': prtyifs,
             'date': $("#round-date").val(),
@@ -312,11 +316,15 @@
       $("#updateroundbutton").click( function() {
           var url = "/rounds/" + $("#rid").val();
           var handicapinf = { 'method' : parseInt($("#handicapinf-method").val()), 'upperLimit': parseInt($("#handicapinf-upperlimit").val()) };
-          var prtyifs = JSON.parse($("#prtyifs").val());
+          var prtyifs = [];
+          var csubarray = csv2array($("#round-csubids").val());
+          if ($("#prtyifs").val()) {
+            prtyifs = JSON.parse($("#prtyifs").val());
+          }
           var JSONdata = {
             'rname': $("#rname").val(),
             'cid': $("#round-cid").val(),
-            'csubids': $("#round-csubids").val(),
+            'csubids': csubarray,
             'handicapinf': handicapinf,
             'prtyifs': prtyifs,
             'date': $("#round-date").val(),
