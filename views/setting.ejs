@@ -347,9 +347,17 @@
   <body>
     <h1><%= title %></h1>
     <hr>
+    <h2>ベースURL</h2>
+    http://wakuwaku.c.node-ninja.com:3000/
+    <br><br>
+<!--
+  ホール情報アクセス
+-->
+    <hr>
     <h2>ホール情報一覧</h2>
 <p>
-GET /holes
+http method : <b>GET</b><br>
+uri : <b>/holes</b><br>
 </p>
     <p><button id="getholebutton" type="button">一覧取得</button></p>
     <textarea id="getholeresponse" cols=100 rows=10 disabled></textarea>
@@ -357,15 +365,14 @@ GET /holes
     <hr>
     <h2>ホール情報追加／更新</h2>
 <p>
-追加　：　POST /holes<br>
-更新　：　PUT /holes<br>
-body例：<br>
-{ 
-"csubid": "c001cs01", 
-"csubname": "IN", 
-"names": [ "01H", "02H", "03H", "04H", "05H", "06H", "07H", "08H", "09H" ], 
-"pars": [ 4, 3, 4, 5, 4, 5, 3, 4, 4 ] 
-}
+・追加<br>
+　http method : <b>POST</b><br>
+　uri : <b>/holes</b><br>
+・更新<br>
+　http method : <b>PUT</b><br>
+　uri : <b>/holes</b><br>
+・body指定例<br>
+　{ "csubid": "c001cs01", "csubname": "IN", "names": [ "01H", "02H", "03H", "04H", "05H", "06H", "07H", "08H", "09H" ], "pars": [ 4, 3, 4, 5, 4, 5, 3, 4, 4 ] }
 </p>
     <p>csubid: <input type="text" id="csubid" size="30" value="c100cs01"></p>
     <p>csubname: <input type="text" id="csubname" size="30" value="IN"></p>
@@ -378,8 +385,9 @@ body例：<br>
     <hr>
     <h2>ホール情報削除</h2>
 <p>
-DELETE /holes/:csubid<br>
-:csubid にコースサブIDを指定する
+http method : <b>DELETE</b><br>
+uri :  <b>/holes/:csubid</b><br>
+　　:csubid にコースサブIDを指定する
 </p>
     <p>csubid: <input type="text" id="removeholeid" size="30" value="c100cs01"></p>
     <p><button id="removeholebutton" type="button">削除</button></p>
@@ -396,14 +404,18 @@ GET /courses
     <hr>
     <h2>コース情報追加／更新</h2>
 <p>
-追加　：　POST /courses<br>
-更新　：　PUT /courses<br>
-body例：<br>
-{ "cid": "c002", "cname": "能登ゴルフ倶楽部", "holeinfs": [ "c002cs01", "c002cs02", "c002cs03" ] }
+・追加<br>
+　http method : <b>POST</b><br>
+　uri : <b>/courses</b><br>
+・更新<br>
+　http method : <b>PUT</b><br>
+　uri : <b>/courses</b><br>
+・body例：<br>
+　{ "cid": "c100", "cname": "ＰＳＷ７２ゴルフ倶楽部", "holeinfs": [ "c100cs01", "c100cs02", "c100cs03", "c100cs04", "c100cs05", "c100cs06", "c100cs07", "c100cs08" ] }
 </p>
     <p>cid: <input type="text" id="cid" size="30" value="c100"></p>
-    <p>cname: <input type="text" id="cname" size="30" value="PSWゴルフ倶楽部"></p>
-    <p>holeinfs: <input type="text" id="holeinfs" size="100" value="c100cs01, c100cs02"></p>
+    <p>cname: <input type="text" id="cname" size="30" value="ＰＳＷ７２ゴルフ倶楽部"></p>
+    <p>holeinfs: <input type="text" id="holeinfs" size="100" value="c100cs01, c100cs02, c100cs03, c100cs04, c100cs05, c100cs06, c100cs07, c100cs08"></p>
     <p><button id="createcoursebutton" type="button">追加</button></p>
     <p><button id="updatecoursebutton" type="button">更新</button></p>
     <textarea id="createcourseresponse" cols=100 rows=10 disabled></textarea>
@@ -411,8 +423,9 @@ body例：<br>
     <hr>
     <h2>コース情報削除</h2>
 <p>
-DELETE /courses/:cid<br>
-:cid にコースID cid を指定する
+http method : <b>DELETE</b><br>
+uri : <b>/courses/:cid</b><br>
+　　:cid にコースID cid を指定する
 </p>
     <p>cid: <input type="text" id="removecid" size="30" value="c100"></p>
     <p><button id="removecoursebutton" type="button">削除</button></p>
@@ -421,7 +434,8 @@ DELETE /courses/:cid<br>
     <hr>
     <h2>ユーザー情報一覧</h2>
 <p>
-GET /users
+http method : <b>GET</b><br>
+uri : <b>/users</b>
 </p>
     <p><button id="getuserbutton" type="button">一覧取得</button></p>
     <textarea id="getuserresponse" cols=100 rows=10 disabled></textarea>
@@ -429,10 +443,14 @@ GET /users
     <hr>
     <h2>ユーザー情報追加／更新</h2>
 <p>
-追加　：　POST /users<br>
-更新　：　PUT /users<br>
-body例：<br>
-{ "brthdy" : "2000-01-01", "mail" : "hoge@hoge.com", "sex" : 1, "uid" : "u1000", "uimg" : "", "uname" : "ＰＳＷ　飛び男" }
+・追加<br>
+　http method : <b>POST</b><br>
+　uri : <b>/users</b><br>
+・更新<br>
+　http method ： <b>PUT</b><br>
+　uri : <b>/users</b><br>
+・body例：<br>
+　{ "uid" : "u1000", "uname" : "ＰＳＷ　飛び男", "brthdy" : "2000-01-01", "mail" : "hoge@hoge.com", "sex" : 1, "uimg" : "" }
 </p>
     <p>uid: <input type="text" id="uid" size="30" value="u1000"></p>
     <p>uname: <input type="text" id="uname" size="30" value="ＰＳＷ　飛び男"></p>
@@ -447,8 +465,9 @@ body例：<br>
     <hr>
     <h2>ユーザー情報削除</h2>
 <p>
-DELETE /users/:uid<br>
-:uid にユーザーID uid を指定する
+http method : <b>DELETE</b><br>
+uri : <b>/users/:uid</b><br>
+　　:uid にユーザーID uid を指定する
 </p>
     <p>uid: <input type="text" id="removeuid" size="30" value="u1000"></p>
     <p><button id="removeuserbutton" type="button">削除</button></p>
@@ -457,7 +476,8 @@ DELETE /users/:uid<br>
     <hr>
     <h2>チーム情報一覧</h2>
 <p>
-GET /teams
+http method : <b>GET</b><br>
+uri : <b>/teams</b>
 </p>
     <p><button id="getbutton" type="button">一覧取得</button></p>
     <textarea id="getresponse" cols=100 rows=10 disabled></textarea>
@@ -465,13 +485,17 @@ GET /teams
     <hr>
     <h2>チーム情報追加／更新</h2>
 <p>
-追加　：　POST /teams<br>
-更新　：　PUT /teams<br>
-body例：<br>
-{ "tid" : "t100", "tname" : "PSW", "timg" : "" }
+・追加<br>
+　http method <b>POST</b><br>
+　uri : <b>/teams</b><br>
+・更新<br>
+　http method : <b>PUT</b><br>
+　uri : <b>/teams</b><br>
+・body例：<br>
+　{ "tid" : "t100", "tname" : "最強チーム", "timg" : "" }
 </p>
     <p>tid: <input type="text" id="tid" size="30" value="t100"></p>
-    <p>tname: <input type="text" id="tname" size="30" value="チームNo.1"></p>
+    <p>tname: <input type="text" id="tname" size="30" value="最強チーム"></p>
     <p><button id="createbutton" type="button">追加</button></p>
     <p><button id="updatebutton" type="button">更新</button></p>
     <textarea id="createresponse" cols=100 rows=10 disabled></textarea>
@@ -479,8 +503,9 @@ body例：<br>
     <hr>
     <h2>チーム情報削除</h2>
 <p>
-DELETE /teams/:tid<br>
-:tid にチームID tid を指定する
+http method : <b>DELETE</b><br>
+uri : <b>/teams/:tid</b><br>
+　　:tid にチームID tid を指定する
 </p>
     <p>tid: <input type="text" id="removetid" size="30" value="t001"></p>
     <p><button id="removebutton" type="button">削除</button></p>
@@ -489,7 +514,8 @@ DELETE /teams/:tid<br>
     <hr>
     <h2>プレーヤー情報一覧</h2>
 <p>
-GET /players
+http method : <b>GET</b><br>
+uri : <b>/players</b>
 </p>
     <p><button id="getplayerbutton" type="button">一覧取得</button></p>
     <textarea id="getplayerresponse" cols=100 rows=10 disabled></textarea>
@@ -497,10 +523,14 @@ GET /players
     <hr>
     <h2>プレーヤー情報追加／更新</h2>
 <p>
-追加　：　POST /players<br>
-更新　：　PUT /players<br>
-body例：<br>
-{ "plid" : "pl1000", "rid" : "r1000", "uid" : "u1000", "tid" : "t1000", "csubids" : [ "c1000cs01", "c1000cs02" ] }
+・追加<br>
+　http method : <b>POST</b><br>
+　uri : <b>/players</b><br>
+・更新<br>
+　http method : <b>PUT</b>
+　uri : <b>/players</b><br>
+・body例：<br>
+　{ "plid" : "pl1000", "rid" : "r1000", "uid" : "u1000", "tid" : "t1000", "csubids" : [ "c1000cs01", "c1000cs02" ] }
 </p>
     <p>plid: <input type="text" id="plid" size="30" value="pl1000"></p>
     <p>uid: <input type="text" id="player-uid" size="30" value="u1000"></p>
@@ -514,8 +544,9 @@ body例：<br>
     <hr>
     <h2>プレーヤー情報削除</h2>
 <p>
-DELETE /players/:plid<br>
-:plid にプレーヤーID plid を指定する
+http method : <b>DELETE</b><br>
+uri : <b>/players/:plid</b><br>
+　　:plid にプレーヤーID plid を指定する
 </p>
     <p>plid: <input type="text" id="removeplid" size="30" value="pl1000"></p>
     <p><button id="removeplayerbutton" type="button">削除</button></p>
@@ -524,7 +555,8 @@ DELETE /players/:plid<br>
     <hr>
     <h2>ラウンド情報一覧</h2>
 <p>
-GET /rounds
+http method : <b>GET</b><br>
+uri : <b>/rounds</b>
 </p>
     <p><button id="getroundbutton" type="button">一覧取得</button></p>
     <textarea id="getroundresponse" cols=100 rows=10 disabled></textarea>
@@ -532,10 +564,14 @@ GET /rounds
     <hr>
     <h2>ラウンド情報追加／更新</h2>
 <p>
-追加　：　POST /rounds<br>
-更新　：　PUT /rounds<br>
-body例：<br>
-{ "cid": "c100", "csubids": [ "c100cs01", "c100cs02" ], "date": { "$date": 1382140800 }, "handicapinf": { "method": 2, "upperLimit": 36 }, "prtyifs": [ { "cid": "c100", "csubids": [ "c100cs01", "c100cs02" ], "number": 1, "pid": "party01", "plyrifs": [ "pl1000", "pl1001", "pl1002", "pl1003" ], "pname": "1組目", "rid": "r1000" }], "rid": "r1000", "rname": "第１回　ＰＳＷオープン 20YY/MM/DD" }
+・追加<br>
+　http method : <b>POST</b>
+　uri : <b>/rounds</b><br>
+・更新<br>
+　http method : <b>PUT</b>
+　uri : <b>/rounds</b><br>
+・body例：<br>
+　{ "rid": "r1000", "rname": "第１回　ＰＳＷオープン 20YY/MM/DD", "cid": "c100", "csubids": [ "c100cs01", "c100cs02" ], "handicapinf": { "method": 2, "upperLimit": 36 }, "prtyifs": [ { "cid": "c100", "csubids": [ "c100cs01", "c100cs02" ], "number": 1, "pid": "party01", "plyrifs": [ "pl1000", "pl1001", "pl1002", "pl1003" ], "pname": "1組目", "rid": "r1000" }], "date": { "$date": 1382140800 } }
 </p>
     <p>rid: <input type="text" id="rid" size="30" value="r1000"></p>
     <p>rname: <input type="text" id="rname" size="30" value="ＰＳＷオープン"></p>
@@ -543,8 +579,8 @@ body例：<br>
     <p>csubids: <input type="text" id="round-csubids" size="30" value="c100cs01, c100cs02"></p>
     <p>handicapinf-method: <input type="text" id="handicapinf-method" size="30" value="2"></p>
     <p>handicapinf-upperLimit: <input type="text" id="handicapinf-upperlimit" size="30" value="36"></p>
-    <p>date: not supported.</p>
 <!--    <p>date: <input type="text" id="round-date" size="30" value=""></p>-->
+    <p>prtyifs:</p>
     <textarea id="prtyifs" cols=100 rows=20>
 [
   {
@@ -566,7 +602,7 @@ body例：<br>
   }
 ]
 </textarea>
-<!--    <p>prtyifs: <input type="text" id="prtyifs" size="30" value=""></p>-->
+    <p>date: not supported.</p>
     <p><button id="createroundbutton" type="button">追加</button></p>
     <p><button id="updateroundbutton" type="button">更新</button></p>
     <textarea id="createroundresponse" cols=100 rows=10 disabled></textarea>
