@@ -236,7 +236,7 @@
           var csubarray = csv2array($("#player-csubids").val());
           var JSONdata = {
             'plid': $("#plid").val(),
-//            'rid': $("#player-rid").val(),
+            'rid': $("#player-rid").val(),
             'uid': $("#player-uid").val(),
             'tid': $("#player-tid").val(),
             'csubids': csubarray
@@ -445,20 +445,50 @@
   <body>
     <h1><%= title %></h1>
     <hr>
+<p>
+<h3>　・<a href="#baseurl-ref">ベースURL</a></h3>
+<h3>　・<a href="#summary-ref">API説明形式</a></h3>
+<br>
+下記情報を設定するAPIを説明します。<br>
+APIを実行できます。<br>
+<h3>　・<a href="#hole-ref">ホール情報</a></h3>
+　　　9ホールごとの情報（パー数など）を定義します。
+<h3>　・<a href="#course-ref">コース情報</a></h3>
+　　　ゴルフ場名、ホール情報との関連付けを定義します。
+<h3>　・<a href="#user-ref">ユーザー情報</a></h3>
+　　　氏名、誕生日、性別などを定義します。
+<h3>　・<a href="#team-ref">チーム情報</a></h3>
+　　　チーム名を定義します（コンペでチーム戦を行う際などに利用します）。
+<h3>　・<a href="#player-ref">プレーヤー情報</a></h3>
+　　　ユーザー、チーム、ラウンドするホール情報との関連を定義します。
+<h3>　・<a href="#round-ref">ラウンド情報</a></h3>
+　　　ラウンド名（コンペ名など）、コース情報との関連、パーティ(組)情報(プレーヤー情報、ラウンドするホール情報との関連)を定義します。
+</p>
+<a name="baseurl-ref"></a>
+    <hr>
     <h2>ベースURL</h2>
-    http://wakuwaku.c.node-ninja.com:3000/
+    http://wakuwaku.c.node-ninja.com:3000
     <br><br>
 <!--
   説明
 -->
+<a name="summary-ref"></a>
     <hr>
 <p>
-[記号]<br>
-　<font color="#FF0000">*</font>&nbsp;:&nbsp;必須
+APIごとに、以下の形式で説明しています。<br>
+<hr>
+<h2>API名</h2>
+http method : <b>GET/POST/PUT/DELETE のいずれか</b><br>
+uri : <b>URI</b><br>
+body指定例 <b>ボディの指定が必要な場合、その指定例を示します。JSON形式です。</b><br>
+<br>
+<b>URIパラメータ、ボディに指定する項目説明</b>　(<font color="#FF0000">*</font>&nbsp;印&nbsp;:&nbsp;必須項目)<br>
+<br>
 </p>
 <!--
   ホール情報アクセス
 -->
+<a name="hole-ref"></a>
     <hr>
     <h2>ホール情報一覧</h2>
 <p>
@@ -466,7 +496,7 @@ http method : <b>GET</b><br>
 uri : <b>/holes</b><br>
 </p>
     <p><button id="getholebutton" type="button">一覧取得</button></p>
-    <textarea id="getholeresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="getholeresponse" cols=100 rows=10 placeholder="[一覧取得]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>ホール情報取得</h2>
@@ -475,12 +505,12 @@ http method : <b>GET</b><br>
 uri : <b>/holes/:csubid</b><br>
 　　:csubid にコースサブIDを指定する
 </p>
-    <p><font color="#FF0000">*</font>csubid: <input type="text" id="getoneholeid" size="30" value="cs100"></p>
+    <p><font color="#FF0000">*</font>csubid: <input type="text" id="getoneholeid" size="30" value="" placeholder="コースサブIDを指定します"></p>
     <p><button id="getoneholebutton" type="button">取得</button></p>
 <p>
 <font color="#0000FF">※正常に取得できた場合は、「ホール情報追加／更新」の各フィールドにも表示します。</font>
 </p>
-    <textarea id="getoneholeresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="getoneholeresponse" cols=100 rows=10 placeholder="[取得]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>ホール情報追加／更新</h2>
@@ -490,20 +520,17 @@ uri : <b>/holes/:csubid</b><br>
 　uri : <b>/holes</b><br>
 ・更新<br>
 　http method : <b>PUT</b><br>
-　uri : <b>/holes</b><br>
+　uri : <b>/holes/:csubid</b><br>
 ・body指定例<br>
 　{ "csubid": "cs100", "csubname": "IN", "names": [ "01H", "02H", "03H", "04H", "05H", "06H", "07H", "08H", "09H" ], "pars": [ 4, 3, 4, 5, 4, 5, 3, 4, 4 ] }
 </p>
-    <p>&nbsp;&nbsp;csubid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="csubid" size="30" value="cs100"></p>
-    <p><font color="#FF0000">*</font>csubname: <input type="text" id="csubname" size="30" value="IN"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(コース名を指定します。例：IN)</p>
-    <p><font color="#FF0000">*</font>names: <input type="text" id="csubnames" size="100" value="01H,02H,03H,04H,05H,06H,07H,08H,09H"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(ホール名をカンマ区切りで指定します。例：1H,2H,3H,4H,5H,6H,7H,8H,9H)</p>
-    <p><font color="#FF0000">*</font>pars: <input type="text" id="pars" size="100" value="4, 3, 4, 5, 4, 5, 3, 4, 4"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(パー数をカンマ区切りで指定します。例：4, 3, 4, 5, 4, 5, 3, 4, 4)</p>
+    <p>&nbsp;&nbsp;csubid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="csubid" size="30" value="" placeholder="更新時、コースサブIDを指定します"></p>
+    <p><font color="#FF0000">*</font>csubname: <input type="text" id="csubname" size="30" value="" placeholder="コース名を指定します。例：IN"></p>
+    <p><font color="#FF0000">*</font>names: <input type="text" id="csubnames" size="100" value="" placeholder="ホール名をカンマ区切りで指定します。例：1H,2H,3H,4H,5H,6H,7H,8H,9H"></p>
+    <p><font color="#FF0000">*</font>pars: <input type="text" id="pars" size="100" value="" placeholder="パー数をカンマ区切りで指定します。例：4, 3, 4, 5, 4, 5, 3, 4, 4"></p>
     <p><button id="createholebutton" type="button">追加</button></p>
     <p><button id="updateholebutton" type="button">更新</button></p>
-    <textarea id="createholeresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="createholeresponse" cols=100 rows=10 placeholder="[追加]/[更新]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>ホール情報削除</h2>
@@ -512,13 +539,14 @@ http method : <b>DELETE</b><br>
 uri :  <b>/holes/:csubid</b><br>
 　　:csubid にコースサブIDを指定する
 </p>
-    <p><font color="#FF0000">*</font>csubid: <input type="text" id="removeholeid" size="30" value="cs100"></p>
+    <p><font color="#FF0000">*</font>csubid: <input type="text" id="removeholeid" size="30" value="" placeholder="コースサブIDを指定します"></p>
     <p><button id="removeholebutton" type="button">削除</button></p>
-    <textarea id="removeholeresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="removeholeresponse" cols=100 rows=10 placeholder="[削除]結果を表示します" disabled></textarea>
 
 <!--
   コース情報アクセス
 -->
+<a name="course-ref"></a>
     <hr>
     <h2>コース情報一覧</h2>
 <p>
@@ -526,7 +554,7 @@ http method : <b>GET</b><br>
 uri : <b>/courses</b>
 </p>
     <p><button id="getcoursebutton" type="button">一覧取得</button></p>
-    <textarea id="getcourseresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="getcourseresponse" cols=100 rows=10 placeholder="[一覧取得]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>コース情報取得</h2>
@@ -535,12 +563,12 @@ http method : <b>GET</b><br>
 uri : <b>/courses/:cid</b><br>
 　　:cid にコースIDを指定する
 </p>
-    <p><font color="#FF0000">*</font>cid: <input type="text" id="getonecourseid" size="30" value="c100"></p>
+    <p><font color="#FF0000">*</font>cid: <input type="text" id="getonecourseid" size="30" value="" placeholder="コースIDを指定します"></p>
     <p><button id="getonecoursebutton" type="button">取得</button></p>
 <p>
 <font color="#0000FF">※正常に取得できた場合は、「コース情報追加／更新」の各フィールドにも表示します。</font>
 </p>
-    <textarea id="getonecourseresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="getonecourseresponse" cols=100 rows=10 placeholder="[取得]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>コース情報追加／更新</h2>
@@ -554,14 +582,12 @@ uri : <b>/courses/:cid</b><br>
 ・body例：<br>
 　{ "cid": "c100", "cname": "ＰＳＷ７２ゴルフ倶楽部", "holeinfs": [ "cs100", "cs101", "cs102", "cs103", "cs104", "cs105", "cs106", "c107" ] }
 </p>
-    <p>&nbsp;&nbsp;cid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="cid" size="30" value="c100"></p>
-    <p><font color="#FF0000">*</font>cname: <input type="text" id="cname" size="100" value="ＰＳＷ７２ゴルフ倶楽部"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(ゴルフ場名を指定します。例：ＰＳＷ７２ゴルフ倶楽部)</p>
-    <p><font color="#FF0000">*</font>holeinfs: <input type="text" id="holeinfs" size="100" value="c100, c101, c102, c103, c104, c105, c106, c107"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(ラウンドするコースのID csubid をカンマ区切りで指定します。例：cs1, cs2, cs3)</p>
+    <p>&nbsp;&nbsp;cid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="cid" size="30" value="" placeholder="更新時、コースIDを指定します"></p>
+    <p><font color="#FF0000">*</font>cname: <input type="text" id="cname" size="100" value="" placeholder="ゴルフ場名を指定します。例：ＰＳＷ７２ゴルフ倶楽部"></p>
+    <p><font color="#FF0000">*</font>holeinfs: <input type="text" id="holeinfs" size="100" value="" placeholder="ラウンドするコースのコースサブID csubid をカンマ区切りで指定します。例：cs1, cs2, cs3"></p>
     <p><button id="createcoursebutton" type="button">追加</button></p>
     <p><button id="updatecoursebutton" type="button">更新</button></p>
-    <textarea id="createcourseresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="createcourseresponse" cols=100 rows=10 placeholder="[追加]/[更新]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>コース情報削除</h2>
@@ -570,13 +596,14 @@ http method : <b>DELETE</b><br>
 uri : <b>/courses/:cid</b><br>
 　　:cid にコースID cid を指定する
 </p>
-    <p><font color="#FF0000">*</font>cid: <input type="text" id="removecid" size="30" value="c100"></p>
+    <p><font color="#FF0000">*</font>cid: <input type="text" id="removecid" size="30" value="" placeholder="コースIDを指定します"></p>
     <p><button id="removecoursebutton" type="button">削除</button></p>
-    <textarea id="removecourseresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="removecourseresponse" cols=100 rows=10 placeholder="[削除]結果を表示します" disabled></textarea>
 
 <!--
   ユーザー情報アクセス
 -->
+<a name="user-ref"></a>
     <hr>
     <h2>ユーザー情報一覧</h2>
 <p>
@@ -584,7 +611,7 @@ http method : <b>GET</b><br>
 uri : <b>/users</b>
 </p>
     <p><button id="getuserbutton" type="button">一覧取得</button></p>
-    <textarea id="getuserresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="getuserresponse" cols=100 rows=10 placeholder="[一覧取得]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>ユーザー情報取得</h2>
@@ -593,12 +620,12 @@ http method : <b>GET</b><br>
 uri : <b>/users/:uid</b><br>
 　　:uid にユーザーIDを指定する
 </p>
-    <p><font color="#FF0000">*</font>uid: <input type="text" id="getoneuserid" size="30" value="u1000"></p>
+    <p><font color="#FF0000">*</font>uid: <input type="text" id="getoneuserid" size="30" value="" placeholder="ユーザーIDを指定します"></p>
     <p><button id="getoneuserbutton" type="button">取得</button></p>
 <p>
 <font color="#0000FF">※正常に取得できた場合は、「ユーザー情報追加／更新」の各フィールドにも表示します。</font>
 </p>
-    <textarea id="getoneuserresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="getoneuserresponse" cols=100 rows=10 placeholder="[取得]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>ユーザー情報追加／更新</h2>
@@ -612,19 +639,15 @@ uri : <b>/users/:uid</b><br>
 ・body例：<br>
 　{ "uid" : "u1000", "uname" : "ＰＳＷ　飛び男", "brthdy" : "2000-01-01", "mail" : "hoge@hoge.com", "sex" : 1, "uimg" : "" }
 </p>
-    <p>&nbsp;&nbsp;uid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="uid" size="30" value="u1000"></p>
-    <p><font color="#FF0000">*</font>uname: <input type="text" id="uname" size="100" value="ＰＳＷ　飛び男"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(ユーザー名を指定します)</p>
-    <p><font color="#FF0000">*</font>brthdy: <input type="text" id="brthdy" size="30" value="2000-01-01"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(誕生日を指定します。YYYY-MM-DD の形式で指定します。例：2000-01-01)</p>
-    <p><font color="#FF0000">*</font>sex: <input type="text" id="sex" size="30" value="1"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(性別を指定します。1 : 男、2 : 女)</p>
-    <p>&nbsp;&nbsp;mail: <input type="text" id="mail" size="100" value="hoge@hoge.com"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(メールアドレスを指定します)</p>
+    <p>&nbsp;&nbsp;uid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="uid" size="30" value="" placeholder="更新時、ユーザーIDを指定します"></p>
+    <p><font color="#FF0000">*</font>uname: <input type="text" id="uname" size="100" value="" placeholder="ユーザー名を指定します"></p>
+    <p><font color="#FF0000">*</font>brthdy: <input type="text" id="brthdy" size="80" value="" placeholder="誕生日を指定します。YYYY-MM-DD の形式で指定します。例：2000-01-01"></p>
+    <p><font color="#FF0000">*</font>sex: <input type="text" id="sex" size="30" value="" placeholder="性別を指定します。1 : 男、2 : 女"></p>
+    <p>&nbsp;&nbsp;mail: <input type="text" id="mail" size="100" value="" placeholder="メールアドレスを指定します"></p>
     <p>&nbsp;&nbsp;uimg: not supported.</p>
     <p><button id="createuserbutton" type="button">追加</button></p>
     <p><button id="updateuserbutton" type="button">更新</button></p>
-    <textarea id="createuserresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="createuserresponse" cols=100 rows=10 placeholder="[追加]/[更新]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>ユーザー情報削除</h2>
@@ -633,13 +656,14 @@ http method : <b>DELETE</b><br>
 uri : <b>/users/:uid</b><br>
 　　:uid にユーザーID uid を指定する
 </p>
-    <p><font color="#FF0000">*</font>uid: <input type="text" id="removeuid" size="30" value="u1000"></p>
+    <p><font color="#FF0000">*</font>uid: <input type="text" id="removeuid" size="30" value="" placeholder="ユーザーIDを指定します"></p>
     <p><button id="removeuserbutton" type="button">削除</button></p>
-    <textarea id="removeuserresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="removeuserresponse" cols=100 rows=10 placeholder="[削除]結果を表示します" disabled></textarea>
 
 <!--
   チーム情報アクセス
 -->
+<a name="team-ref"></a>
     <hr>
     <h2>チーム情報一覧</h2>
 <p>
@@ -647,7 +671,7 @@ http method : <b>GET</b><br>
 uri : <b>/teams</b>
 </p>
     <p><button id="getbutton" type="button">一覧取得</button></p>
-    <textarea id="getresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="getresponse" cols=100 rows=10 placeholder="[一覧取得]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>チーム情報取得</h2>
@@ -656,12 +680,12 @@ http method : <b>GET</b><br>
 uri : <b>/teams/:tid</b><br>
 　　:tid にチームIDを指定する
 </p>
-    <p><font color="#FF0000">*</font>tid: <input type="text" id="getoneteamid" size="30" value="t100"></p>
+    <p><font color="#FF0000">*</font>tid: <input type="text" id="getoneteamid" size="30" value="" placeholder="チームIDを指定します"></p>
     <p><button id="getoneteambutton" type="button">取得</button></p>
 <p>
 <font color="#0000FF">※正常に取得できた場合は、「チーム情報追加／更新」の各フィールドにも表示します。</font>
 </p>
-    <textarea id="getoneteamresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="getoneteamresponse" cols=100 rows=10 placeholder="[取得]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>チーム情報追加／更新</h2>
@@ -675,12 +699,11 @@ uri : <b>/teams/:tid</b><br>
 ・body例：<br>
 　{ "tid" : "t100", "tname" : "最強チーム", "timg" : "" }
 </p>
-    <p>&nbsp;&nbsp;tid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="tid" size="30" value="t100"></p>
-    <p><font color="#FF0000">*</font>tname: <input type="text" id="tname" size="100" value="最強チーム"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(チーム名を指定します)</p>
+    <p>&nbsp;&nbsp;tid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="tid" size="30" value="" placeholder="更新時、チームIDを指定します"></p>
+    <p><font color="#FF0000">*</font>tname: <input type="text" id="tname" size="100" value="" placeholder="チーム名を指定します"></p>
     <p><button id="createbutton" type="button">追加</button></p>
     <p><button id="updatebutton" type="button">更新</button></p>
-    <textarea id="createresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="createresponse" cols=100 rows=10 placeholder="[追加]/[更新]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>チーム情報削除</h2>
@@ -689,13 +712,14 @@ http method : <b>DELETE</b><br>
 uri : <b>/teams/:tid</b><br>
 　　:tid にチームID tid を指定する
 </p>
-    <p><font color="#FF0000">*</font>tid: <input type="text" id="removetid" size="30" value="t100"></p>
+    <p><font color="#FF0000">*</font>tid: <input type="text" id="removetid" size="30" value="" placeholder="チームIDを指定します"></p>
     <p><button id="removebutton" type="button">削除</button></p>
-    <textarea id="removeresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="removeresponse" cols=100 rows=10 placeholder="[削除]結果を表示します" disabled></textarea>
 
 <!--
   プレーヤー情報アクセス
 -->
+<a name="player-ref"></a>
     <hr>
     <h2>プレーヤー情報一覧</h2>
 <p>
@@ -703,7 +727,7 @@ http method : <b>GET</b><br>
 uri : <b>/players</b>
 </p>
     <p><button id="getplayerbutton" type="button">一覧取得</button></p>
-    <textarea id="getplayerresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="getplayerresponse" cols=100 rows=10 placeholder="[一覧取得]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>プレーヤー情報取得</h2>
@@ -712,12 +736,12 @@ http method : <b>GET</b><br>
 uri : <b>/players/:plid</b><br>
 　　:plid にプレーヤーIDを指定する
 </p>
-    <p><font color="#FF0000">*</font>plid: <input type="text" id="getoneplayerid" size="30" value="pl1000"></p>
+    <p><font color="#FF0000">*</font>plid: <input type="text" id="getoneplayerid" size="30" value="" placeholder="プレーヤーIDを指定します"></p>
     <p><button id="getoneplayerbutton" type="button">取得</button></p>
 <p>
 <font color="#0000FF">※正常に取得できた場合は、「プレーヤー情報追加／更新」の各フィールドにも表示します。</font>
 </p>
-    <textarea id="getoneplayerresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="getoneplayerresponse" cols=100 rows=10 placeholder="[取得]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>プレーヤー情報追加／更新</h2>
@@ -731,19 +755,14 @@ uri : <b>/players/:plid</b><br>
 ・body例：<br>
 　{ "plid" : "pl1000", "rid" : "r1000", "uid" : "u1000", "tid" : "t100", "csubids" : [ "cs103", "cs102" ] }
 </p>
-    <p>&nbsp;&nbsp;plid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="plid" size="30" value="pl1000"></p>
-    <p><font color="#FF0000">*</font>uid: <input type="text" id="player-uid" size="30" value="u1000"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(ユーザーのID uid を指定します)</p>
-<p>rid は、指定しない</p>
-    <p><font color="#FF0000">*</font>rid: <input type="text" id="player-rid" size="30" value="r1000"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(ラウンド情報のID rid を指定します)</p>
-    <p><font color="#FF0000">*</font>tid: <input type="text" id="player-tid" size="30" value="t100"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(チーム情報のID tid を指定します)</p>
-    <p><font color="#FF0000">*</font>csubids: <input type="text" id="player-csubids" size="100" value="cs103, cs102"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(ラウンドするホール情報のID csubid をカンマ区切りで指定します。ラウンドする順に指定します。例：cs103, cs102)</p>
+    <p>&nbsp;&nbsp;plid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="plid" size="30" value="" placeholder="更新時、プレーヤーIDを指定します"></p>
+    <p><font color="#FF0000">*</font>uid: <input type="text" id="player-uid" size="30" value="" placeholder="ユーザーIDを指定します"></p>
+    <p><font color="#FF0000">*</font>tid: <input type="text" id="player-tid" size="30" value="" placeholder="チームIDを指定します"></p>
+    <p><font color="#FF0000">*</font>csubids: <input type="text" id="player-csubids" size="100" value="" placeholder="ラウンドするコースのコースサブIDをカンマ区切りで指定します。ラウンドする順に指定します。例：cs103, cs102"></p>
+    <p>&nbsp;&nbsp;rid: <input type="text" id="player-rid" size="30" value="" placeholder="ラウンドID" disabled></p>
     <p><button id="createplayerbutton" type="button">追加</button></p>
     <p><button id="updateplayerbutton" type="button">更新</button></p>
-    <textarea id="createplayerresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="createplayerresponse" cols=100 rows=10 placeholder="[追加]/[更新]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>プレーヤー情報削除</h2>
@@ -752,13 +771,14 @@ http method : <b>DELETE</b><br>
 uri : <b>/players/:plid</b><br>
 　　:plid にプレーヤーID plid を指定する
 </p>
-    <p><font color="#FF0000">*</font>plid: <input type="text" id="removeplid" size="30" value="pl1000"></p>
+    <p><font color="#FF0000">*</font>plid: <input type="text" id="removeplid" size="30" value="" placeholder="プレーヤーIDを指定します"></p>
     <p><button id="removeplayerbutton" type="button">削除</button></p>
-    <textarea id="removeplayerresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="removeplayerresponse" cols=100 rows=10 placeholder="[削除]結果を表示します" disabled></textarea>
 
 <!--
   ラウンド情報アクセス
 -->
+<a name="round-ref"></a>
     <hr>
     <h2>ラウンド情報一覧</h2>
 <p>
@@ -766,7 +786,7 @@ http method : <b>GET</b><br>
 uri : <b>/rounds</b>
 </p>
     <p><button id="getroundbutton" type="button">一覧取得</button></p>
-    <textarea id="getroundresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="getroundresponse" cols=100 rows=10 placeholder="[一覧取得]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>ラウンド情報取得</h2>
@@ -775,12 +795,12 @@ http method : <b>GET</b><br>
 uri : <b>/rounds/:rid</b><br>
 　　:rid にラウンドIDを指定する
 </p>
-    <p><font color="#FF0000">*</font>rid: <input type="text" id="getoneroundid" size="30" value="r1000"></p>
+    <p><font color="#FF0000">*</font>rid: <input type="text" id="getoneroundid" size="30" value="" placeholder="ラウンドIDを指定します"></p>
     <p><button id="getoneroundbutton" type="button">取得</button></p>
 <p>
 <font color="#0000FF">※正常に取得できた場合は、「ラウンド情報追加／更新」の各フィールドにも表示します。</font>
 </p>
-    <textarea id="getoneroundresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="getoneroundresponse" cols=100 rows=10 placeholder="[取得]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>ラウンド情報追加／更新</h2>
@@ -794,56 +814,54 @@ uri : <b>/rounds/:rid</b><br>
 ・body例：<br>
 　{ "rid": "r1000", "rname": "第１回　ＰＳＷオープン 20YY/MM/DD", "cid": "c100", "csubids": [ "c100cs01", "c100cs02" ], "handicapinf": { "method": 2, "upperLimit": 36 }, "prtyifs": [ { "cid": "c100", "csubids": [ "c100cs01", "c100cs02" ], "number": 1, "pid": "party01", "plyrifs": [ "pl1000", "pl1001", "pl1002", "pl1003" ], "pname": "1組目", "rid": "r1000" }], "date": { "$date": 1382140800 } }
 </p>
-    <p>&nbsp;&nbsp;rid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="rid" size="30" value="r1000"></p>
-    <p><font color="#FF0000">*</font>rname: <input type="text" id="rname" size="100" value="ＰＳＷオープン"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(ラウンド名（例：コンペ名）を指定します)</p>
-    <p><font color="#FF0000">*</font>cid: <input type="text" id="round-cid" size="30" value="c1000"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(ラウンドするコース情報のIDを指定します)</p>
-    <p><font color="#FF0000">*</font>csubids: <input type="text" id="round-csubids" size="100" value="cs100, cs101, cs102"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(ラウンドするホール情報のID csubid をカンマ区切り指定します。例：cs100, cs101, cs102)</p>
-    <p><font color="#FF0000">*</font>handicapinf-method: <input type="text" id="handicapinf-method" size="30" value="2"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(ハンディキャップ計算方法を指定します。1 : ぺリア方式、2 : ダブルペリア方式)</p>
-    <p><font color="#FF0000">*</font>handicapinf-upperLimit: <input type="text" id="handicapinf-upperlimit" size="30" value="36"><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(ハンディキャップ上限値を指定します)</p>
+    <p>&nbsp;&nbsp;rid<font color="#FF0000">(更新時指定)</font>: <input type="text" id="rid" size="30" value="" placeholder="更新時、ラウンドIDを指定します"></p>
+    <p><font color="#FF0000">*</font>rname: <input type="text" id="rname" size="100" value="" placeholder="ラウンド名（例：コンペ名）を指定します"></p>
+    <p><font color="#FF0000">*</font>cid: <input type="text" id="round-cid" size="50" value="" placeholder="ラウンドするコースのコースIDを指定します"></p>
+    <p><font color="#FF0000">*</font>csubids: <input type="text" id="round-csubids" size="100" value="" placeholder="ラウンドするコースのコースサブID (csubid) をカンマ区切りで指定します。例：cs100, cs101, cs102"></p>
+    <p><font color="#FF0000">*</font>handicapinf-method: <input type="text" id="handicapinf-method" size="70" value="" placeholder="ハンディキャップ計算方法を指定します。1 : ぺリア方式、2 : ダブルペリア方式"></p>
+    <p><font color="#FF0000">*</font>handicapinf-upperLimit: <input type="text" id="handicapinf-upperlimit" size="40" value="" placeholder="ハンディキャップ上限値を指定します"></p>
 <!--    <p>date: <input type="text" id="round-date" size="30" value=""></p>-->
     <p><font color="#FF0000">*</font>prtyifs:<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;(パーティ情報を指定します。パーティ数分を配列で指定します。<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;csubids : ラウンドするホール情報のID csubid の配列<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;plyrifs : プレーヤーIDの配列<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;pname : パーティ名)<br>
+    &nbsp;&nbsp;・パーティ情報を指定します。パーティ数分を配列で指定します。<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;[<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"csubids": ラウンドするコースのコースサブID (csubid) の配列<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"plyrifs": プレーヤーID (plid) の配列<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pname": パーティ名<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;]<br>
     <br>
-    &nbsp;&nbsp;&nbsp;&nbsp;指定例 (2組を指定する場合)：<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;
-[
-  {
-    "csubids": [
-        "cs101",
-        "cs102"
-    ], 
-    "plyrifs": [
-        "pl1000",
-        "pl1001",
-        "pl1002",
-        "pl1003"
-    ], 
-    "pname": "1組目"
-  },
-  {
-    "csubids": [
-        "cs101",
-        "cs102"
-    ], 
-    "plyrifs": [
-        "pl1004",
-        "pl1005",
-        "pl1006",
-        "pl1007"
-    ], 
-    "pname": "2組目"
-  }
+    &nbsp;&nbsp;・指定例 (2組を指定する場合)：<br>
+[<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"csubids": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"cs101",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"cs102"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;], <br>
+&nbsp;&nbsp;&nbsp;&nbsp;"plyrifs": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pl1000",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pl1001",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pl1002",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pl1003"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;], <br>
+&nbsp;&nbsp;&nbsp;&nbsp;"pname": "1組目"<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"csubids": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"cs101",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"cs102"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;], <br>
+&nbsp;&nbsp;&nbsp;&nbsp;"plyrifs": [<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pl1004",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pl1005",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pl1006",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"pl1007"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;],<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"pname": "2組目"<br>
+&nbsp;&nbsp}<br>
 ]<br>
 </p>
-    <textarea id="prtyifs" cols=100 rows=20>
+    <textarea id="prtyifs" cols=100 rows=20 placeholder="パーティ情報を指定します">
 [
   {
     "csubids": [
@@ -863,7 +881,7 @@ uri : <b>/rounds/:rid</b><br>
     <p>date: not supported.</p>
     <p><button id="createroundbutton" type="button">追加</button></p>
     <p><button id="updateroundbutton" type="button">更新</button></p>
-    <textarea id="createroundresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="createroundresponse" cols=100 rows=10 placeholder="[追加]/[更新]結果を表示します" disabled></textarea>
 
     <hr>
     <h2>ラウンド情報削除</h2>
@@ -872,9 +890,9 @@ http method : <b>DELETE</b><br>
 uri : <b>/rounds/:rid</b><br>
 　　:rid にラウンドID rid を指定する
 </p>
-    <p><font color="#FF0000">*</font>rid: <input type="text" id="removerid" size="30" value="r1000"></p>
+    <p><font color="#FF0000">*</font>rid: <input type="text" id="removerid" size="30" value="" placeholder="ラウンドIDを指定します"></p>
     <p><button id="removeroundbutton" type="button">削除</button></p>
-    <textarea id="removeroundresponse" cols=100 rows=10 disabled></textarea>
+    <textarea id="removeroundresponse" cols=100 rows=10 placeholder="[削除]結果を表示します" disabled></textarea>
 
   </body>
 </html>

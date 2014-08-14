@@ -156,8 +156,6 @@ module.exports = {
   },
   // ラウンド情報更新
   update: function(req, res) {
-// パーティID pid チェック(pid 存在チェック)
-// プレーヤー情報更新（パーティ情報との関連削除。一旦、更新前のプレーヤー情報から rid を削除して、振りなおすか）
     console.log("update round start:" + req.body);
     if (isNullOrEmpty(req.params.rid)) {
       responseError(400, res, "invalid:rid");
