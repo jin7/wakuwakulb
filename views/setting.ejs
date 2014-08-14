@@ -289,11 +289,8 @@
       // 追加
       $("#createroundbutton").click( function() {
           var handicapinf = { 'method' : parseInt($("#handicapinf-method").val()), 'upperLimit': parseInt($("#handicapinf-upperlimit").val()) };
-          var prtyifs = [];
+          var prtyifs = $("#prtyifs").val() ? convertToPrtyifsObject($("#prtyifs").val()) : [];
           var csubarray = csv2array($("#round-csubids").val());
-          if ($("#prtyifs").val()) {
-            prtyifs = JSON.parse($("#prtyifs").val());
-          }
           var JSONdata = {
             'rid': $("#rid").val(),
             'rname': $("#rname").val(),
@@ -316,11 +313,8 @@
       $("#updateroundbutton").click( function() {
           var url = "/rounds/" + $("#rid").val();
           var handicapinf = { 'method' : parseInt($("#handicapinf-method").val()), 'upperLimit': parseInt($("#handicapinf-upperlimit").val()) };
-          var prtyifs = [];
+          var prtyifs = $("#prtyifs").val() ? convertToPrtyifsObject($("#prtyifs").val()) : [];
           var csubarray = csv2array($("#round-csubids").val());
-          if ($("#prtyifs").val()) {
-            prtyifs = JSON.parse($("#prtyifs").val());
-          }
           var JSONdata = {
             'rname': $("#rname").val(),
             'cid': $("#round-cid").val(),
@@ -427,6 +421,23 @@
     		data[i] = data[i].replace( /(^\s+)|(\s+$)/g , ""  );
       }
       return data;
+    }
+
+    function convertToPrtyifsObject(vals) {
+      var prtyifs = [];
+      var srcobj = JSON.parse($("#prtyifs").val());
+      for (i = 0, l = srcobj.length; i < l; i++) {
+        var prtyif = {};
+        prtyif.number = srcobj[i].number;
+        prtyif.rid = srcobj[i].rid;
+        prtyif.pid = srcobj[i].pid;
+        prtyif.cid = srcobj[i].cid;
+        prtyif.pname = srcobj[i].pname;
+        prtyif.plyrifs = srcobj[i].plyrifs;
+        prtyif.csubids = srcobj[i].csubids;
+        prtyifs.push(prtyif);
+      }
+      return prtyifs;
     }
   </script>
 

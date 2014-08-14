@@ -14,7 +14,7 @@ module.exports = {
   },
   // プレーヤー情報追加
   create: function(req, res) {
-    console.log(req.body);
+    console.log("create player start:" + req.body);
     var newPlayer = new Player(req.body);
     isValidUid(newPlayer.uid, function(isValid) {
       if (!isValid) {
@@ -61,6 +61,7 @@ module.exports = {
   },
   // プレーヤー情報更新
   update: function(req, res) {
+    console.log("update player start:" + req.body);
     isValidPlid(req.params.plid, function(isValid) {
       if (!isValid) {
         responseError(400, res, "invalid:plid");

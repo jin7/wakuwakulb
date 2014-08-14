@@ -131,6 +131,29 @@ function IsValidTid(val, retCallback) {
     }
   );
 }
+isValidPlids = IsValidPlids;
+function IsValidPlids(vals, retCallback) {
+  if (IsNullOrEmpty(vals)) {
+    retCallback(false);
+    return;
+  }
+  var isValid = true;
+  async.forEach(vals, function(val, cb) {
+//console.log("plid=" + val)
+    IsValidPlid(val, function(isValidPlid) {
+      if (!isValidPlid) {
+        cb(400);
+      } else {
+        cb(null);
+      }
+    });
+  }, function(err) {
+    if (err) {
+      isValid = false;
+    }
+    retCallback(isValid);
+  });
+}
 isValidPlid = IsValidPlid;
 function IsValidPlid(val, retCallback) {
   if (IsNullOrEmpty(val)) {
@@ -149,6 +172,68 @@ function IsValidPlid(val, retCallback) {
       retCallback(isValid);
     }
   );
+}
+isValidCid = IsValidCid;
+function IsValidCid(val, retCallback) {
+  if (IsNullOrEmpty(val)) {
+    retCallback(false);
+    return;
+  }
+  var isValid = true;
+  Course.findOne({ 'cid': val },
+    function(err, course) {
+      if (err) {
+        throw err;
+      }
+      if (course == null) {
+        isValid = false;
+      }
+      retCallback(isValid);
+    }
+  );
+}
+isValidRid = IsValidRid;
+function IsValidRid(val, retCallback) {
+  if (IsNullOrEmpty(val)) {
+    retCallback(false);
+    return;
+  }
+  var isValid = true;
+  Round.findOne({ 'rid': val },
+    function(err, round) {
+      if (err) {
+        throw err;
+      }
+      if (round == null) {
+        isValid = false;
+      }
+      retCallback(isValid);
+    }
+  );
+}
+isValidPid = IsValidPid;
+function IsValidPid(val, retCallback) {
+  if (IsNullOrEmpty(val)) {
+    retCallback(false);
+    return;
+  }
+  var isValid = true;
+  Round.findOne({ 'pid': val },
+    function(err, party) {
+      if (err) {
+        throw err;
+      }
+      if (party == null) {
+        isValid = false;
+      }
+      retCallback(isValid);
+    }
+  );
+}
+embedRidInPlayer = EmbedRidInPlayer;
+function EmbedRidInPlayer(rid, prtyifs, retCallback) {
+  // TODO: embed rid in player
+  retCallback(true);
 }
 isDate = IsDate;
 function IsDate(datestr) {
