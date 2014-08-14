@@ -233,7 +233,39 @@ function IsValidPid(val, retCallback) {
 embedRidInPlayer = EmbedRidInPlayer;
 function EmbedRidInPlayer(rid, prtyifs, retCallback) {
   // TODO: embed rid in player
-  retCallback(true);
+  async.forEach(prtyifs, function(prtyif, cb) {
+    if (isNullOrEmpty(prtyif.plyrifs)) {
+      cb(400);
+    }
+    async.forEach(prtyif.plyrifs, function(plid, plCb) {
+      Player.findOne({ 'plid' : plid }, function(err, player) {
+        if (err) {
+          plCb(500);
+        } else {
+          player.rid = rid;
+          player.save(function(err) {
+            if (err) {
+              plCb(500);
+            } else {
+              plCb(null);
+            }
+          });
+        }
+      });
+    }, function(err) {
+      if (err) {
+        cb(err);
+      } else {
+        cb(null);
+      }
+    });
+  }, function(err) {
+    if (err) {
+      retCallback(false);
+    } else {
+      retCallback(true);
+    }
+  });
 }
 isDate = IsDate;
 function IsDate(datestr) {
