@@ -42,7 +42,11 @@ module.exports = {
     Course.findOne({ 'cid': req.params.cid },
       function(err, course) {
         if (!err) {
-          responseSuccess(res, course);
+          if (course) {
+            responseSuccess(res, course);
+          } else {
+            responseError(404, res);
+          }
         } else {
           responseError(500, res, err);
         }

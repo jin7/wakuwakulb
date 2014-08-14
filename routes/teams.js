@@ -37,7 +37,11 @@ module.exports = {
     Team.findOne({ 'tid': req.params.tid },
       function(err, team) {
         if (!err) {
-          responseSuccess(res, team);
+          if (team) {
+            responseSuccess(res, team);
+          } else {
+            responseError(404, res);
+          }
         } else {
           responseError(500, res, err);
         }

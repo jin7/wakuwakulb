@@ -44,7 +44,11 @@ module.exports = {
     Hole.findOne({ 'csubid': req.params.csubid },
       function(err, hole) {
         if (!err) {
-          responseSuccess(res, hole);
+          if (hole) {
+            responseSuccess(res, hole);
+          } else {
+            responseError(404, res);
+          }
         } else {
           responseError(500, res, err);
         }

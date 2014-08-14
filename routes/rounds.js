@@ -145,7 +145,11 @@ module.exports = {
     Round.findOne({ 'rid': req.params.rid },
       function(err, round) {
         if (!err) {
-          responseSuccess(res, round);
+          if (round) {
+            responseSuccess(res, round);
+          } else {
+            responseError(404, res);
+          }
         } else {
           responseError(500, res, err);
         }

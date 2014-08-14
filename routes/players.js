@@ -50,7 +50,11 @@ module.exports = {
     Player.findOne({ 'plid': req.params.plid },
       function(err, player) {
         if (!err) {
-          responseSuccess(res, player);
+          if (player) {
+            responseSuccess(res, player);
+          } else {
+            responseError(404, res);
+          }
         } else {
           responseError(500, res, err);
         }

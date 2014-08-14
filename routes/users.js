@@ -44,7 +44,11 @@ module.exports = {
     User.findOne({ 'uid': req.params.uid },
       function(err, user) {
         if (!err) {
-          responseSuccess(res, user);
+          if (user) {
+            responseSuccess(res, user);
+          } else {
+            responseError(404, res);
+          }
         } else {
           responseError(500, res, err);
         }
