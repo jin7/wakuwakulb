@@ -463,6 +463,8 @@ APIを実行できます。<br>
 　　　ユーザー、チーム、ラウンドするホール情報との関連を定義します。
 <h3>　・<a href="#round-ref">ラウンド情報</a></h3>
 　　　ラウンド名（コンペ名など）、コース情報との関連、パーティ(組)情報(プレーヤー情報、ラウンドするホール情報との関連)を定義します。
+<br>
+<h3>　・<a href="#error-ref">エラー一覧</a></h3>
 </p>
 <a name="baseurl-ref"></a>
     <hr>
@@ -894,5 +896,14 @@ uri : <b>/rounds/:rid</b><br>
     <p><button id="removeroundbutton" type="button">削除</button></p>
     <textarea id="removeroundresponse" cols=100 rows=10 placeholder="[削除]結果を表示します" disabled></textarea>
 
+<a name="error-ref"></a>
+<hr>
+<h2>エラー一覧</h2>
+<table>
+<tr><th>status</th><th>エラー内容</th></tr>
+<tr><td>400</td><td>パラメータ不当。必要なパラメータが指定されているか確認してください。</td></tr>
+<tr><td>404</td><td>指定したIDが存在しない。指定したIDが正しいか確認してください。</td></tr>
+<tr><td>500</td><td>DBアクセスエラー</td></tr>
+</table>
   </body>
 </html>
