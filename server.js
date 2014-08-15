@@ -394,6 +394,28 @@ function CreatePid(num, retCallback) {
     retCallback(pids);
   });
 }
+isValidKey = IsValidKey;
+function IsValidKey(val, retCallback) {
+  if (IsNullOrEmpty(val)) {
+    retCallback(false);
+    return;
+  }
+  Auth.findOne({ 'account': 'wakuwakuadmin'}, function(err, auth) {
+    if (err) {
+      retCallback(false);
+    } else {
+      if (auth == null) {
+        retCallback(false);
+        return;
+      }
+      if (val == auth.key) {
+        retCallback(true);
+      } else {
+        retCallback(false);
+      }
+    }
+  });
+}
 ///
 /// Database schema
 ///
@@ -502,6 +524,13 @@ var scoreSchema = new mongoose.Schema({
   , score : { type: Number }
 });
 Score = mongoose.model('Score', scoreSchema);
+
+// Auth model
+var authSchema = new mongoose.Schema({
+    account: { type: String }
+  , key: { type: String }
+});
+Auth = mongoose.model('Auth', authSchema);
 
 // Configuration
 

@@ -332,6 +332,9 @@
       $.ajax({
           type : 'get',
           url : url,
+          beforeSend: function( xhr ) {
+            xhr.setRequestHeader("X-W2LBKey", $("#accesskey").val());
+          },
           scriptCharset: 'utf-8',
           success : function(data) {
               // Success
@@ -353,6 +356,9 @@
       $.ajax({
           type : 'post',
           url : url,
+          beforeSend: function( xhr ) {
+            xhr.setRequestHeader("X-W2LBKey", $("#accesskey").val());
+          },
           data : JSON.stringify(body),
           contentType: 'application/json',
           dataType : 'json',
@@ -374,6 +380,9 @@
       $.ajax({
           type : 'put',
           url : url,
+          beforeSend: function( xhr ) {
+            xhr.setRequestHeader("X-W2LBKey", $("#accesskey").val());
+          },
           data : JSON.stringify(body),
           contentType: 'application/json',
           dataType : 'json',
@@ -395,6 +404,9 @@
       $.ajax({
           type : 'delete',
           url : url,
+          beforeSend: function( xhr ) {
+            xhr.setRequestHeader("X-W2LBKey", $("#accesskey").val());
+          },
           scriptCharset: 'utf-8',
           success : function(data) {
               // Success
@@ -455,7 +467,7 @@ APIを実行できます。<br>
 　　　9ホールごとの情報（パー数など）を定義します。
 <h3>　・<a href="#course-ref">コース情報</a></h3>
 　　　ゴルフ場名、ホール情報との関連付けを定義します。
-<h3>　・<!--<a href="#user-ref">-->ユーザー情報<!--</a>--></h3>
+<h3>　・<a href="#user-ref">ユーザー情報</a></h3>
 　　　氏名、誕生日、性別などを定義します。
 <h3>　・<a href="#team-ref">チーム情報</a></h3>
 　　　チーム名を定義します（コンペでチーム戦を行う際などに利用します）。
@@ -487,6 +499,13 @@ body指定例 <b>ボディの指定が必要な場合、その指定例を示し
 <b>URIパラメータ、ボディに指定する項目説明</b>　(<font color="#FF0000">*</font>&nbsp;印&nbsp;:&nbsp;必須項目)<br>
 <br>
 </p>
+<hr>
+<p>
+<br>
+APIにアクセスするための accesskey を指定します。<br>
+accesskey : <input type="text" id="accesskey" size="100" value="" placeholder="accesskeyを指定します">
+</p>
+<br>
 <!--
   ホール情報アクセス
 -->
@@ -605,7 +624,6 @@ uri : <b>/courses/:cid</b><br>
 <!--
   ユーザー情報アクセス
 -->
-<!--
 <a name="user-ref"></a>
     <hr>
     <h2>ユーザー情報一覧</h2>
@@ -662,7 +680,7 @@ uri : <b>/users/:uid</b><br>
     <p><font color="#FF0000">*</font>uid: <input type="text" id="removeuid" size="30" value="" placeholder="ユーザーIDを指定します"></p>
     <p><button id="removeuserbutton" type="button">削除</button></p>
     <textarea id="removeuserresponse" cols=100 rows=10 placeholder="[削除]結果を表示します" disabled></textarea>
--->
+
 <!--
   チーム情報アクセス
 -->

@@ -1,12 +1,18 @@
 module.exports = {
   // プレーヤー情報一覧取得
   index: function(req, res) {
-    Player.find().exec(function(err, players) {
-      if (!err && players != null && players.length > 0) {
-        responseSuccess(res, players);
-      } else {
-        responseError(500, res, err);
+    isValidKey(req.header('X-W2LBKey'), function(isValid) {
+      if (!isValid) {
+        responseError(401, res);
+        return;
       }
+      Player.find().exec(function(err, players) {
+        if (!err && players != null && players.length > 0) {
+          responseSuccess(res, players);
+        } else {
+          responseError(500, res, err);
+        }
+      });
     });
   },
   new: function(req, res) {
@@ -14,31 +20,37 @@ module.exports = {
   },
   // プレーヤー情報追加
   create: function(req, res) {
-    console.log("create player start:" + req.body);
-    var newPlayer = new Player(req.body);
-    isValidUid(newPlayer.uid, function(isValid) {
+    isValidKey(req.header('X-W2LBKey'), function(isValid) {
       if (!isValid) {
-        responseError(400, res, "invalid:uid");
+        responseError(401, res);
         return;
       }
-      isValidTid(newPlayer.tid, function(isValid) {
+      console.log("create player start:" + req.body);
+      var newPlayer = new Player(req.body);
+      isValidUid(newPlayer.uid, function(isValid) {
         if (!isValid) {
-          responseError(400, res, "invalid:tid");
+          responseError(400, res, "invalid:uid");
           return;
         }
-        isValidHoleinfs(newPlayer.csubids, function(isValid) {
+        isValidTid(newPlayer.tid, function(isValid) {
           if (!isValid) {
-            responseError(400, res, "invalid:csubids");
+            responseError(400, res, "invalid:tid");
             return;
           }
-          createPlid(function(plid) {
-            newPlayer.plid = plid;
-            newPlayer.save(function(err) {
-              if (!err) {
-                responseSuccess(res);
-              } else {
-                responseError(500, res, err);
-              }
+          isValidHoleinfs(newPlayer.csubids, function(isValid) {
+            if (!isValid) {
+              responseError(400, res, "invalid:csubids");
+              return;
+            }
+            createPlid(function(plid) {
+              newPlayer.plid = plid;
+              newPlayer.save(function(err) {
+                if (!err) {
+                  responseSuccess(res);
+                } else {
+                  responseError(500, res, err);
+                }
+              });
             });
           });
         });
@@ -47,75 +59,87 @@ module.exports = {
   },
   // プレーヤー情報取得
   show: function(req, res) {
-    Player.findOne({ 'plid': req.params.plid },
-      function(err, player) {
-        if (!err) {
-          if (player) {
-            responseSuccess(res, player);
+    isValidKey(req.header('X-W2LBKey'), function(isValid) {
+      if (!isValid) {
+        responseError(401, res);
+        return;
+      }
+      Player.findOne({ 'plid': req.params.plid },
+        function(err, player) {
+          if (!err) {
+            if (player) {
+              responseSuccess(res, player);
+            } else {
+              responseError(404, res);
+            }
           } else {
-            responseError(404, res);
+            responseError(500, res, err);
           }
-        } else {
-          responseError(500, res, err);
-        }
-      });
+        });
+    });
   },
   edit: function(req, res) {
     responseError(501, res, err);
   },
   // プレーヤー情報更新
   update: function(req, res) {
-    console.log("update player start:" + req.body);
-    isValidPlid(req.params.plid, function(isValid) {
+    isValidKey(req.header('X-W2LBKey'), function(isValid) {
       if (!isValid) {
-        responseError(400, res, "invalid:plid");
+        responseError(401, res);
         return;
       }
-      isValidUid(req.body.uid, function(isValid) {
+      console.log("update player start:" + req.body);
+      isValidPlid(req.params.plid, function(isValid) {
         if (!isValid) {
-          responseError(400, res, "invalid:uid");
+          responseError(400, res, "invalid:plid");
           return;
         }
-        isValidTid(req.body.tid, function(isValid) {
+        isValidUid(req.body.uid, function(isValid) {
           if (!isValid) {
-            responseError(400, res, "invalid:tid");
+            responseError(400, res, "invalid:uid");
             return;
           }
-          isValidHoleinfs(req.body.csubids, function(isValid) {
+          isValidTid(req.body.tid, function(isValid) {
             if (!isValid) {
-              responseError(400, res, "invalid:csubids");
+              responseError(400, res, "invalid:tid");
               return;
             }
-            Player.findOne({ 'plid': req.params.plid },
-              function(err, player) {
-                if (!err) {
-                  if (player) {
-                    if (req.body.rid) {
-                      player.rid = req.body.rid;
-                    }
-                    if (req.body.uid) {
-                      player.uid = req.body.uid;
-                    }
-                    if (req.body.tid) {
-                      player.tid = req.body.tid;
-                    }
-                    if (req.body.csubids) {
-                      player.csubids = req.body.csubids;
-                    }
-                    player.save(function(err) {
-                      if (!err) {
-                        responseSuccess(res);
-                      } else {
-                        responseError(500, res, err);
+            isValidHoleinfs(req.body.csubids, function(isValid) {
+              if (!isValid) {
+                responseError(400, res, "invalid:csubids");
+                return;
+              }
+              Player.findOne({ 'plid': req.params.plid },
+                function(err, player) {
+                  if (!err) {
+                    if (player) {
+                      if (req.body.rid) {
+                        player.rid = req.body.rid;
                       }
-                    });
+                      if (req.body.uid) {
+                        player.uid = req.body.uid;
+                      }
+                      if (req.body.tid) {
+                        player.tid = req.body.tid;
+                      }
+                      if (req.body.csubids) {
+                        player.csubids = req.body.csubids;
+                      }
+                      player.save(function(err) {
+                        if (!err) {
+                          responseSuccess(res);
+                        } else {
+                          responseError(500, res, err);
+                        }
+                      });
+                    } else {
+                      responseError(404, res);
+                    }
                   } else {
-                    responseError(404, res);
+                    responseError(500, res, err);
                   }
-                } else {
-                  responseError(500, res, err);
-                }
-              });
+                });
+            });
           });
         });
       });
@@ -123,13 +147,19 @@ module.exports = {
   },
   // プレーヤー情報削除
   destroy: function(req, res) {
-    console.log('plid=' + req.params.plid);
-    Player.remove({ 'plid': req.params.plid }, function(err) {
-      if (!err) {
-        responseSuccess(res);
-      } else {
-        responseError(500, res, err);
+    isValidKey(req.header('X-W2LBKey'), function(isValid) {
+      if (!isValid) {
+        responseError(401, res);
+        return;
       }
+      console.log('plid=' + req.params.plid);
+      Player.remove({ 'plid': req.params.plid }, function(err) {
+        if (!err) {
+          responseSuccess(res);
+        } else {
+          responseError(500, res, err);
+        }
+      });
     });
   }
 };
