@@ -168,8 +168,8 @@
 		io.transports.push('jsonp-polling');
 		io.transports.push('flashsocket');
 		io.transports.push('htmlfile');
-		lb = io.connect("http://wakuwaku.c.node-ninja.com:3000/leadersboard", {
-//		lb = io.connect("http://localhost:3000/leadersboard", {
+		lb = io.connect("https://wakuwaku.c.node-ninja.com/leadersboard", {
+//		lb = io.connect("https://localhost/leadersboard", {
 			'try multiple transports': true, 
 			'force new connection': true 
 		});
