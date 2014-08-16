@@ -402,12 +402,13 @@
 		initializeCommon();
 
 		var countHandy = 0;
+		var handiMax = storage.getItem(kHandiMax);
 
 		// ハンデ抽選状況の更新
 		if (document.getElementById('drawHole') !=  null)
 		{
 			countHandy = countSelectHandy();
-			document.getElementById('drawHole').innerHTML  = countHandy + " / " + storage.getItem(kHandiMax);
+			document.getElementById('drawHole').innerHTML  = countHandy + " / " + handiMax;
 		}
 
 		// チームデータを作成する
@@ -432,7 +433,12 @@
 
 		// データをアニメーションクラスに設定し、初期表示を行う
 		clsAnimete.CreateObjects();
-		clsAnimete.restoreData( true );  // アニメーションあり
+		if (countHandy == handiMax) {
+			clsAnimete.restoreData( false, "yes" );  // アニメーションなし
+			clsAnimete.updaeData("finale");
+		} else {
+			clsAnimete.restoreData( true );  // アニメーションあり
+		}
 //		if (isUpdate)
 //		{
 //			clsAnimete.updaeData(animeType);
