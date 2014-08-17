@@ -4,5 +4,10 @@
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'WakuWaku Leaders Board' });
+  res.render('index',
+    {
+      title: 'WakuWaku Leaders Board',
+      rid: req.query.rid
+    }
+  );
 };

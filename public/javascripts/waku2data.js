@@ -160,7 +160,7 @@
 	/******************************************************************
 	 * コース情報取得処理（初回接続時）
 	 ******************************************************************/
-	function connectTop()
+	function connectTop(rid)
 	{
         // leadersboard接続
 		io.transports.push('websocket');
@@ -182,8 +182,8 @@
 			// ラウンド情報取得
 			lb.on(ev[2], function(round) {
 				console.log("getroundinf access...");
-				getRoundData(round);
-				getPlayerData(round);
+				getRoundData([round]);
+				getPlayerData([round]);
 
 				if (storage.getItem("_" + kRId) != null
 					&& storage.getItem("_" + kRId) != ""
@@ -209,15 +209,15 @@
 	    });
 
 		// ラウンド情報要求
-		requestRoundInfo(lb);
+		requestRoundInfo(lb, rid);
 	}
 
 
 	/******************************************************************
 	 * ラウンド情報要求（初回接続時　サーバへの送信）
 	 ******************************************************************/
-	function requestRoundInfo( lb ) {
-		lb.emit(ev[2], {});
+	function requestRoundInfo( lb, rid ) {
+		lb.emit(ev[2], { 'rid' : rid });
 		console.log("send request RoundInfo");
 	}
 

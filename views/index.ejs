@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="/stylesheets/button.css">
     <link rel="stylesheet" href="/stylesheets/slider-animation.css">
 	</meta>
+  <script type="text/javascript">
+    var rid = '<%= rid %>';
+  </script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 	<script type="text/javascript" src="https://wakuwaku.c.node-ninja.com/socket.io/socket.io.js"></script>
 <!--	<script type="text/javascript" src="https://localhost/socket.io/socket.io.js"></script>-->
@@ -51,8 +54,8 @@
 
 		<section>
 			<nav style="text-align:center; position:absolute; left:20px; bottom:40px;">
-				<input class="button blue" type="button" value="はじめから" onclick="initAll();location.href='/performance'" /> 
-				<input class="button blue" type="button" value="続きから" onclick="initNext();location.href='/performance'" /> 
+				<input class="button blue" type="button" value="はじめから" onclick="initAll();location.href='/performance?rid=<%= rid %>'" /> 
+				<input class="button blue" type="button" value="続きから" onclick="initNext();location.href='/performance?rid=<%= rid %>'" /> 
             </nav>
 		</section>
 <!--

@@ -840,33 +840,33 @@ var lb = io
     // ラウンド情報取得要求受信
     socket.on('getroundinf', function (data) {
         // ラウンド情報を通知
-        notifyRoundData(socket);
+        notifyRoundData(socket, data.rid );
     });
   });
 
 // ラウンド情報通知
-function notifyRoundData(socket) {
-    console.log('notifyRoundData');
+function notifyRoundData(socket, rid) {
+    console.log('notifyRoundData:' + rid);
     var calls = [];
-    var roundList = [];
+    var roundobj = {};
     var csubidList = [];
     calls.push(function (callback) {
         // ラウンド情報サーチ
-        Round.find(function (err, rounds) {
+        Round.findOne({ 'rid': rid }, function (err, round) {
             //console.log('rounds:' + rounds.length);
-            if (!err && rounds != null) {
-//                if (rounds.length == 1) {
-                  if (rounds.length >= 1) {
-                    console.log('csubids:' + rounds[0].csubids);
-                    var round = { "rid": rounds[0].rid, "rname": rounds[0].rname, "date": rounds[0].date, "time": rounds[0].time, "handicapinf": rounds[0].handicapinf, "cinf": [], "prtyinfs": rounds[0].prtyifs };
-                    var courseinf = { "cid": rounds[0].cid };
+            if (!err && round != null) {
+                    console.log('csubids:' + round.csubids);
+                    roundobj = { "rid": round.rid, "rname": round.rname, "date": round.date, "time": round.time, "handicapinf": round.handicapinf, "cinf": [], "prtyinfs": round.prtyifs };
+                    var courseinf = { "cid": round.cid };
+//console.log("cid:" + round.cid);
                     // コース情報サーチ
-                    Course.findOne({ "cid": rounds[0].cid }, function (err, crs) {
+                    Course.findOne({ "cid": round.cid }, function (err, crs) {
                         if (!err) {
+//console.log("crs:" + crs);
                             courseinf["cname"] = crs.cname;
                             var csubList = [];
                             // サブコースIDごとホール情報取得
-                            async.forEach(rounds[0].csubids, function (csubid, csubidCb) {
+                            async.forEach(round.csubids, function (csubid, csubidCb) {
                                 // ホール情報サーチ
                                 Hole.findOne({ 'csubid': csubid }, function (err, csub) {
                                     if (!err) {
@@ -882,15 +882,15 @@ function notifyRoundData(socket) {
                                 // パーティ情報を取得
                                 //                        console.log("async.forEach(csubids) err:" + err + ",csublist:" + csubList);
                                 courseinf.holeinfs = csubList;
-                                round.cinf = courseinf;
+                                roundobj.cinf = courseinf;
                                 var prtyinfs = [];  // パーティ情報配列
                                 // パーティ情報ごとプレーヤー情報取得
-                                async.forEachSeries(rounds[0].prtyifs, function (prtyinf, prtyinfCb) {
+                                async.forEachSeries(round.prtyifs, function (prtyinf, prtyinfCb) {
                                     var plyrinfsForTeam = [];
                                     var plyrinfs = [];  // プレーヤー情報配列
                                     async.forEachSeries(prtyinf.plyrifs, function (plyrid, plyrinfCb) {
                                         // プレーヤー情報サーチ
-                                        Player.findOne({ 'plid': plyrid, 'rid': rounds[0].rid }, function (err, plyr) {
+                                        Player.findOne({ 'plid': plyrid, 'rid': round.rid }, function (err, plyr) {
                                             if (!err && plyr) {
                                                 plyrinfs.push({ "plid": plyr.plid, "rid": plyr.rid, "uid": plyr.uid, "tid": plyr.tid });
                                             } else {
@@ -904,6 +904,7 @@ function notifyRoundData(socket) {
                                         if (!err) {
                                             async.forEachSeries(plyrinfs, function (plyr, plyrCb) {
                                                 // チーム情報取得
+//console.log("tid:" + plyr.tid);
                                                 Team.findOne({ 'tid': plyr.tid }, function (err, team) {
                                                     if (!err) {
                                                         console.log("team:" + team);
@@ -957,9 +958,8 @@ function notifyRoundData(socket) {
                                 }, function (err) {
                                     // パーティ情報取得完了後、ラウンド情報オブジェクトへ設定
                                     if (!err) {
-                                        round.prtyinfs = prtyinfs;
-                                        roundList.push(round);
-                                        callback(null, roundList);
+                                        roundobj.prtyinfs = prtyinfs;
+                                        callback(null, roundobj)
                                     }
                                 });
                             });
@@ -967,26 +967,17 @@ function notifyRoundData(socket) {
                             console.log("Cource.findOne err : " + err);
                         }
                     });
-                } else {
-                    async.forEach(rounds, function (round, cb) {
-                        roundList.push({ "rid": round.rid, "rname": round.rname, "date": round.date, "time": round.time, "cinf": round.cinf, "prtyinfs": round.prtyifs });
-                        cb();
-                    }, function (err) {
-                        console.log("notifyRoundData forEach error:" + err);
-                        callback(null, roundList);
-                    });
-                }
             } else {
                 console.log("notifyRoundData Round.find() error:" + err);
-                callback(null, roundList);
+                callback(null, roundobj);
             }
         });
     });
 
     async.series(calls, function (err, result) {
         if (!err) {
-            console.log('emit getroundinf : ' + roundList);
-            socket.emit('getroundinf', roundList);
+            console.log('emit getroundinf : ' + roundobj);
+            socket.emit('getroundinf', roundobj);
         } else {
             console.log("async.series error:" + err);
         }
