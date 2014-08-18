@@ -296,8 +296,6 @@ function IsDate(datestr) {
 responseSuccess = ResponseSuccess;
 function ResponseSuccess(res, json) {
 console.log("ResponseSuccess");
-//  res.header('Access-Control-Allow-Origin', 'http://waku2leaderboardv3.herokuapp.com');
-  res.header("Access-Control-Allow-Origin", "*");
   if (!json) {
     res.json({ 'result':0 });
   } else {
@@ -307,8 +305,6 @@ console.log("ResponseSuccess");
 
 responseError = ResponseError;
 function ResponseError(status, res, err) {
-//  res.header('Access-Control-Allow-Origin', 'http://waku2leaderboardv3.herokuapp.com');
-  res.header("Access-Control-Allow-Origin", "*");
   res.statusCode = status;
   if (err) {
     res.json({ 'error': err });
@@ -555,6 +551,21 @@ app.configure(function(){
   app.use(express.session());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
+  // apply this rule to all requests accessing any URL/URI
+  app.all('*', function(req, res, next) {
+      // add details of what is allowed in HTTP request headers to the response headers
+      res.header('Access-Control-Allow-Origin', req.headers.origin);
+      res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS');
+      res.header('Access-Control-Allow-Credentials', false);
+      res.header('Access-Control-Max-Age', '86400');
+      res.header('Access-Control-Allow-Headers', 'X-W2LBKey, X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+      // the next() function continues execution and will move onto the requested URL/URI
+      next();
+  });
+  // fulfils pre-flight/promise request
+  app.options('*', function(req, res) {
+    res.send(200);
+  });
   mongoose.connect(mongoUri);
 });
 
