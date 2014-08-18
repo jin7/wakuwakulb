@@ -296,7 +296,8 @@ function IsDate(datestr) {
 responseSuccess = ResponseSuccess;
 function ResponseSuccess(res, json) {
 console.log("ResponseSuccess");
-  res.header('Access-Control-Allow-Origin', 'http://waku2leaderboardv3.herokuapp.com');
+//  res.header('Access-Control-Allow-Origin', 'http://waku2leaderboardv3.herokuapp.com');
+  res.header("Access-Control-Allow-Origin", "*");
   if (!json) {
     res.json({ 'result':0 });
   } else {
@@ -306,7 +307,8 @@ console.log("ResponseSuccess");
 
 responseError = ResponseError;
 function ResponseError(status, res, err) {
-  res.header('Access-Control-Allow-Origin', 'http://waku2leaderboardv3.herokuapp.com');
+//  res.header('Access-Control-Allow-Origin', 'http://waku2leaderboardv3.herokuapp.com');
+  res.header("Access-Control-Allow-Origin", "*");
   res.statusCode = status;
   if (err) {
     res.json({ 'error': err });
