@@ -295,8 +295,8 @@ function IsDate(datestr) {
 
 responseSuccess = ResponseSuccess;
 function ResponseSuccess(res, json) {
+  res.header('Access-Control-Allow-Origin', '*');
   if (!json) {
-    res.header('Access-Control-Allow-Origin', '*');
     res.json({ 'result':0 });
   } else {
     res.json(json)
@@ -305,6 +305,7 @@ function ResponseSuccess(res, json) {
 
 responseError = ResponseError;
 function ResponseError(status, res, err) {
+  res.header('Access-Control-Allow-Origin', '*');
   res.statusCode = status;
   if (err) {
     res.json({ 'error': err });
