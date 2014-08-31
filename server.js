@@ -24,8 +24,8 @@ var express = require('express')
 mongoose = require('mongoose')
 app = express();
 
-//var mongoUri = 'mongodb://127.0.0.1/wakuwakulb2';
-var mongoUri = process.env.MONGOHQ_URL;
+var mongoUri = 'mongodb://127.0.0.1/wakuwakulb2';
+//var mongoUri = process.env.MONGOHQ_URL;
 var Schema = mongoose.Schema;
 
 function validator(v) {
