@@ -1,1 +1,1 @@
-web: node setver.js
+web: node server.js
