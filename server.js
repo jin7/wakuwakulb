@@ -539,8 +539,8 @@ Auth = mongoose.model('Auth', authSchema);
 // Configuration
 
 app.configure(function(){
-//  app.set('port', process.env.PORT || 443);
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', process.env.PORT || 443);
+//  app.set('port', process.env.PORT || 3000);
 //  app.set('port', process.env.PORT || 80);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
@@ -613,12 +613,12 @@ var options = {
   key: fs.readFileSync(__dirname + '/crypto/wakuwakulb-key.pem'),
   cert: fs.readFileSync(__dirname + '/crypto/wakuwakulb-cert.pem')
 };
-//var server = https.createServer(options, app).listen(app.get('port'), function(){
-//  console.log("Express server listening on port " + app.get('port'));
-//});
-var server = http.createServer(app).listen(app.get('port'), function() {
-  console.log("Express server listening on port" + app.get('port'));
+var server = https.createServer(options, app).listen(app.get('port'), function(){
+  console.log("Express server listening on port " + app.get('port'));
 });
+//var server = http.createServer(app).listen(app.get('port'), function() {
+//  console.log("Express server listening on port" + app.get('port'));
+//});
 var io = require('socket.io').listen(server);
 io.configure('prouction', function() {
   io.enable('browser client minification');
